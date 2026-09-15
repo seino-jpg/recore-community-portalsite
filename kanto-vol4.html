@@ -290,6 +290,24 @@
       font-size: 12px; color: var(--text-sub); margin-top: 8px; letter-spacing: 0.02em;
     }
 
+    /* ===== 受付について ===== */
+    .reception {
+      display: grid; grid-template-columns: 300px 1fr; gap: 32px; align-items: start;
+      margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--border);
+    }
+    .reception figure { margin: 0; }
+    .reception img {
+      display: block; width: 100%; height: auto; border-radius: 2px;
+      aspect-ratio: 5/6; object-fit: cover;
+    }
+    .reception figcaption { font-size: 12px; color: var(--text-sub); margin-top: 8px; }
+    .reception h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 20px; color: var(--green-dark); margin-bottom: 12px;
+    }
+    .reception p { font-size: 15px; margin-bottom: 12px; }
+    .reception p:last-child { margin-bottom: 0; font-size: 13px; color: var(--text-sub); }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 860px) {
       section { padding: 60px 0; }
@@ -297,6 +315,8 @@
       .hero-fact { padding-right: 24px; margin-right: 24px; }
       .program-item { grid-template-columns: 1fr; gap: 12px; }
       .photo-pair { grid-template-columns: 1fr; gap: 20px; margin-top: 36px; }
+      .reception { grid-template-columns: 1fr; gap: 20px; margin-top: 36px; padding-top: 32px; }
+      .reception img { aspect-ratio: 4/3; }
       .program-num { font-size: 36px; }
       .tt-row { grid-template-columns: 1fr; gap: 2px; padding-left: 24px; }
       .outline th { width: 108px; padding: 14px 10px; font-size: 14px; }
@@ -503,6 +523,19 @@
     <p style="font-size: 13px; color: var(--text-sub); margin-top: 8px;" class="fade-in">
       ※ 各見学パートの時間は、当日の倉庫の稼働状況により前後する場合があります。
     </p>
+
+    <div class="reception fade-in">
+      <figure>
+        <img src="img/reception.jpg" alt="入口事務所の受付。窓口に受付用のタブレットが設置され、手前に入館証が置かれている" loading="lazy" width="1000" height="1200">
+        <figcaption>入口事務所の受付と入館証</figcaption>
+      </figure>
+      <div>
+        <h3>受付について</h3>
+        <p>受付は入口の事務所です。設置されているタブレットで手続きをし、入館証を受け取ってから見学エリアへ移動します。11:30 から受付できますので、12:00 のオリエンテーション開始までにお済ませください。</p>
+        <p>お車でお越しの場合は、来客用駐車場が先着4台です。満車のときは近隣のコインパーキングをご利用ください。</p>
+        <p>当日の詳しい受付方法は、お申し込み後に担当よりご案内します。</p>
+      </div>
+    </div>
   </div>
 </section>
 
