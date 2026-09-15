@@ -49,35 +49,50 @@
     .display { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; }
 
     /* ===== HEADER ===== */
+    /* 深緑のヒーローに重ね、スクロールで白背景に切り替える */
     header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      padding: 22px 0;
+      transition: background .28s ease, border-color .28s ease, padding .28s ease;
+    }
+    header.is-solid {
+      background: rgba(255,255,255,0.96);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      backdrop-filter: saturate(180%) blur(10px);
+      border-bottom-color: var(--border);
+      padding: 13px 0;
     }
     header nav {
-      max-width: 1000px; margin: 0 auto;
       display: flex; justify-content: space-between; align-items: center; gap: 24px;
     }
     .logo {
       font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 20px; font-weight: 900;
-      color: var(--green-dark); text-decoration: none; white-space: nowrap;
+      font-size: 21px; font-weight: 900; letter-spacing: 0.04em;
+      color: #fff; text-decoration: none; white-space: nowrap;
+      transition: color .28s ease;
     }
     .logo-sub {
-      display: block; font-size: 10px; font-weight: 700;
-      letter-spacing: 0.18em; color: var(--text-sub); line-height: 1.2;
+      display: block; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.26em; color: rgba(255,255,255,0.65); line-height: 1.4;
+      transition: color .28s ease;
     }
     .header-back {
-      font-size: 13px; color: var(--text-sub); text-decoration: none; white-space: nowrap;
+      font-size: 13px; color: rgba(255,255,255,0.85); text-decoration: none; white-space: nowrap;
+      transition: color .28s ease;
     }
-    .header-back:hover { color: var(--green-mid); }
+    .header-back:hover { color: var(--gold); }
+    header.is-solid .logo { color: var(--green-dark); }
+    header.is-solid .logo-sub { color: var(--text-sub); }
+    header.is-solid .header-back { color: var(--text-sub); }
+    header.is-solid .header-back:hover { color: var(--green-mid); }
 
     /* ===== HERO ===== */
     .hero {
       background: var(--green-dark);
       color: #fff;
-      padding: 72px 0 0;
+      padding: 124px 0 0;
       border-bottom: 6px solid var(--gold);
     }
     .hero-kicker {
@@ -366,10 +381,12 @@
 
 <!-- ===== HEADER ===== -->
 <header>
+  <div class="container">
   <nav>
     <a href="index.html" class="logo">RECORE<span class="logo-sub">COMMUNITY</span></a>
     <a href="index.html#events" class="header-back">← イベント一覧へ戻る</a>
   </nav>
+  </div>
 </header>
 
 <!-- ===== HERO ===== -->
@@ -677,6 +694,11 @@
 </div>
 
 <script>
+const hdr = document.querySelector('header');
+const syncHeader = () => hdr.classList.toggle('is-solid', window.scrollY > 60);
+syncHeader();
+addEventListener('scroll', syncHeader, { passive: true });
+
 const io = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });

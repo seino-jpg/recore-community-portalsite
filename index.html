@@ -47,31 +47,49 @@
     .display { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; }
 
     /* ===== HEADER ===== */
+    /* ヒーロー写真に重ねる。スクロールすると白背景に切り替わる */
     header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      padding: 22px 0;
+      transition: background .28s ease, border-color .28s ease, padding .28s ease;
+    }
+    header.is-solid {
+      background: rgba(255,255,255,0.96);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      backdrop-filter: saturate(180%) blur(10px);
+      border-bottom-color: var(--border);
+      padding: 13px 0;
     }
     header nav {
-      max-width: 1000px; margin: 0 auto;
       display: flex; justify-content: space-between; align-items: center; gap: 32px;
     }
     .logo {
       font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 20px; font-weight: 900;
-      color: var(--green-dark); text-decoration: none; white-space: nowrap;
+      font-size: 21px; font-weight: 900; letter-spacing: 0.04em;
+      color: #fff; text-decoration: none; white-space: nowrap;
+      transition: color .28s ease;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.35);
     }
     .logo-sub {
-      display: block; font-size: 10px; font-weight: 700;
-      letter-spacing: 0.18em; color: var(--text-sub); line-height: 1.2;
+      display: block; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.26em; color: rgba(255,255,255,0.65); line-height: 1.4;
+      transition: color .28s ease;
     }
-    .nav-links { display: flex; gap: 26px; }
+    .nav-links { display: flex; gap: 30px; }
     .nav-links a {
-      font-size: 14px; color: var(--text); text-decoration: none; white-space: nowrap;
-      padding-bottom: 2px; border-bottom: 1px solid transparent;
+      font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,0.92);
+      text-decoration: none; white-space: nowrap;
+      padding-bottom: 3px; border-bottom: 1px solid transparent;
+      transition: color .28s ease, border-color .18s ease;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.35);
     }
     .nav-links a:hover { border-bottom-color: var(--gold); }
+
+    header.is-solid .logo { color: var(--green-dark); text-shadow: none; }
+    header.is-solid .logo-sub { color: var(--text-sub); }
+    header.is-solid .nav-links a { color: var(--text); text-shadow: none; }
 
     /* ===== HERO ===== */
     .hero { position: relative; background: var(--green-dark); overflow: hidden; }
@@ -84,9 +102,10 @@
       content: ""; position: absolute; inset: 0;
       background:
         linear-gradient(to right, rgba(22,41,15,0.92) 0%, rgba(22,41,15,0.70) 38%, rgba(22,41,15,0.28) 78%, rgba(22,41,15,0.18) 100%),
-        linear-gradient(to top, rgba(22,41,15,0.85) 0%, rgba(22,41,15,0.1) 42%, rgba(22,41,15,0) 60%);
+        linear-gradient(to top, rgba(22,41,15,0.85) 0%, rgba(22,41,15,0.1) 42%, rgba(22,41,15,0) 60%),
+        linear-gradient(to bottom, rgba(22,41,15,0.5) 0%, rgba(22,41,15,0.12) 14%, rgba(22,41,15,0) 24%);
     }
-    .hero-inner { position: relative; z-index: 2; padding: 96px 0 0; }
+    .hero-inner { position: relative; z-index: 2; padding: 148px 0 0; }
     .hero-kicker {
       display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
       color: var(--gold); border: 1px solid rgba(196,212,74,0.5);
@@ -330,8 +349,14 @@
       .join-row { grid-template-columns: 1fr; gap: 4px; }
       .ev-actions .btn { flex: 1 1 auto; }
     }
-    @media (max-width: 460px) {
-      .nav-links { display: none; }
+    @media (max-width: 560px) {
+      /* 狭い画面ではロゴの下にナビを回り込ませる（ナビ自体は残す） */
+      header { padding: 14px 0; }
+      header.is-solid { padding: 10px 0; }
+      header nav { flex-direction: column; align-items: flex-start; gap: 9px; }
+      .nav-links { flex-wrap: wrap; gap: 8px 16px; }
+      .nav-links a { font-size: 12.5px; }
+      .hero-inner { padding-top: 132px; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -343,6 +368,7 @@
 
 <!-- ===== HEADER ===== -->
 <header>
+  <div class="container">
   <nav>
     <a href="/" class="logo">RECORE<span class="logo-sub">COMMUNITY</span></a>
     <div class="nav-links">
@@ -352,6 +378,7 @@
       <a href="#join">参加方法</a>
     </div>
   </nav>
+  </div>
 </header>
 
 <!-- ===== HERO ===== -->
@@ -591,6 +618,12 @@
 </footer>
 
 <script>
+// スクロール位置でヘッダーの見え方を切り替える
+const hdr = document.querySelector('header');
+const syncHeader = () => hdr.classList.toggle('is-solid', window.scrollY > 60);
+syncHeader();
+addEventListener('scroll', syncHeader, { passive: true });
+
 const io = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
