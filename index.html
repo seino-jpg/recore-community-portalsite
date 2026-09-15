@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RECORE Community | リユース業界の成長の生態系</title>
+  <meta name="description" content="RECOREコミュニティは、リユース業界のプロフェッショナルが知見を共有し、共に成長する場です。関東・関西でオフラインイベントを開催しています。次回は10月22日（木）ブックオフ出品倉庫 見学会。">
+  <meta property="og:title" content="RECORE Community | リユース業界の成長の生態系">
+  <meta property="og:description" content="孤独な試行錯誤を終わらせる。関東・関西でリユース業界の実践知を持ち寄るコミュニティです。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://recore-community-portalsite.vercel.app/img/community-hero.jpg">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -14,12 +20,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
       --green-dark: #1E3A14;
       --green-mid: #2D4E1C;
-      --green-card: #1A3212;
       --gold: #C4D44A;
-      --gold-dim: rgba(196,212,74,0.15);
       --text: #2C2C2C;
       --text-sub: #6A6A6A;
       --bg: #F7F7F2;
@@ -27,912 +32,310 @@
       --border: #DDE0D8;
     }
 
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: 'Noto Sans JP', sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== HEADER / NAV ===== */
+    img { max-width: 100%; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+    .display { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; }
+
+    /* ===== HEADER ===== */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 100;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       padding: 16px 24px;
     }
-
-    nav {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 40px;
+    header nav {
+      max-width: 1000px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 32px;
     }
-
     .logo {
       font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--green-dark);
-      text-decoration: none;
-      white-space: nowrap;
+      font-size: 20px; font-weight: 900;
+      color: var(--green-dark); text-decoration: none; white-space: nowrap;
     }
-
-    .logo-main { color: var(--green-dark); }
-    .logo-sub { color: var(--gold); font-size: 12px; display: block; font-weight: 700; letter-spacing: 0.08em; }
-
-    nav-links {
-      display: flex;
-      gap: 32px;
-      align-items: center;
-      flex: 1;
+    .logo-sub {
+      display: block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.18em; color: var(--text-sub); line-height: 1.2;
     }
-
-    nav button {
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      padding: 8px 0;
-      transition: color 0.2s;
+    .nav-links { display: flex; gap: 26px; }
+    .nav-links a {
+      font-size: 14px; color: var(--text); text-decoration: none; white-space: nowrap;
+      padding-bottom: 2px; border-bottom: 1px solid transparent;
     }
-
-    nav button:hover { color: var(--gold); }
-
-    .btn-primary {
-      background: var(--gold);
-      color: var(--green-dark);
-      padding: 12px 28px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: none;
-    }
-
-    .btn-primary:hover {
-      background: #d6e85a;
-      transform: translateY(-2px);
-    }
-
-    /* ===== COMMON ===== */
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-    section { padding: 96px 24px; }
-
-    .label-en {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      color: var(--gold);
-      margin-bottom: 16px;
-    }
-
-    .label-en::before {
-      content: '';
-      display: block;
-      width: 32px;
-      height: 2px;
-      background: var(--gold);
-      flex-shrink: 0;
-    }
-
-    .section-title {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: clamp(28px, 5vw, 44px);
-      font-weight: 900;
-      color: var(--green-dark);
-      line-height: 1.2;
-      margin-bottom: 20px;
-    }
-
-    .section-sub {
-      color: var(--text-sub);
-      font-size: 16px;
-      margin-bottom: 48px;
-      max-width: 700px;
-      line-height: 1.8;
-    }
-
-    .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.55s ease, transform 0.55s ease; }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .nav-links a:hover { border-bottom-color: var(--gold); }
 
     /* ===== HERO ===== */
-    .hero {
-      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
-      color: #fff;
-      padding: 120px 24px;
-      text-align: center;
+    .hero { position: relative; background: var(--green-dark); overflow: hidden; }
+    .hero-photo {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center 34%;
     }
-
-    .hero-content { max-width: 900px; margin: 0 auto; }
-
-    .hero-logo {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      margin-bottom: 24px;
-      opacity: 0.9;
+    /* 文字の可読性を確保するためのスクリム（左と下を落とし、右側は写真を残す） */
+    .hero::after {
+      content: ""; position: absolute; inset: 0;
+      background:
+        linear-gradient(to right, rgba(22,41,15,0.92) 0%, rgba(22,41,15,0.70) 38%, rgba(22,41,15,0.28) 78%, rgba(22,41,15,0.18) 100%),
+        linear-gradient(to top, rgba(22,41,15,0.85) 0%, rgba(22,41,15,0.1) 42%, rgba(22,41,15,0) 60%);
     }
-
+    .hero-inner { position: relative; z-index: 2; padding: 96px 0 0; }
+    .hero-kicker {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+      color: var(--gold); border: 1px solid rgba(196,212,74,0.5);
+      padding: 5px 14px; border-radius: 2px; margin-bottom: 28px;
+    }
     .hero-title {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: clamp(32px, 8vw, 56px);
-      font-weight: 900;
-      line-height: 1.2;
-      margin-bottom: 24px;
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: clamp(32px, 6vw, 60px); line-height: 1.28;
+      color: #fff; margin-bottom: 24px; text-shadow: 0 2px 24px rgba(0,0,0,0.3);
     }
-
     .hero-title em { font-style: normal; color: var(--gold); }
-
-    .hero-subtitle {
-      font-size: 18px;
-      line-height: 1.8;
-      margin-bottom: 48px;
-      opacity: 0.9;
+    .hero-lead {
+      font-size: 16px; color: rgba(255,255,255,0.88);
+      max-width: 600px; margin-bottom: 56px;
+      text-shadow: 0 1px 12px rgba(0,0,0,0.35);
+    }
+    .hero-strip {
+      display: flex; flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,0.2); padding: 26px 0 40px;
+    }
+    .hero-stat {
+      padding-right: 44px; margin-right: 44px;
+      border-right: 1px solid rgba(255,255,255,0.2);
+    }
+    .hero-stat:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+    .hero-stat-label {
+      display: block; font-size: 11px; letter-spacing: 0.16em;
+      color: rgba(255,255,255,0.55); margin-bottom: 2px;
+    }
+    .hero-stat-value {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 26px; color: #fff; line-height: 1.2;
+    }
+    .hero-stat-value small { font-size: 14px; font-weight: 700; margin-left: 2px; }
+    .hero-credit {
+      position: relative; z-index: 2;
+      font-size: 11px; color: rgba(255,255,255,0.6);
+      padding: 0 24px 16px; max-width: 1000px; margin: 0 auto;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.5);
     }
 
-    .hero-buttons {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
+    /* ===== SECTION 共通 ===== */
+    section { padding: 88px 0; }
+    .label-en {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+      color: var(--green-mid); margin-bottom: 10px;
     }
+    .section-title {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: clamp(24px, 3.6vw, 34px); line-height: 1.4;
+      color: var(--green-dark); margin-bottom: 16px;
+    }
+    .section-sub { font-size: 15px; color: var(--text-sub); max-width: 680px; margin-bottom: 48px; }
 
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 15px 32px;
-      font-size: 15px;
-      font-weight: 700;
-      border-radius: 8px;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: 0.04em;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      font-size: 15px; text-decoration: none; padding: 15px 34px; border-radius: 2px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .btn-gold { background: var(--gold); color: var(--green-dark); box-shadow: 0 2px 0 rgba(0,0,0,0.12); }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
+    .btn-line { background: transparent; color: var(--green-mid); border: 1px solid var(--green-mid); }
+    .btn-line:hover { background: rgba(45,78,28,0.06); }
+    .btn-ghost { background: transparent; color: var(--gold); border: 1px solid rgba(196,212,74,0.55); }
+    .btn-ghost:hover { background: rgba(196,212,74,0.1); }
+
+    /* ===== NEXT EVENT（主役＋従） ===== */
+    .lead-event {
+      display: grid; grid-template-columns: 196px 1fr; gap: 36px;
+      padding: 40px 0; border-top: 2px solid var(--green-dark); border-bottom: 1px solid var(--border);
+    }
+    .lead-date {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 62px; line-height: 0.92; letter-spacing: -0.02em; color: var(--green-dark);
+    }
+    .lead-date-sub {
+      font-size: 12px; letter-spacing: 0.12em; color: var(--text-sub);
+      font-weight: 700; margin-top: 8px; font-family: 'Noto Sans JP', sans-serif;
+    }
+    .lead-badge {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--green-dark); background: var(--gold);
+      padding: 4px 12px; border-radius: 2px; margin-bottom: 12px;
+    }
+    .lead-event h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 25px; line-height: 1.4; color: var(--green-dark); margin-bottom: 16px;
+    }
+    .ev-meta { margin-bottom: 18px; }
+    .ev-meta div { font-size: 14px; padding: 5px 0; }
+    .ev-meta span {
+      display: inline-block; min-width: 82px;
+      font-weight: 700; color: var(--green-mid);
+    }
+    .lead-event p { font-size: 15px; margin-bottom: 22px; }
+    .ev-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .sub-event {
+      display: grid; grid-template-columns: 196px 1fr; gap: 36px;
+      padding: 28px 0; border-bottom: 1px solid var(--border);
+    }
+    .sub-date {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 34px; line-height: 1; color: var(--text-sub);
+    }
+    .sub-event h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      font-size: 18px; color: var(--green-dark); margin-bottom: 10px;
+    }
+    .sub-event .ev-meta div { font-size: 13px; padding: 3px 0; color: var(--text-sub); }
+    .sub-event .ev-meta span { min-width: 74px; }
+
+    /* ===== ABOUT（番号付き罫線） ===== */
+    .about-lead { font-size: 17px; line-height: 1.85; max-width: 760px; margin-bottom: 52px; }
+    .value-row {
+      display: grid; grid-template-columns: 78px 1fr; gap: 28px;
+      padding: 26px 0; border-top: 1px solid var(--border);
+    }
+    .value-row:last-of-type { border-bottom: 1px solid var(--border); }
+    .value-num {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 34px; line-height: 1; color: var(--gold);
+      -webkit-text-stroke: 1px var(--green-mid);
+    }
+    .value-row h4 {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 18px; color: var(--green-dark); margin-bottom: 4px;
+    }
+    .value-row p { font-size: 15px; color: var(--text-sub); }
+    .rule-box {
+      margin-top: 44px; padding: 24px 28px;
+      background: rgba(196,212,74,0.12); border-left: 3px solid var(--gold);
+    }
+    .rule-box h4 {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 16px; color: var(--green-dark); margin-bottom: 6px;
+    }
+    .rule-box p { font-size: 14px; color: var(--text-sub); }
+
+    /* ===== 写真バンド ===== */
+    .band { margin: 0; background: var(--green-dark); }
+    .band img { display: block; width: 100%; height: clamp(240px, 34vw, 420px); object-fit: cover; }
+    .band figcaption {
+      max-width: 1000px; margin: 0 auto; padding: 12px 24px 16px;
+      font-size: 12px; color: rgba(255,255,255,0.55);
+    }
+
+    /* ===== REPORTS（非対称リスト） ===== */
+    .report-major {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center;
+      padding: 36px 0; border-top: 1px solid var(--border);
+    }
+    .report-major:nth-of-type(even) .report-photo { order: 2; }
+    .report-photo { margin: 0; }
+    .report-photo img {
+      display: block; width: 100%; height: auto; border-radius: 2px;
+      aspect-ratio: 4/3; object-fit: cover;
     }
-
-    .btn-gold {
-      background: var(--gold);
-      color: var(--green-dark);
-      box-shadow: 0 4px 16px rgba(196, 212, 74, 0.3);
-    }
-
-    .btn-gold:hover {
-      background: #d6e85a;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(196, 212, 74, 0.4);
-    }
-
-    .btn-white {
-      background: #fff;
-      color: var(--green-dark);
-      box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
-    }
-
-    .btn-white:hover {
-      background: #f0f0f0;
-      transform: translateY(-2px);
-    }
-
-    /* ===== STATS ===== */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 32px;
-      margin: 64px 0;
-    }
-
-    .stat-card {
-      text-align: center;
-    }
-
-    .stat-number {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: clamp(36px, 6vw, 48px);
-      font-weight: 900;
-      color: var(--gold);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .stat-label {
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 500;
-    }
-
-    /* ===== ABOUT SECTION ===== */
-    .about-section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: start;
-      margin: 40px 0;
-    }
-
-    .about-content h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 16px;
-      margin-top: 24px;
-    }
-
-    .about-content h3:first-child { margin-top: 0; }
-
-    .about-content p {
-      color: var(--text-sub);
-      line-height: 1.85;
-      margin-bottom: 16px;
-      font-size: 15px;
-    }
-
-    .benefits-list {
-      display: grid;
-      gap: 16px;
-      margin: 32px 0;
-    }
-
-    .benefit-item {
-      background: var(--surface);
-      padding: 20px;
-      border-radius: 8px;
-      border-left: 4px solid var(--gold);
-    }
-
-    .benefit-item strong {
-      color: var(--green-dark);
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .benefit-item p {
-      font-size: 14px;
-      color: var(--text-sub);
-      margin: 0;
-    }
-
-    /* ===== VISION GRID ===== */
-    .vision-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 32px;
-      margin: 40px 0;
-    }
-
-    .vision-card {
-      text-align: center;
-      padding: 40px 24px;
-      background: var(--surface);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      transition: all 0.3s;
-    }
-
-    .vision-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 32px rgba(30, 58, 20, 0.1);
-      border-color: var(--gold);
-    }
-
-    .vision-card h3 {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--green-dark);
-      margin-bottom: 12px;
-    }
-
-    .vision-card p {
-      color: var(--text-sub);
-      font-size: 14px;
-      line-height: 1.8;
-      margin: 0;
-    }
-
-    /* ===== EVENT GRID ===== */
-    .event-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 32px;
-      margin: 40px 0;
-    }
-
-    .event-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: all 0.3s;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .event-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(30, 58, 20, 0.1);
-    }
-
-    .event-header {
-      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
-      color: #fff;
-      padding: 32px 24px;
-      text-align: center;
-    }
-
-    .event-badge {
-      display: inline-block;
-      background: var(--gold);
-      color: var(--green-dark);
-      padding: 4px 12px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
-    }
-
-    .event-vol {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 28px;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    .event-status {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-
-    .event-body {
-      padding: 24px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .event-body h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 16px;
-    }
-
-    .event-info {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 24px;
-      flex: 1;
-    }
-
-    .event-info-item {
-      font-size: 14px;
-      color: var(--text-sub);
-    }
-
-    .event-info-label {
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .event-desc {
-      font-size: 14px;
-      color: var(--text-sub);
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-
-    .event-button {
-      margin-top: auto;
-    }
-
-    /* ===== APPLY FORM ===== */
-    .apply-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 40px;
-      max-width: 720px;
-      margin: 40px auto 0;
-      box-shadow: 0 8px 24px rgba(30, 58, 20, 0.06);
-    }
-
-    .apply-event {
-      background: var(--bg);
-      border-left: 4px solid var(--gold);
-      border-radius: 6px;
-      padding: 16px 20px;
-      margin-bottom: 32px;
-      font-size: 14px;
-      color: var(--text-sub);
-      line-height: 1.9;
-    }
-
-    .apply-event strong {
-      color: var(--green-dark);
-      font-size: 15px;
-    }
-
-    .form-row {
-      margin-bottom: 20px;
-    }
-
-    .form-row label {
-      display: block;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .form-required {
-      display: inline-block;
-      background: var(--green-mid);
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 3px;
-      margin-left: 8px;
-      vertical-align: 2px;
-    }
-
-    .form-optional {
-      display: inline-block;
-      background: var(--border);
-      color: var(--text-sub);
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 3px;
-      margin-left: 8px;
-      vertical-align: 2px;
-    }
-
-    .form-row input,
-    .form-row textarea {
-      width: 100%;
-      padding: 13px 16px;
-      font-size: 15px;
-      font-family: inherit;
-      color: var(--text);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      -webkit-appearance: none;
-    }
-
-    .form-row input:focus,
-    .form-row textarea:focus {
-      outline: none;
-      border-color: var(--green-mid);
-      box-shadow: 0 0 0 3px var(--gold-dim);
-      background: var(--surface);
-    }
-
-    .form-row textarea {
-      min-height: 110px;
-      resize: vertical;
-      line-height: 1.7;
-    }
-
-    .form-note {
-      font-size: 12px;
-      color: var(--text-sub);
-      margin-top: 6px;
-    }
-
-    .radio-group {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .radio-option {
-      flex: 1;
-      min-width: 140px;
-      position: relative;
-    }
-
-    .radio-option input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .radio-option span {
-      display: block;
-      padding: 13px 16px;
-      font-size: 15px;
-      font-weight: 500;
-      text-align: center;
-      color: var(--text-sub);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .radio-option span:hover {
-      border-color: var(--green-mid);
-      color: var(--text);
-    }
-
-    .radio-option input:checked + span {
-      background: var(--green-dark);
-      border-color: var(--green-dark);
-      color: #fff;
-      font-weight: 700;
-    }
-
-    .radio-option input:focus-visible + span {
-      box-shadow: 0 0 0 3px var(--gold-dim);
-    }
-
-    .form-submit {
-      text-align: center;
-      margin-top: 32px;
-    }
-
-    .form-submit .btn {
-      justify-content: center;
-      min-width: 240px;
-    }
-
-    .form-submit .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .form-message {
-      display: none;
-      margin-top: 20px;
-      padding: 16px 20px;
-      border-radius: 8px;
-      font-size: 14px;
-      line-height: 1.8;
-    }
-
-    .form-message.success {
-      display: block;
-      background: var(--gold-dim);
-      border: 1px solid var(--gold);
-      color: var(--green-dark);
-    }
-
-    .form-message.error {
-      display: block;
-      background: #fdecea;
-      border: 1px solid #f5c2bd;
-      color: #a8342a;
-    }
-
-    /* ===== ROADMAP ===== */
-    .roadmap {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 32px;
-      margin: 40px 0;
-    }
-
-    .phase-card {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: 32px 24px;
-      position: relative;
-    }
-
-    .phase-card.current {
-      border-color: var(--gold);
-      box-shadow: 0 4px 16px rgba(196, 212, 74, 0.2);
-    }
-
-    .phase-badge {
-      display: inline-block;
-      background: var(--gold);
-      color: var(--green-dark);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    .phase-number {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--green-dark);
-      margin-bottom: 8px;
-    }
-
-    .phase-card h3 {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--green-dark);
-      margin-bottom: 8px;
-    }
-
-    .phase-subtitle {
-      color: var(--text-sub);
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 16px;
-    }
-
-    .phase-description {
-      color: var(--text-sub);
-      font-size: 14px;
-      line-height: 1.8;
-      margin-bottom: 24px;
-    }
-
-    .phase-items {
-      display: grid;
-      gap: 12px;
-    }
-
-    .phase-item {
-      display: flex;
-      gap: 8px;
-      font-size: 14px;
-      color: var(--text);
-    }
-
-    .phase-item::before {
-      content: '✓';
-      color: var(--gold);
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    /* ===== REPORT SECTION ===== */
-    .report-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 32px;
-      margin: 40px 0;
-    }
-
-    .report-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: all 0.3s;
-    }
-
-    .report-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(30, 58, 20, 0.1);
-    }
-
-    .report-image {
-      width: 100%;
-      height: 200px;
-      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 48px;
-    }
-
-    .report-content {
-      padding: 24px;
-    }
-
     .report-badge {
-      display: inline-block;
-      background: var(--gold);
-      color: var(--green-dark);
-      padding: 4px 12px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 700;
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      color: #fff; background: var(--green-mid); padding: 3px 11px; border-radius: 2px;
       margin-bottom: 12px;
     }
-
-    .report-content h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 12px;
-      line-height: 1.4;
+    .report-major h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 21px; line-height: 1.45; color: var(--green-dark); margin-bottom: 12px;
     }
-
     .report-meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin: 16px 0;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--text-sub); margin-bottom: 12px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border);
     }
-
-    .report-meta-item {
-      font-size: 13px;
-      color: var(--text-sub);
+    .report-major p { font-size: 15px; margin-bottom: 18px; }
+    .report-link {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      font-size: 14px; color: var(--green-mid); text-decoration: none;
+      border-bottom: 1px solid var(--gold); padding-bottom: 2px;
     }
+    .report-link:hover { color: var(--green-dark); }
 
-    .report-meta-label {
-      font-weight: 700;
-      color: var(--text);
-      display: block;
-      margin-bottom: 4px;
+    .report-minor {
+      display: grid; grid-template-columns: 116px 1fr auto; gap: 24px; align-items: baseline;
+      padding: 22px 0; border-top: 1px solid var(--border);
     }
-
-    .report-desc {
-      font-size: 14px;
-      color: var(--text-sub);
-      line-height: 1.7;
-      margin-bottom: 20px;
+    .report-minor:last-of-type { border-bottom: 1px solid var(--border); }
+    .report-minor-date { font-size: 13px; color: var(--text-sub); white-space: nowrap; }
+    .report-minor h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      font-size: 16px; line-height: 1.5; color: var(--green-dark); margin-bottom: 3px;
     }
+    .report-minor .sub { font-size: 13px; color: var(--text-sub); }
 
-    /* ===== JOIN SECTION ===== */
-    .join-section {
-      background: var(--green-card);
-      color: #fff;
-      padding: 80px 24px;
-      text-align: center;
+    /* ===== JOIN ===== */
+    .join { background: var(--green-dark); color: #fff; }
+    .join .label-en { color: var(--gold); }
+    .join .section-title { color: #fff; }
+    .join .section-sub { color: rgba(255,255,255,0.75); }
+    .join-points { list-style: none; margin: 0 0 40px; max-width: 760px; }
+    .join-points li {
+      font-size: 15px; color: rgba(255,255,255,0.88);
+      padding-left: 20px; position: relative; margin-bottom: 9px;
     }
-
-    .join-section .label-en { justify-content: center; }
-    .join-section .label-en::before { display: none; }
-
-    .join-section .section-title {
-      color: #fff;
-      margin-bottom: 20px;
+    .join-points li::before {
+      content: ""; position: absolute; left: 0; top: 12px;
+      width: 9px; height: 2px; background: var(--gold);
     }
-
-    .join-section .section-sub {
-      color: rgba(255, 255, 255, 0.8);
-      max-width: 600px;
+    .join-table { border-top: 1px solid rgba(255,255,255,0.18); }
+    .join-row {
+      display: grid; grid-template-columns: 148px 1fr; gap: 24px;
+      padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.18);
+      font-size: 15px;
     }
-
-    .join-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 32px;
-      margin: 64px 0;
+    .join-row dt {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      color: var(--gold); font-size: 14px;
     }
+    .join-row dd { color: rgba(255,255,255,0.9); }
+    .join-row a { color: var(--gold); }
+    .join-cta { margin-top: 40px; }
 
-    .join-benefit {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      padding: 28px 24px;
-      text-align: center;
-    }
+    footer { background: #16290F; color: rgba(255,255,255,0.7); padding: 40px 0; text-align: center; font-size: 13px; }
+    footer a { color: var(--gold); text-decoration: none; }
 
-    .join-benefit h4 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: #fff;
-    }
-
-    .join-benefit p {
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.7);
-      line-height: 1.7;
-      margin: 0;
-    }
-
-    .join-info {
-      max-width: 700px;
-      margin: 64px auto;
-      padding: 32px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-    }
-
-    .join-info h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 24px;
-    }
-
-    .join-info-item {
-      display: grid;
-      grid-template-columns: 120px 1fr;
-      gap: 24px;
-      margin-bottom: 20px;
-      text-align: left;
-    }
-
-    .join-info-label {
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    /* ===== FOOTER ===== */
-    footer {
-      background: #0F1E09;
-      color: rgba(255, 255, 255, 0.4);
-      padding: 48px 24px;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    footer strong { color: rgba(255, 255, 255, 0.7); }
-
-    footer .container {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 24px;
-    }
+    .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
-      nav {
-        flex-wrap: wrap;
-        gap: 16px;
-      }
-
-      nav-links {
-        flex: 1 0 100%;
-        order: 3;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      section { padding: 56px 20px; }
-      .hero { padding: 80px 20px; }
-
-      .about-section,
-      .stats-grid,
-      .vision-grid,
-      .event-grid,
-      .roadmap,
-      .report-grid,
-      .join-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .report-meta {
-        grid-template-columns: 1fr;
-      }
-
-      .apply-card {
-        padding: 24px 20px;
-      }
-
-      .form-submit .btn {
-        width: 100%;
-        min-width: 0;
-      }
-
-      .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .btn { width: 100%; text-align: center; }
-
-      .join-info-item {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
+    @media (max-width: 860px) {
+      section { padding: 60px 0; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 13px; }
+      .hero-inner { padding-top: 56px; }
+      .hero-stat { padding-right: 24px; margin-right: 24px; }
+      .hero-stat-value { font-size: 21px; }
+      .lead-event, .sub-event { grid-template-columns: 1fr; gap: 14px; }
+      .lead-date { font-size: 52px; }
+      .value-row { grid-template-columns: 52px 1fr; gap: 16px; }
+      .report-major { grid-template-columns: 1fr; gap: 18px; }
+      .report-major:nth-of-type(even) .report-photo { order: 0; }
+      .report-minor { grid-template-columns: 1fr; gap: 4px; }
+      .join-row { grid-template-columns: 1fr; gap: 4px; }
+      .ev-actions .btn { flex: 1 1 auto; }
+    }
+    @media (max-width: 460px) {
+      .nav-links { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .fade-in { opacity: 1; transform: none; transition: none; }
     }
   </style>
 </head>
@@ -941,286 +344,236 @@
 <!-- ===== HEADER ===== -->
 <header>
   <nav>
-    <a href="#" class="logo">RECORE<span class="logo-sub">Community</span></a>
-    <nav-links>
-      <button onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">コミュニティとは</button>
-      <button onclick="document.getElementById('events').scrollIntoView({behavior: 'smooth'})">次回イベント</button>
-      <button onclick="document.getElementById('reports').scrollIntoView({behavior: 'smooth'})">イベントレポート</button>
-    </nav-links>
+    <a href="/" class="logo">RECORE<span class="logo-sub">COMMUNITY</span></a>
+    <div class="nav-links">
+      <a href="#events">次回イベント</a>
+      <a href="#about">コミュニティとは</a>
+      <a href="#reports">イベントレポート</a>
+      <a href="#join">参加方法</a>
+    </div>
   </nav>
 </header>
 
 <!-- ===== HERO ===== -->
 <section class="hero">
-  <div class="hero-content">
-    <div class="hero-logo fade-in">RECORE COMMUNITY</div>
-    <h1 class="hero-title fade-in">孤独な試行錯誤を<br><em>終わらせる。</em></h1>
-    <p class="hero-subtitle fade-in">RECOREコミュニティは、リユース業界のプロフェッショナルが知見を共有し、共に成長する「成長の生態系」です。</p>
-  </div>
-</section>
-
-<!-- ===== ABOUT ===== -->
-<section id="about" style="background: var(--surface);">
-  <div class="container">
-    <div class="label-en fade-in">ABOUT</div>
-    <h2 class="section-title fade-in">RECOREコミュニティとは</h2>
-
-    <div style="margin: 40px 0;">
-      <p style="font-size: 18px; line-height: 1.8; color: var(--text-sub); margin-bottom: 48px; max-width: 800px;" class="fade-in">RECOREユーザーの横のつながりを作ることで相互作用を生むことを目指しています。リユース業界という特殊な業界の中でしっかり機能するコミュニティには、大きな価値があると考えています。</p>
-
-      <h3 style="font-size: 18px; font-weight: 700; color: var(--green-dark); margin-bottom: 16px;" class="fade-in">コミュニティで得られるもの</h3>
-      <div class="benefits-list fade-in">
-        <div class="benefit-item">
-          <strong>継続的なビジネス成果を創出する土台</strong>
-          <p>相互に学び、アイデアを交換し、ビジネス成長を加速させます。</p>
+  <img class="hero-photo" src="img/community-hero.jpg" alt="関西コミュニティ第1回・店舗見学後の集合写真" width="1600" height="1200">
+  <div class="hero-inner">
+    <div class="container">
+      <span class="hero-kicker">RECORE COMMUNITY</span>
+      <h1 class="hero-title">孤独な試行錯誤を<br><em>終わらせる。</em></h1>
+      <p class="hero-lead">
+        同じ壁に、別々にぶつかっている。リユース業界のプロフェッショナルが集まり、現場で試したことをそのまま持ち寄る場です。
+      </p>
+      <div class="hero-strip">
+        <div class="hero-stat">
+          <span class="hero-stat-label">NEXT EVENT</span>
+          <span class="hero-stat-value">10.22<small>（木）</small></span>
         </div>
-        <div class="benefit-item">
-          <strong>他のRECOREユーザーとの情報交換・相談</strong>
-          <p>全国のユーザーと直接つながり、経営課題の解決策を共有できます。</p>
+        <div class="hero-stat">
+          <span class="hero-stat-label">開催実績</span>
+          <span class="hero-stat-value">4<small>回</small></span>
         </div>
-        <div class="benefit-item">
-          <strong>活用事例・成功事例の共有</strong>
-          <p>RECORE導入企業の成功事例や失敗事例から実践的なノウハウを習得できます。</p>
+        <div class="hero-stat">
+          <span class="hero-stat-label">拠点</span>
+          <span class="hero-stat-value">関東・関西</span>
         </div>
-        <div class="benefit-item">
-          <strong>業者間取引の斡旋</strong>
-          <p>RECORE導入企業同士での新たなビジネス機会を創出します。</p>
-        </div>
-      </div>
-
-      <h3 style="font-size: 18px; font-weight: 700; color: var(--green-dark); margin-bottom: 16px; margin-top: 48px;" class="fade-in">基本ルール</h3>
-      <p style="color: var(--text-sub); line-height: 1.85; max-width: 800px;" class="fade-in">株式会社RECOREからの対価は支払われません。他のメンバーが不快になるような営業活動は禁止です。運営メンバーや参加者の負担にならないよう、オフラインでの交流を大切にしています。</p>
-    </div>
-  </div>
-</section>
-
-<!-- ===== EVENT REPORTS ===== -->
-<section id="reports" style="background: var(--bg);">
-  <div class="container">
-    <div class="label-en fade-in">EVENT REPORTS</div>
-    <h2 class="section-title fade-in">イベントレポート</h2>
-    <p class="section-sub fade-in">リユース業界のプロフェッショナルが集まり、実践的なノウハウを共有した<br>コミュニティイベントの記録です。</p>
-
-    <!-- 関東コミュニティ -->
-    <h3 style="font-size: 18px; font-weight: 700; color: var(--green-dark); margin-bottom: 24px; margin-top: 48px;" class="fade-in">関東コミュニティ</h3>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 24px 0;">
-      <div class="report-card fade-in">
-        <div class="report-image" style="font-size: 16px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%); padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px; text-align: center;">第1回RECORE関東コミュニティレポート</div>
-        <div class="report-content">
-          <span class="report-badge">Vol.1</span>
-          <h3>Liquidと生成AIを活用して出品を効率化しよう！</h3>
-          <div class="report-meta">
-            <div class="report-meta-item">
-              <span class="report-meta-label">開催日</span>
-              2025年9月16日
-            </div>
-            <div class="report-meta-item">
-              <span class="report-meta-label">参加者</span>
-              8名
-            </div>
-          </div>
-          <p class="report-desc">RECOREのECテンプレート機能「Liquid」を活用した出品効率化をメインテーマに、ブックオフ様の実践事例を中心に情報共有を行いました。</p>
-          <a href="https://ueda-recore.github.io/report/kanto/vol1/report.html" class="btn btn-gold" style="width: 100%; text-align: center;">詳細を見る</a>
-        </div>
-      </div>
-
-      <div class="report-card fade-in">
-        <div class="report-image" style="font-size: 16px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%); padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px; text-align: center;">第2回RECORE関東コミュニティレポート</div>
-        <div class="report-content">
-          <span class="report-badge">Vol.2</span>
-          <h3>LINEミニアプリと会員ランク制度によるLTV最大化戦略</h3>
-          <div class="report-meta">
-            <div class="report-meta-item">
-              <span class="report-meta-label">開催日</span>
-              2026年1月23日
-            </div>
-            <div class="report-meta-item">
-              <span class="report-meta-label">登壇者</span>
-              株式会社アクト 吉田和由 氏
-            </div>
-          </div>
-          <p class="report-desc">中古工具専門リユースショップ「アクトツール」での LINEミニアプリ導入から会員ランク制度による LTV最大化戦略について共有。</p>
-          <a href="https://ueda-recore.github.io/report/kanto/vol2/report.html" class="btn btn-gold" style="width: 100%; text-align: center;">詳細を見る</a>
-        </div>
-      </div>
-
-      <div class="report-card fade-in">
-        <div class="report-image" style="font-size: 16px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%); padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px; text-align: center;">第3回RECORE関東コミュニティレポート</div>
-        <div class="report-content">
-          <span class="report-badge">Vol.3</span>
-          <h3>RECOREのカタログに対する思想の共有／型番がない商品の理想的なカタログ管理とは？</h3>
-          <div class="report-meta">
-            <div class="report-meta-item">
-              <span class="report-meta-label">開催日</span>
-              2026年6月19日
-            </div>
-            <div class="report-meta-item">
-              <span class="report-meta-label">登壇者</span>
-              株式会社RECORE 清野隼土
-            </div>
-          </div>
-          <p class="report-desc">RECOREのカタログ設計思想（親子構造・属性設計）と、型番がない商品の理想的なカタログ管理方法について、2つの講座で共有しました。</p>
-          <a href="https://ueda-recore.github.io/report/kanto/vol3/report.html" class="btn btn-gold" style="width: 100%; text-align: center;">詳細を見る</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 関西コミュニティ -->
-    <h3 style="font-size: 18px; font-weight: 700; color: var(--green-dark); margin-bottom: 24px; margin-top: 48px;" class="fade-in">関西コミュニティ</h3>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 24px 0;">
-      <div class="report-card fade-in">
-        <div class="report-image" style="font-size: 16px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%); padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px; text-align: center;">第1回RECORE関西コミュニティレポート</div>
-        <div class="report-content">
-          <span class="report-badge">Vol.1（関西）</span>
-          <h3>第1回RECORE関西コミュニティレポート</h3>
-          <div class="report-meta">
-            <div class="report-meta-item">
-              <span class="report-meta-label">開催日</span>
-              2026年6月5日
-            </div>
-            <div class="report-meta-item">
-              <span class="report-meta-label">参加者</span>
-              6名
-            </div>
-          </div>
-          <p class="report-desc">関西コミュニティの記念すべき第1回イベント。参加企業の成功事例を共有し、現場のリアルな工夫について深く掘り下げました。</p>
-          <a href="https://ueda-recore.github.io/report/kansai/report.html" class="btn btn-gold" style="width: 100%; text-align: center;">詳細を見る</a>
+        <div class="hero-stat">
+          <span class="hero-stat-label">参加費</span>
+          <span class="hero-stat-value">無料</span>
         </div>
       </div>
     </div>
   </div>
+  <p class="hero-credit">関西コミュニティ第1回 ／ NEXT51 三国ヶ丘店</p>
 </section>
 
-<!-- ===== NEXT EVENTS ===== -->
+<!-- ===== NEXT EVENT ===== -->
 <section id="events" style="background: var(--surface);">
   <div class="container">
     <div class="label-en fade-in">NEXT EVENT</div>
-    <h2 class="section-title fade-in">次回イベント</h2>
+    <h2 class="section-title fade-in">次に集まるのは、ここです。</h2>
+    <p class="section-sub fade-in">RECORE をご利用中の企業様であれば、どなたでもご参加いただけます。</p>
 
-    <div class="event-grid fade-in">
-      <div class="event-card">
-        <div class="event-header">
-          <div class="event-badge">関東コミュニティ</div>
-          <div class="event-vol">Vol.4</div>
-          <div class="event-status">2026年10月22日（木）開催</div>
-        </div>
-        <div class="event-body">
-          <h3>関東コミュニティ第4回イベント<br>ブックオフ出品倉庫 見学会</h3>
-          <div class="event-info">
-            <div class="event-info-item">
-              <span class="event-info-label">開催日時：</span>
-              2026年10月22日（木）12:00〜16:00<span style="color: var(--green-mid); font-weight: 700;">（受付 11:30〜）</span>
-            </div>
-            <div class="event-info-item">
-              <span class="event-info-label">開催場所：</span>
-              東名横浜ロジスティクスセンター<br>
-              <span style="font-size: 13px;">神奈川県横浜市瀬谷区北町25-9</span>
-            </div>
-            <div class="event-info-item">
-              <span class="event-info-label">内容：</span>
-              ピッキング業務・ささげ業務・メディア倉庫の見学（各60分）
-            </div>
-            <div class="event-info-item">
-              <span class="event-info-label">申込締切：</span>
-              2026年9月30日（水）
-            </div>
-          </div>
-          <p class="event-desc">ささげ（撮影・採寸・原稿）からEC出品、ピッキング、梱包、出荷まで、出品倉庫のオペレーションを丸ごと見学いただけます。自社の出品フローを見直すヒントを、現場で持ち帰ってください。</p>
-          <div class="event-button">
-            <a href="kanto-vol4.html" class="btn btn-gold">イベント詳細を見る</a>
-            <a href="apply.html?event=kanto-vol4" class="btn" style="background: transparent; color: var(--green-mid); border: 1px solid var(--green-mid);">参加を申し込む</a>
-          </div>
-        </div>
+    <div class="lead-event fade-in">
+      <div>
+        <div class="lead-date display">10.22</div>
+        <div class="lead-date-sub">2026 / THU ・ 関東 Vol.4</div>
       </div>
-
-      <div class="event-card">
-        <div class="event-header">
-          <div class="event-badge">関西コミュニティ</div>
-          <div class="event-vol">Vol.2</div>
-          <div class="event-status">2026年12月4日（金）開催</div>
+      <div>
+        <span class="lead-badge">申込締切 9月30日（水）</span>
+        <h3>ブックオフ出品倉庫 見学会</h3>
+        <div class="ev-meta">
+          <div><span>開催日時</span>12:00〜16:00（受付 11:30〜）</div>
+          <div><span>開催場所</span>東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）</div>
+          <div><span>内容</span>ピッキング業務・ささげ業務・メディア倉庫の見学（各60分）</div>
         </div>
-        <div class="event-body">
-          <h3>関西コミュニティ第2回イベント<br>リサイクルショップ ソッキン 店舗見学会</h3>
-          <div class="event-info">
-            <div class="event-info-item">
-              <span class="event-info-label">開催日時：</span>
-              2026年12月4日（金）<span style="color: var(--green-mid); font-weight: 700;">（開催時間は追ってご案内）</span>
-            </div>
-            <div class="event-info-item">
-              <span class="event-info-label">開催場所：</span>
-              株式会社Canup 「リサイクルショップ ソッキン」店舗兼倉庫<br>
-              <span style="font-size: 13px;">大阪府摂津市鳥飼上1丁目16番5号</span>
-            </div>
-            <div class="event-info-item">
-              <span class="event-info-label">内容：</span>
-              店舗見学・テーマに併せての各社の成功事例共有・相談会
-            </div>
-          </div>
-          <p class="event-desc">店舗見学やテーマに併せての各社の成功事例共有、相談会を開催予定です。具体的な内容は追ってご紹介します。</p>
-          <div class="event-button">
-            <a href="apply.html?event=kansai-vol2" class="btn btn-gold">参加を申し込む</a>
-          </div>
+        <p>ささげ・EC出品・ピッキング・梱包・出荷。リユースEC のオペレーションが1か所に集約された出品倉庫を、現場で歩きながら見学します。</p>
+        <div class="ev-actions">
+          <a href="kanto-vol4.html" class="btn btn-gold">イベント詳細を見る</a>
+          <a href="apply.html?event=kanto-vol4" class="btn btn-line">参加を申し込む</a>
         </div>
       </div>
     </div>
 
-    <p style="text-align: center; color: var(--text-sub); font-size: 13px; margin-top: 32px;" class="fade-in">
+    <div class="sub-event fade-in">
+      <div>
+        <div class="sub-date display">12.04</div>
+        <div class="lead-date-sub">2026 / FRI ・ 関西 Vol.2</div>
+      </div>
+      <div>
+        <h3>リサイクルショップ ソッキン 店舗見学会</h3>
+        <div class="ev-meta">
+          <div><span>開催場所</span>株式会社Canup「リサイクルショップ ソッキン」店舗兼倉庫（大阪府摂津市鳥飼上1丁目16番5号）</div>
+          <div><span>内容</span>店舗見学・テーマに併せての各社の成功事例共有・相談会</div>
+          <div><span>申込締切</span>2026年11月20日（金）</div>
+        </div>
+        <div class="ev-actions">
+          <a href="apply.html?event=kansai-vol2" class="btn btn-line">参加を申し込む</a>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size: 13px; color: var(--text-sub); margin-top: 24px;" class="fade-in">
       ※ 関西コミュニティ第2回イベントの開催時間・当日の内容は決定次第更新します。
     </p>
   </div>
 </section>
 
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="container">
+    <div class="label-en fade-in">ABOUT</div>
+    <h2 class="section-title fade-in">RECOREコミュニティとは</h2>
+    <p class="about-lead fade-in">
+      RECOREユーザーの横のつながりを作ることで相互作用を生むことを目指しています。リユース業界という特殊な業界の中でしっかり機能するコミュニティには、大きな価値があると考えています。
+    </p>
+
+    <div class="value-row fade-in">
+      <div class="value-num display">01</div>
+      <div>
+        <h4>継続的なビジネス成果を創出する土台</h4>
+        <p>相互に学び、アイデアを交換し、ビジネス成長を加速させます。</p>
+      </div>
+    </div>
+    <div class="value-row fade-in">
+      <div class="value-num display">02</div>
+      <div>
+        <h4>他のRECOREユーザーとの情報交換・相談</h4>
+        <p>全国のユーザーと直接つながり、経営課題の解決策を共有できます。</p>
+      </div>
+    </div>
+    <div class="value-row fade-in">
+      <div class="value-num display">03</div>
+      <div>
+        <h4>活用事例・成功事例の共有</h4>
+        <p>RECORE導入企業の成功事例や失敗事例から実践的なノウハウを習得できます。</p>
+      </div>
+    </div>
+    <div class="value-row fade-in">
+      <div class="value-num display">04</div>
+      <div>
+        <h4>業者間取引の斡旋</h4>
+        <p>RECORE導入企業同士での新たなビジネス機会を創出します。</p>
+      </div>
+    </div>
+
+    <div class="rule-box fade-in">
+      <h4>基本ルール</h4>
+      <p>株式会社RECOREからの対価は支払われません。他のメンバーが不快になるような営業活動は禁止です。運営メンバーや参加者の負担にならないよう、オフラインでの交流を大切にしています。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 写真バンド ===== -->
+<figure class="band">
+  <img src="img/community-tour.jpg" alt="関西コミュニティ第1回・店内見学の様子" loading="lazy" width="1600" height="1200">
+  <figcaption>関西コミュニティ第1回 ／ 店内見学の様子</figcaption>
+</figure>
+
+<!-- ===== EVENT REPORTS ===== -->
+<section id="reports">
+  <div class="container">
+    <div class="label-en fade-in">EVENT REPORTS</div>
+    <h2 class="section-title fade-in">これまでに、話したこと。</h2>
+    <p class="section-sub fade-in">リユース業界のプロフェッショナルが集まり、実践的なノウハウを共有したイベントの記録です。</p>
+
+    <div class="report-major fade-in">
+      <figure class="report-photo">
+        <img src="img/report-kanto-vol3.jpg" alt="関東コミュニティ第3回・講座の様子" loading="lazy" width="1400" height="788">
+      </figure>
+      <div>
+        <span class="report-badge">関東 Vol.3</span>
+        <h3>RECOREのカタログに対する思想の共有／型番がない商品の理想的なカタログ管理とは？</h3>
+        <div class="report-meta">2026年6月19日 ／ 登壇：株式会社RECORE 清野隼土</div>
+        <p>RECOREのカタログ設計思想（親子構造・属性設計）と、型番がない商品の理想的なカタログ管理方法について、2つの講座で共有しました。</p>
+        <a href="https://ueda-recore.github.io/report/kanto/vol3/report.html" class="report-link">レポートを読む →</a>
+      </div>
+    </div>
+
+    <div class="report-major fade-in">
+      <figure class="report-photo">
+        <img src="img/report-kansai-vol1.jpg" alt="関西コミュニティ第1回・集合写真" loading="lazy" width="1400" height="1050">
+      </figure>
+      <div>
+        <span class="report-badge">関西 Vol.1</span>
+        <h3>第1回 RECORE関西コミュニティ</h3>
+        <div class="report-meta">2026年6月5日 ／ 参加 6名 ／ NEXT51 三国ヶ丘店</div>
+        <p>関西コミュニティの記念すべき第1回イベント。参加企業の成功事例を共有し、現場のリアルな工夫について深く掘り下げました。</p>
+        <a href="https://ueda-recore.github.io/report/kansai/report.html" class="report-link">レポートを読む →</a>
+      </div>
+    </div>
+
+    <div class="report-minor fade-in">
+      <div class="report-minor-date">2026年1月23日</div>
+      <div>
+        <h3>LINEミニアプリと会員ランク制度によるLTV最大化戦略</h3>
+        <div class="sub">関東 Vol.2 ／ 登壇：株式会社アクト 吉田和由 氏</div>
+      </div>
+      <a href="https://ueda-recore.github.io/report/kanto/vol2/report.html" class="report-link">読む →</a>
+    </div>
+
+    <div class="report-minor fade-in">
+      <div class="report-minor-date">2025年9月16日</div>
+      <div>
+        <h3>Liquidと生成AIを活用して出品を効率化しよう！</h3>
+        <div class="sub">関東 Vol.1 ／ 参加 8名 ／ ブックオフ様の実践事例を中心に</div>
+      </div>
+      <a href="https://ueda-recore.github.io/report/kanto/vol1/report.html" class="report-link">読む →</a>
+    </div>
+  </div>
+</section>
 
 <!-- ===== JOIN ===== -->
-<section id="join" class="join-section">
+<section id="join" class="join">
   <div class="container">
-    <div class="label-en" style="color: var(--gold);">JOIN US</div>
-    <h2 class="section-title">コミュニティに参加しませんか？</h2>
-    <p class="section-sub" style="max-width: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">RECOREをご利用中の企業様であれば、どなたでも参加できます。全国のリユース業界のプロフェッショナルと繋がり、ビジネスの成長を加速させましょう。</p>
+    <div class="label-en">JOIN US</div>
+    <h2 class="section-title">参加しませんか。</h2>
+    <p class="section-sub">RECOREをご利用中の企業様であれば、どなたでも参加できます。全国のリユース業界のプロフェッショナルと繋がり、ビジネスの成長を加速させましょう。</p>
 
-    <div class="join-grid">
-      <div class="join-benefit">
-        <h4>100社以上の知見へのアクセス</h4>
-        <p>全国のRECOREユーザーが蓄積した実践的なノウハウを共有できます。</p>
+    <ul class="join-points">
+      <li>100社以上の知見へのアクセス ─ 全国のRECOREユーザーが蓄積した実践的なノウハウ</li>
+      <li>最新DX活用事例 ─ Liquid × 生成AI など、最前線の技術活用事例をいち早く</li>
+      <li>RECORE新機能の優先共有 ─ 最新機能や更新情報をコミュニティメンバーへ先に</li>
+      <li>オフラインでの深い交流 ─ 信頼関係を築けるパートナーとの出会い</li>
+    </ul>
+
+    <dl class="join-table">
+      <div class="join-row"><dt>参加資格</dt><dd>RECOREをご利用中の企業様</dd></div>
+      <div class="join-row"><dt>参加費</dt><dd>無料（イベント2次会は有料の場合あり）</dd></div>
+      <div class="join-row"><dt>活動形式</dt><dd>オフラインイベント</dd></div>
+      <div class="join-row">
+        <dt>お問い合わせ</dt>
+        <dd>
+          関東コミュニティ窓口 ／ 清野：<a href="mailto:seino@recore-corp.jp">seino@recore-corp.jp</a><br>
+          関西コミュニティ窓口 ／ 上田：<a href="mailto:ueda@recore-corp.jp">ueda@recore-corp.jp</a>
+        </dd>
       </div>
-      <div class="join-benefit">
-        <h4>最新DX活用事例</h4>
-        <p>Liquid × 生成AIなど最前線の技術活用事例をいち早く入手できます。</p>
-      </div>
-      <div class="join-benefit">
-        <h4>RECORE新機能共有</h4>
-        <p>最新機能や更新情報をコミュニティメンバーに優先的に共有し、導入活用をサポートします。</p>
-      </div>
-      <div class="join-benefit">
-        <h4>オフラインでの深い交流</h4>
-        <p>定期的なリアルイベントで、信頼関係を築けるパートナーと出会えます。</p>
-      </div>
+    </dl>
+
+    <div class="join-cta">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfb0A6hANqHYdg5HQKNyAAJzLGMlrdKq7TCi_xy52-ZSUD3vg/viewform?usp=publish-editor" target="_blank" rel="noopener" class="btn btn-gold">コミュニティに参加する</a>
+      <a href="#events" class="btn btn-ghost" style="margin-left: 12px;">次回イベントを見る</a>
     </div>
-
-    <div class="join-info">
-      <h3>参加方法</h3>
-      <div class="join-info-item">
-        <div class="join-info-label">参加資格</div>
-        <div>RECOREをご利用中の企業様</div>
-      </div>
-      <div class="join-info-item">
-        <div class="join-info-label">参加費</div>
-        <div>無料（イベント2次会は有料の場合あり）</div>
-      </div>
-      <div class="join-info-item">
-        <div class="join-info-label">活動形式</div>
-        <div>オフラインイベント</div>
-      </div>
-      <div class="join-info-item">
-        <div class="join-info-label">お問い合わせ</div>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <div>【関東コミュニティ窓口】 清野：<a href="mailto:seino@recore-corp.jp" style="color: var(--gold); text-decoration: none;">seino@recore-corp.jp</a></div>
-          <div>【関西コミュニティ窓口】 上田：<a href="mailto:ueda@recore-corp.jp" style="color: var(--gold); text-decoration: none;">ueda@recore-corp.jp</a></div>
-        </div>
-      </div>
-    </div>
-
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfb0A6hANqHYdg5HQKNyAAJzLGMlrdKq7TCi_xy52-ZSUD3vg/viewform?usp=publish-editor" target="_blank" class="btn btn-gold" style="margin-top: 32px;">コミュニティに参加する</a>
   </div>
 </section>
 
@@ -1229,9 +582,9 @@
   <div class="container">
     <p><strong>RECORE Community</strong> — 孤独な試行錯誤を終わらせる。</p>
     <p style="margin: 12px 0; font-size: 12px;">
-      <a href="https://recore-corp.jp/" style="color: var(--gold); text-decoration: none;">コーポレートサイト</a> |
-      <a href="https://recore-pos.com/" style="color: var(--gold); text-decoration: none;">RECORE サービスHP</a> |
-      <a href="mailto:seino@recore-corp.jp" style="color: var(--gold); text-decoration: none;">お問い合わせ</a>
+      <a href="https://recore-corp.jp/">コーポレートサイト</a> |
+      <a href="https://recore-pos.com/">RECORE サービスHP</a> |
+      <a href="mailto:seino@recore-corp.jp">お問い合わせ</a>
     </p>
     <p>© 2026 RECORE Community by 株式会社RECORE. All rights reserved.</p>
   </div>
