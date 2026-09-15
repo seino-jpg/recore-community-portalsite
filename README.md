@@ -2,7 +2,9 @@
 
 RECOREコミュニティの全体ポータルサイトです。リユース業界のプロフェッショナルが知見を共有し、共に成長する「成長の生態系」を紹介しています。
 
-**公開URL:** https://ueda-recore.github.io/recore-portalsite/
+**公開URL:** https://recore-community-portalsite.vercel.app/
+
+> 2026-09-15 に GitHub Pages（`ueda-recore/recore-portalsite`）から Vercel 配信へ移行。ファイル構成はそのまま引き継いでいる。
 
 ## サイト概要
 
@@ -39,10 +41,12 @@ RECOREコミュニティの全体ポータルサイトです。リユース業�
 
 **Next Events セクション**
 開催予定イベント2つ：
-- **関東コミュニティ Vol.4 — ブックオフ出品倉庫 見学会**
-  - 日程：2026年10月19日（月）12:00〜17:00 ※仮
+- **関東コミュニティ Vol.4 — ブックオフ出品倉庫 見学会**（日程確定）
+  - 日程：2026年10月22日（木）12:00〜16:00（受付 11:30〜12:00）
   - 場所：東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）
-  - 内容：ささげ・EC出品・ピッキング・梱包・出荷のオペレーション見学
+  - 内容：ピッキング業務・ささげ業務・メディア倉庫の見学（各60分）
+  - 申込締切：2026年9月30日（水）
+  - 詳細：特設ページ `kanto-vol4.html`（カードの「イベント詳細を見る」から遷移）
 
 - **関西コミュニティ Vol.2**
   - 日程：準備中
@@ -113,22 +117,41 @@ RECOREコミュニティの全体ポータルサイトです。リユース業�
 記録先のタブは最初の申し込みが入った時点で自動作成される（ヘッダー・書式つき）。手で作っておいても構わない。
 キーが未登録・未指定の申し込みは `その他` タブに入るので、設定漏れでも取りこぼさない。
 
-### 3. イベントレポート（report.html）
+### 3. イベント特設ページ / LP（kanto-vol4.html）
 
-第1回RECORE関西コミュニティイベントのレポートページ
+関東コミュニティ Vol.4「ブックオフ出品倉庫 見学会」の単独LP。トップのイベントカード「イベント詳細を見る」と、申込ページの「→ 当日の流れ・開催概要はこちら」から遷移する。
 
-- **開催日時** — 2026年6月5日（金）17:00～19:00
-- **開催場所** — NEXT51 三国ヶ丘店（堺市）
-- **参加者数** — 6名
-- **参加企業** — 3社
+セクション構成：
 
-セクション：
-- 開催概要（詳細テーブル）
-- イベント概要（目的・こだわり）
-- タイムテーブル（4つのセッション）
-- イベント当日の様子（ギャラリー）
-- 参加者の声（4つのコメント）
-- まとめ
+| セクション | 内容 |
+|---|---|
+| ヒーロー | `10.22` の大型タイポ・開催時間・会場・参加費・申込締切・CTA |
+| PROGRAM | 見学する3工程（ピッキング／ささげ／メディア倉庫）を各60分・見どころ付きで |
+| TIMETABLE | 11:30 受付 〜 16:00 終了までの時間軸 |
+| OUTLINE | 開催概要テーブル（日時・会場・内容・対象・参加費・交通手段・締切・主催）＋注意事項 |
+| CTA | 申込導線と問い合わせ先 |
+
+当日のタイムスケジュール：
+
+| 時刻 | 内容 |
+|---|---|
+| 11:30 – 12:00 | 受付・集合 |
+| 12:00 – 12:15 | オリエンテーション |
+| 12:15 – 13:15 | ピッキング業務 見学（60分） |
+| 13:15 – 13:30 | 休憩 |
+| 13:30 – 14:30 | ささげ業務 見学（60分） |
+| 14:30 – 14:45 | 休憩 |
+| 14:45 – 15:45 | メディア倉庫 見学（60分・同施設内の別エリア） |
+| 15:45 – 16:00 | クロージング・質疑応答 |
+
+締切（9/30 23:59 JST）を過ぎるとページ末尾のスクリプトが申込ボタンを「申込受付は終了しました」に置き換える。
+
+**新しいイベントのLPを増やすとき**
+
+1. `kanto-vol4.html` を複製して内容を差し替える（スタイルはファイル内で完結している）
+2. `apply.html` の `EVENT_LP` にキーとファイル名を1行足す — 申込カードからLPへの導線が出る
+3. `index.html` のイベントカードに「イベント詳細を見る」ボタンを足す
+4. `vercel.json` の `rewrites` に拡張子なしURLを1行足す
 
 ## デザイン仕様
 
@@ -149,12 +172,16 @@ RECOREコミュニティの全体ポータルサイトです。リユース業�
 
 ## ファイル構成
 
-\\\
-recore-portalsite/
+```
+recore-community-portalsite/
 ├── README.md           # このファイル
+├── vercel.json         # Vercel 設定（拡張子なしURLの rewrite・セキュリティヘッダ）
 ├── index.html          # 全体ポータルサイト
-└── apply.html          # 参加申し込みフォーム（関東 Vol.4）
-\\\
+├── kanto-vol4.html     # 関東 Vol.4 イベント特設ページ（LP）
+└── apply.html          # 参加申し込みフォーム（イベント共通・?event= で切替）
+```
+
+ビルドなしの静的HTML。各ページはスタイル・スクリプトをファイル内に持つ（共通CSSファイルは無い）。
 
 ## 関連リポジトリ
 
@@ -165,28 +192,49 @@ recore-portalsite/
 
 ### ローカル開発
 
-\\\ash
-git clone https://github.com/ueda-recore/recore-portalsite.git
-cd recore-portalsite
-python -m http.server 8080
+```bash
+git clone https://github.com/seino-jpg/recore-community-portalsite.git
+cd recore-community-portalsite
+python3 -m http.server 8080
 # http://localhost:8080/index.html
-\\\
+```
 
-## GitHub Pages
+ローカルでは `vercel.json` の rewrite が効かないため、拡張子つき（`kanto-vol4.html`）でアクセスする。
 
-- **公開URL** — https://ueda-recore.github.io/recore-portalsite/
-- **ブランチ** — main
-- **ビルドタイプ** — Static HTML
+## デプロイ（Vercel）
+
+- **プロジェクト** — `recore-community-portalsite`（Vercel アカウント: seino-jpg）
+- **フレームワーク** — なし（静的HTMLをそのまま配信。ビルドコマンドなし）
+- **連携ブランチ** — `main` への push で自動デプロイ、それ以外のブランチはプレビューURL
+
+`vercel.json` の rewrite により、拡張子なしのURLでも配信される。
+
+| 配信URL | 実ファイル |
+|---|---|
+| `/` | `index.html` |
+| `/kanto-vol4` | `kanto-vol4.html` |
+| `/apply?event=kanto-vol4` | `apply.html` |
 
 ## 更新方法
 
-\\\ash
+```bash
 git add .
 git commit -m "Update: [変更内容]"
 git push origin main
-\\\
+```
 
-変更は自動的に GitHub Pages で公開されます（数秒以内）。
+push すると Vercel が自動でデプロイします（数十秒）。
+
+### 移行前のリポジトリについて
+
+移行元の `ueda-recore/recore-portalsite`（GitHub Pages）は上田さん個人アカウント配下にあり、
+`https://ueda-recore.github.io/recore-portalsite/` でまだ公開されている。
+外部に配ったリンクの差し替えが済むまでは、日程など公開情報の変更は**両方に反映すること**。
+`upstream` remote として設定済み：
+
+```bash
+git remote -v   # origin=seino-jpg（正本） / upstream=ueda-recore（移行元）
+```
 
 ## お問い合わせ
 
@@ -198,5 +246,5 @@ git push origin main
 
 ---
 
-**更新日** — 2026年6月17日  
+**更新日** — 2026年9月15日  
 **管理者** — RECORE カスタマーサクセスチーム
