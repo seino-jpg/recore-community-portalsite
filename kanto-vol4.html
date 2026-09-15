@@ -8,6 +8,8 @@
   <meta property="og:title" content="関東コミュニティ Vol.4 ｜ ブックオフ出品倉庫 見学会">
   <meta property="og:description" content="2026年10月22日（木）12:00–16:00｜東名横浜ロジスティクスセンター。ピッキング・ささげ・メディア倉庫の3工程を1日で。">
   <meta property="og:type" content="website">
+  <meta property="og:image" content="https://recore-community-portalsite.vercel.app/img/warehouse-aisle.jpg">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
@@ -267,12 +269,34 @@
     .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
 
+    /* ===== 写真 ===== */
+    .band { margin: 0; background: var(--green-dark); }
+    .band img { display: block; width: 100%; height: clamp(280px, 42vw, 520px); object-fit: cover; }
+    .band figcaption {
+      max-width: 1000px; margin: 0 auto; padding: 12px 24px 16px;
+      font-size: 12px; color: rgba(255,255,255,0.55); letter-spacing: 0.04em;
+    }
+
+    .photo-pair {
+      display: grid; grid-template-columns: 1.55fr 1fr; gap: 24px;
+      align-items: end; margin-top: 56px;
+    }
+    .photo-pair figure { margin: 0; }
+    .photo-pair img {
+      display: block; width: 100%; height: auto; border-radius: 2px;
+      aspect-ratio: 16/10; object-fit: cover;
+    }
+    .photo-pair figcaption {
+      font-size: 12px; color: var(--text-sub); margin-top: 8px; letter-spacing: 0.02em;
+    }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 860px) {
       section { padding: 60px 0; }
       .hero { padding-top: 48px; }
       .hero-fact { padding-right: 24px; margin-right: 24px; }
       .program-item { grid-template-columns: 1fr; gap: 12px; }
+      .photo-pair { grid-template-columns: 1fr; gap: 20px; margin-top: 36px; }
       .program-num { font-size: 36px; }
       .tt-row { grid-template-columns: 1fr; gap: 2px; padding-left: 24px; }
       .outline th { width: 108px; padding: 14px 10px; font-size: 14px; }
@@ -339,6 +363,12 @@
   </div>
 </section>
 
+<!-- ===== 写真バンド ===== -->
+<figure class="band">
+  <img src="img/warehouse-aisle.jpg" alt="東名横浜ロジスティクスセンターの通路。両側にカゴ台車が並び、奥へ長く伸びている" loading="lazy" width="1600" height="900">
+  <figcaption>東名横浜ロジスティクスセンター ／ 2026年9月 下見時に撮影</figcaption>
+</figure>
+
 <!-- ===== PROGRAM ===== -->
 <section id="program" style="background: var(--surface);">
   <div class="container">
@@ -388,6 +418,17 @@
           <li>自社の商材構成に置き換えたときの応用点</li>
         </ul>
       </div>
+    </div>
+
+    <div class="photo-pair fade-in">
+      <figure>
+        <img src="img/warehouse-floor.jpg" alt="出品倉庫のフロア。作業台とラックが並び、奥にパレット積みの段ボールが見える" loading="lazy" width="1600" height="968">
+        <figcaption>作業エリアの通路。左手に検品・出庫の作業台、右手に出荷待ちのパレットが並ぶ</figcaption>
+      </figure>
+      <figure>
+        <img src="img/warehouse-scale.jpg" alt="出品倉庫の天井。鉄骨梁と照明が奥まで連なり、施設の規模が分かる" loading="lazy" width="1600" height="792">
+        <figcaption>天井高のある大型施設。この規模を1日かけて歩く</figcaption>
+      </figure>
     </div>
   </div>
 </section>
