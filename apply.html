@@ -972,9 +972,10 @@
     <div class="apply-card fade-in">
       <div class="apply-event">
         <strong id="event-title">関東コミュニティ第4回イベント｜ブックオフ出品倉庫 見学会</strong><br>
-        <span id="event-date">2026年10月22日（木）昼頃開始予定（12:15開始のピッキング業務から見学。詳細な時間割は追ってご案内）</span><br>
+        <span id="event-date">2026年10月22日（木）12:00〜16:00（受付 11:30〜12:00）</span><br>
         <span id="event-place">東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）</span><br>
         <span id="event-deadline" style="font-weight: 700;">申込締切：2026年9月30日（水）</span>
+        <span id="event-lp-link" hidden><br><a href="kanto-vol4.html" style="color: var(--green-mid); font-weight: 700;">→ 当日の流れ・開催概要はこちら</a></span>
       </div>
 
       <form id="apply-form" novalidate>
@@ -1073,10 +1074,10 @@ const EVENTS = {
     title: '関東コミュニティ第4回イベント｜ブックオフ出品倉庫 見学会',
     name: '関東コミュニティ第4回イベント（ブックオフ出品倉庫 見学会）',
     lead: '関東コミュニティ第4回イベントへのお申し込みはこちらから。<br>受付後、担当より詳細をご連絡します。',
-    date: '2026年10月22日（木）昼頃開始予定（12:15開始のピッキング業務から見学。詳細な時間割は追ってご案内）',
+    date: '2026年10月22日（木）12:00〜16:00（受付 11:30〜12:00）',
     deadline: '2026-09-30',   // この日の23:59（JST）で受付終了
     place: '東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）',
-    detail: 'ブックオフ出品倉庫の見学\nささげ・EC出品・ピッキング・梱包・出荷のオペレーションをご覧いただけます。',
+    detail: 'ピッキング業務・ささげ業務・メディア倉庫の見学（各60分）\n12:00 オリエンテーション／12:15 ピッキング／13:30 ささげ／14:45 メディア倉庫／15:45 クロージング（16:00 終了）',
     transportNote: '来客用駐車場は先着4台です。満車の場合は近隣のコインパーキングをご利用ください。'
   },
   'kansai-vol2': {
@@ -1105,6 +1106,14 @@ document.getElementById('event-title').textContent = currentEvent.title;
 document.getElementById('event-date').textContent = currentEvent.date;
 document.getElementById('event-place').textContent = currentEvent.place;
 document.getElementById('transport-note').textContent = currentEvent.transportNote;
+
+// イベント特設ページ（LP）がある回だけ、申込カードから導線を出す
+const EVENT_LP = { 'kanto-vol4': 'kanto-vol4.html' };
+if (EVENT_LP[currentKey]) {
+  const lp = document.getElementById('event-lp-link');
+  lp.querySelector('a').href = EVENT_LP[currentKey];
+  lp.hidden = false;
+}
 
 // ===== 申込締切 =====
 // deadline の日付の 23:59（JST）を過ぎたらフォームを閉じる

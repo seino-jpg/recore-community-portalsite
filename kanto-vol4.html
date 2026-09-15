@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>関東コミュニティ Vol.4 ｜ ブックオフ出品倉庫 見学会 | RECORE Community</title>
+  <meta name="description" content="2026年10月22日（木）、東名横浜ロジスティクスセンターにて開催。ピッキング・ささげ・メディア倉庫の3工程を1日で見学する、RECORE関東コミュニティ第4回イベント。申込締切9月30日（水）。">
+  <meta property="og:title" content="関東コミュニティ Vol.4 ｜ ブックオフ出品倉庫 見学会">
+  <meta property="og:description" content="2026年10月22日（木）12:00–16:00｜東名横浜ロジスティクスセンター。ピッキング・ささげ・メディア倉庫の3工程を1日で。">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #1E3A14;
+      --green-mid: #2D4E1C;
+      --green-card: #1A3212;
+      --gold: #C4D44A;
+      --gold-dim: rgba(196,212,74,0.15);
+      --text: #2C2C2C;
+      --text-sub: #6A6A6A;
+      --bg: #F7F7F2;
+      --surface: #FFFFFF;
+      --border: #DDE0D8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+    .display { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; }
+
+    /* ===== HEADER ===== */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    header nav {
+      max-width: 1000px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    }
+    .logo {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 20px; font-weight: 900;
+      color: var(--green-dark); text-decoration: none; white-space: nowrap;
+    }
+    .logo-sub {
+      display: block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.18em; color: var(--text-sub); line-height: 1.2;
+    }
+    .header-back {
+      font-size: 13px; color: var(--text-sub); text-decoration: none; white-space: nowrap;
+    }
+    .header-back:hover { color: var(--green-mid); }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: var(--green-dark);
+      color: #fff;
+      padding: 72px 0 0;
+      border-bottom: 6px solid var(--gold);
+    }
+    .hero-kicker {
+      display: inline-block;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.2em;
+      color: var(--gold);
+      border: 1px solid rgba(196,212,74,0.5);
+      padding: 5px 14px; border-radius: 2px;
+      margin-bottom: 28px;
+    }
+    .hero-date {
+      display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .hero-date-num {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: clamp(56px, 12vw, 104px);
+      line-height: 0.9; letter-spacing: -0.02em; color: #fff;
+    }
+    .hero-date-meta { padding-bottom: 8px; }
+    .hero-date-year { font-size: 13px; letter-spacing: 0.14em; color: rgba(255,255,255,0.6); }
+    .hero-date-time {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      font-size: 20px; color: var(--gold); line-height: 1.4;
+    }
+    .hero-title {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: clamp(26px, 4.6vw, 42px);
+      line-height: 1.35; letter-spacing: 0.01em;
+      margin-bottom: 20px;
+    }
+    .hero-lead {
+      font-size: 15px; color: rgba(255,255,255,0.82);
+      max-width: 620px; margin-bottom: 40px;
+    }
+    .hero-facts {
+      display: flex; flex-wrap: wrap; gap: 0;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding: 24px 0 40px;
+    }
+    .hero-fact {
+      padding-right: 40px; margin-right: 40px;
+      border-right: 1px solid rgba(255,255,255,0.15);
+    }
+    .hero-fact:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+    .hero-fact-label {
+      font-size: 11px; letter-spacing: 0.14em; color: rgba(255,255,255,0.5);
+      display: block; margin-bottom: 4px;
+    }
+    .hero-fact-value {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      font-size: 16px; color: #fff;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      font-size: 16px; text-decoration: none;
+      padding: 16px 40px; border-radius: 2px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .btn-gold {
+      background: var(--gold); color: var(--green-dark);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.12);
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
+    .btn-ghost {
+      background: transparent; color: var(--gold);
+      border: 1px solid rgba(196,212,74,0.55);
+    }
+    .btn-ghost:hover { background: rgba(196,212,74,0.1); }
+
+    /* ===== SECTION ===== */
+    section { padding: 88px 0; }
+    .label-en {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+      color: var(--gold); margin-bottom: 10px;
+    }
+    .label-en.on-light { color: var(--green-mid); }
+    .section-title {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: clamp(22px, 3.4vw, 32px); line-height: 1.4;
+      color: var(--green-dark); margin-bottom: 16px;
+    }
+    .section-sub { font-size: 15px; color: var(--text-sub); max-width: 680px; margin-bottom: 48px; }
+
+    /* ===== PROGRAM（見学する3工程）===== */
+    .program-item {
+      display: grid; grid-template-columns: 96px 1fr; gap: 32px;
+      padding: 36px 0; border-top: 1px solid var(--border);
+    }
+    .program-item:last-child { border-bottom: 1px solid var(--border); }
+    .program-num {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 48px; line-height: 1; color: var(--gold);
+      -webkit-text-stroke: 1px var(--green-mid);
+    }
+    .program-body h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+      font-size: 21px; color: var(--green-dark); margin-bottom: 6px;
+    }
+    .program-meta {
+      font-size: 12px; letter-spacing: 0.08em; color: var(--text-sub);
+      margin-bottom: 14px;
+    }
+    .program-body p { font-size: 15px; }
+    .program-points { margin-top: 16px; padding-left: 0; list-style: none; }
+    .program-points li {
+      font-size: 14px; color: var(--green-mid); font-weight: 500;
+      padding-left: 18px; position: relative; margin-bottom: 6px;
+    }
+    .program-points li::before {
+      content: ""; position: absolute; left: 0; top: 11px;
+      width: 8px; height: 2px; background: var(--gold);
+    }
+
+    /* ===== TIMETABLE ===== */
+    .timetable { border-left: 2px solid var(--border); margin-left: 8px; }
+    .tt-row {
+      display: grid; grid-template-columns: 148px 1fr; gap: 28px;
+      padding: 0 0 28px 32px; position: relative;
+    }
+    .tt-row::before {
+      content: ""; position: absolute; left: -7px; top: 8px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--green-mid);
+    }
+    .tt-row.is-main::before { background: var(--gold); border-color: var(--green-dark); }
+    .tt-time {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      font-size: 16px; color: var(--green-dark); white-space: nowrap; padding-top: 1px;
+    }
+    .tt-body h4 {
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      font-size: 17px; color: var(--text); margin-bottom: 2px;
+    }
+    .tt-row.is-main .tt-body h4 { color: var(--green-dark); font-weight: 900; font-size: 19px; }
+    .tt-note { font-size: 13px; color: var(--text-sub); }
+    .tt-rest .tt-time, .tt-rest .tt-body h4 { color: var(--text-sub); font-weight: 500; }
+
+    /* ===== 開催概要テーブル ===== */
+    .outline { width: 100%; border-collapse: collapse; }
+    .outline th, .outline td {
+      text-align: left; vertical-align: top;
+      padding: 18px 16px; border-bottom: 1px solid var(--border); font-size: 15px;
+    }
+    .outline th {
+      width: 160px; white-space: nowrap;
+      font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
+      color: var(--green-dark); background: rgba(196,212,74,0.08);
+    }
+    .outline tr:first-child th, .outline tr:first-child td { border-top: 1px solid var(--border); }
+    .outline .sub { font-size: 13px; color: var(--text-sub); display: block; margin-top: 4px; }
+
+    /* ===== 注意事項 ===== */
+    .notes { list-style: none; }
+    .notes li {
+      font-size: 14px; color: var(--text-sub);
+      padding-left: 20px; position: relative; margin-bottom: 10px;
+    }
+    .notes li::before {
+      content: "※"; position: absolute; left: 0; color: var(--green-mid);
+    }
+
+    /* ===== CTA ===== */
+    .cta { background: var(--green-card); color: #fff; text-align: center; }
+    .cta .section-title { color: #fff; }
+    .cta-deadline {
+      display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--green-dark); background: var(--gold);
+      padding: 6px 18px; border-radius: 2px; margin-bottom: 24px;
+    }
+    .cta-lead { font-size: 15px; color: rgba(255,255,255,0.82); margin-bottom: 36px; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .cta-contact { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 28px; }
+    .cta-contact a { color: var(--gold); }
+
+    /* ===== FOOTER ===== */
+    footer { background: var(--green-dark); color: rgba(255,255,255,0.7); padding: 40px 0; text-align: center; font-size: 13px; }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    /* ===== 追従バー（モバイル）===== */
+    .sticky-cta {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
+      background: rgba(30,58,20,0.97); padding: 12px 16px;
+      display: none; align-items: center; justify-content: space-between; gap: 12px;
+      border-top: 2px solid var(--gold);
+    }
+    .sticky-cta-text { font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.4; }
+    .sticky-cta .btn { padding: 12px 22px; font-size: 14px; }
+
+    /* ===== fade-in ===== */
+    .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 860px) {
+      section { padding: 60px 0; }
+      .hero { padding-top: 48px; }
+      .hero-fact { padding-right: 24px; margin-right: 24px; }
+      .program-item { grid-template-columns: 1fr; gap: 12px; }
+      .program-num { font-size: 36px; }
+      .tt-row { grid-template-columns: 1fr; gap: 2px; padding-left: 24px; }
+      .outline th { width: 108px; padding: 14px 10px; font-size: 14px; }
+      .outline td { padding: 14px 10px; font-size: 14px; }
+      .sticky-cta { display: flex; }
+      body { padding-bottom: 76px; }
+      .cta-actions .btn { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .fade-in { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <nav>
+    <a href="index.html" class="logo">RECORE<span class="logo-sub">COMMUNITY</span></a>
+    <a href="index.html#events" class="header-back">← イベント一覧へ戻る</a>
+  </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" style="padding-bottom: 0;">
+  <div class="container">
+    <span class="hero-kicker">関東コミュニティ Vol.4</span>
+
+    <div class="hero-date">
+      <span class="hero-date-num display">10.22</span>
+      <div class="hero-date-meta">
+        <span class="hero-date-year">2026 / THU</span>
+        <div class="hero-date-time">12:00 — 16:00<span style="font-size: 14px; color: rgba(255,255,255,0.6); font-weight: 400;">（受付 11:30〜）</span></div>
+      </div>
+    </div>
+
+    <h1 class="hero-title">ブックオフ出品倉庫<br>見学会</h1>
+
+    <p class="hero-lead">
+      ささげ・EC出品・ピッキング・梱包・出荷。リユースEC のオペレーションが1か所に集約された出品倉庫を、現場で歩きながら見学します。
+      自社の出品フローを見直すヒントを、その場で持ち帰ってください。
+    </p>
+
+    <div class="hero-facts">
+      <div class="hero-fact">
+        <span class="hero-fact-label">VENUE</span>
+        <span class="hero-fact-value">東名横浜ロジスティクスセンター</span>
+      </div>
+      <div class="hero-fact">
+        <span class="hero-fact-label">ENTRY</span>
+        <span class="hero-fact-value">参加費無料</span>
+      </div>
+      <div class="hero-fact">
+        <span class="hero-fact-label">DEADLINE</span>
+        <span class="hero-fact-value">9月30日（水）締切</span>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 56px;">
+      <a href="apply.html?event=kanto-vol4" class="btn btn-gold">参加を申し込む</a>
+      <a href="#timetable" class="btn btn-ghost" style="margin-left: 12px;">当日の流れを見る</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROGRAM ===== -->
+<section id="program" style="background: var(--surface);">
+  <div class="container">
+    <div class="label-en on-light fade-in">PROGRAM</div>
+    <h2 class="section-title fade-in">1日で、3つの工程を見る。</h2>
+    <p class="section-sub fade-in">
+      出品倉庫のオペレーションを工程ごとに区切って見学します。各60分、質問しながら回れる時間を取りました。
+    </p>
+
+    <div class="program-item fade-in">
+      <div class="program-num display">01</div>
+      <div class="program-body">
+        <h3>ピッキング業務</h3>
+        <div class="program-meta">12:15 — 13:15 ／ 60分</div>
+        <p>注文が入った商品を、膨大な在庫のなかから取り出して集める工程。ロケーション管理と動線の設計が、そのままスピードに直結する部分です。</p>
+        <ul class="program-points">
+          <li>在庫のロケーション管理と棚の持ち方</li>
+          <li>作業者の動線とピッキングの単位</li>
+          <li>誤出荷を防ぐためのチェックの入れ方</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="program-item fade-in">
+      <div class="program-num display">02</div>
+      <div class="program-body">
+        <h3>ささげ業務</h3>
+        <div class="program-meta">13:30 — 14:30 ／ 60分</div>
+        <p>撮影・採寸・原稿の3工程。EC出品のボトルネックになりやすく、かつ売上にいちばん効く領域を、実際の作業台で見ていただきます。</p>
+        <ul class="program-points">
+          <li>撮影ブースの構成と1点あたりの所要時間</li>
+          <li>採寸・原稿作成の標準化とマニュアルの粒度</li>
+          <li>出品までのリードタイムをどう縮めているか</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="program-item fade-in">
+      <div class="program-num display">03</div>
+      <div class="program-body">
+        <h3>メディア倉庫</h3>
+        <div class="program-meta">14:45 — 15:45 ／ 60分</div>
+        <p>同施設内の別エリアにある、本・CD・DVD などメディア商材を扱う倉庫。多品種・小口・大量という、アパレルや家電とはまったく異なる条件下でのオペレーションです。</p>
+        <ul class="program-points">
+          <li>大量の小口商材をさばく保管と仕分けの考え方</li>
+          <li>単価が低い商材で採算を合わせる工程設計</li>
+          <li>自社の商材構成に置き換えたときの応用点</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TIMETABLE ===== -->
+<section id="timetable">
+  <div class="container">
+    <div class="label-en on-light fade-in">TIMETABLE</div>
+    <h2 class="section-title fade-in">当日の流れ</h2>
+    <p class="section-sub fade-in">受付は 11:30 から。12:00 のオリエンテーションまでにお集まりください。</p>
+
+    <div class="timetable fade-in">
+      <div class="tt-row">
+        <div class="tt-time">11:30 — 12:00</div>
+        <div class="tt-body">
+          <h4>受付・集合</h4>
+          <p class="tt-note">東名横浜ロジスティクスセンター 受付にて。お名刺を1枚ご用意ください。</p>
+        </div>
+      </div>
+
+      <div class="tt-row">
+        <div class="tt-time">12:00 — 12:15</div>
+        <div class="tt-body">
+          <h4>オリエンテーション</h4>
+          <p class="tt-note">当日の流れ・見学ルート・注意事項のご案内、参加者の自己紹介。</p>
+        </div>
+      </div>
+
+      <div class="tt-row is-main">
+        <div class="tt-time">12:15 — 13:15</div>
+        <div class="tt-body">
+          <h4>ピッキング業務 見学</h4>
+          <p class="tt-note">ロケーション管理・動線設計・誤出荷防止のチェック体制。</p>
+        </div>
+      </div>
+
+      <div class="tt-row tt-rest">
+        <div class="tt-time">13:15 — 13:30</div>
+        <div class="tt-body"><h4>休憩</h4></div>
+      </div>
+
+      <div class="tt-row is-main">
+        <div class="tt-time">13:30 — 14:30</div>
+        <div class="tt-body">
+          <h4>ささげ業務 見学</h4>
+          <p class="tt-note">撮影・採寸・原稿の各工程と、出品までのリードタイム。</p>
+        </div>
+      </div>
+
+      <div class="tt-row tt-rest">
+        <div class="tt-time">14:30 — 14:45</div>
+        <div class="tt-body"><h4>休憩</h4></div>
+      </div>
+
+      <div class="tt-row is-main">
+        <div class="tt-time">14:45 — 15:45</div>
+        <div class="tt-body">
+          <h4>メディア倉庫 見学</h4>
+          <p class="tt-note">同施設内の別エリアへ移動。本・CD・DVD などメディア商材のオペレーション。</p>
+        </div>
+      </div>
+
+      <div class="tt-row">
+        <div class="tt-time">15:45 — 16:00</div>
+        <div class="tt-body">
+          <h4>クロージング・質疑応答</h4>
+          <p class="tt-note">見学の振り返りと、その場で解消しきれなかった質問へのご回答。</p>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size: 13px; color: var(--text-sub); margin-top: 8px;" class="fade-in">
+      ※ 各見学パートの時間は、当日の倉庫の稼働状況により前後する場合があります。
+    </p>
+  </div>
+</section>
+
+<!-- ===== OUTLINE ===== -->
+<section id="outline" style="background: var(--surface);">
+  <div class="container">
+    <div class="label-en on-light fade-in">OUTLINE</div>
+    <h2 class="section-title fade-in">開催概要</h2>
+
+    <table class="outline fade-in">
+      <tr>
+        <th>イベント名</th>
+        <td>RECORE 関東コミュニティ 第4回イベント<br>ブックオフ出品倉庫 見学会</td>
+      </tr>
+      <tr>
+        <th>開催日時</th>
+        <td>2026年10月22日（木）12:00 〜 16:00<span class="sub">受付 11:30〜12:00</span></td>
+      </tr>
+      <tr>
+        <th>開催場所</th>
+        <td>東名横浜ロジスティクスセンター<span class="sub">神奈川県横浜市瀬谷区北町25-9</span></td>
+      </tr>
+      <tr>
+        <th>内容</th>
+        <td>ピッキング業務・ささげ業務・メディア倉庫の見学（各60分）、質疑応答</td>
+      </tr>
+      <tr>
+        <th>対象</th>
+        <td>RECORE をご利用中の企業様<span class="sub">複数名でご参加の場合は、お手数ですが1名ずつお申し込みください。</span></td>
+      </tr>
+      <tr>
+        <th>参加費</th>
+        <td>無料</td>
+      </tr>
+      <tr>
+        <th>交通手段</th>
+        <td>公共交通機関／お車のどちらでもお越しいただけます<span class="sub">来客用駐車場は先着4台です。満車の場合は近隣のコインパーキングをご利用ください。お申し込み時に交通手段をお伺いします。</span></td>
+      </tr>
+      <tr>
+        <th>申込締切</th>
+        <td>2026年9月30日（水）23:59</td>
+      </tr>
+      <tr>
+        <th>主催</th>
+        <td>RECORE コミュニティ（株式会社RECORE）<span class="sub">お問い合わせ： <a href="mailto:seino@recore-corp.jp" style="color: var(--green-mid);">seino@recore-corp.jp</a></span></td>
+      </tr>
+    </table>
+
+    <ul class="notes fade-in" style="margin-top: 32px;">
+      <li>今回のイベントでは懇親会は開催いたしません。</li>
+      <li>倉庫内は稼働中です。安全のため、当日の案内に従ってご見学ください。</li>
+      <li>申込締切を過ぎるとフォームは自動で受付を終了します。締切後のご参加希望は、上記メールアドレスまでご相談ください。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta" id="apply-cta">
+  <div class="container">
+    <div class="cta-deadline">申込締切 2026年9月30日（水）</div>
+    <h2 class="section-title">現場を見て、自社の出品フローを見直す。</h2>
+    <p class="cta-lead">ご参加は無料です。お申し込み後、担当より当日の詳細をご連絡します。</p>
+    <div class="cta-actions">
+      <a href="apply.html?event=kanto-vol4" class="btn btn-gold">参加を申し込む</a>
+      <a href="index.html#events" class="btn btn-ghost">ほかのイベントを見る</a>
+    </div>
+    <p class="cta-contact">
+      ご不明な点は <a href="mailto:seino@recore-corp.jp">seino@recore-corp.jp</a> までお気軽にお問い合わせください。
+    </p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <p><strong>RECORE Community</strong> — 孤独な試行錯誤を終わらせる。</p>
+    <p style="margin: 12px 0; font-size: 12px;">
+      <a href="index.html">ポータルトップ</a> |
+      <a href="https://recore-corp.jp/">コーポレートサイト</a> |
+      <a href="https://recore-pos.com/">RECORE サービスHP</a> |
+      <a href="mailto:seino@recore-corp.jp">お問い合わせ</a>
+    </p>
+    <p>© 2026 RECORE Community by 株式会社RECORE. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ===== STICKY CTA（モバイル）===== -->
+<div class="sticky-cta">
+  <div class="sticky-cta-text">10月22日（木）開催<br>申込締切 9/30（水）</div>
+  <a href="apply.html?event=kanto-vol4" class="btn btn-gold">申し込む</a>
+</div>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+// 申込締切（9/30 23:59 JST）を過ぎたら、申込導線を受付終了表示に切り替える
+const DEADLINE = new Date('2026-09-30T23:59:59+09:00').getTime();
+if (Date.now() >= DEADLINE) {
+  document.querySelectorAll('a[href^="apply.html"]').forEach(a => {
+    a.textContent = '申込受付は終了しました';
+    a.removeAttribute('href');
+    a.style.pointerEvents = 'none';
+    a.style.opacity = '0.55';
+  });
+  document.querySelector('.cta-deadline').textContent = '申込受付は終了しました';
+}
+</script>
+
+</body>
+</html>
