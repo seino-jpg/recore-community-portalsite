@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>申込管理 | RECORE Community</title>
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#1E3A14">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #1E3A14;
+      --green-mid: #2D4E1C;
+      --gold: #C4D44A;
+      --gold-dim: rgba(196,212,74,0.15);
+      --text: #2C2C2C;
+      --text-sub: #6A6A6A;
+      --bg: #F7F7F2;
+      --surface: #FFFFFF;
+      --border: #DDE0D8;
+    }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    nav {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    }
+    .logo {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 20px; font-weight: 900; color: var(--green-dark);
+      text-decoration: none; white-space: nowrap;
+    }
+    .logo-sub { color: var(--gold); font-size: 12px; display: block; font-weight: 700; letter-spacing: 0.08em; }
+    /* display を指定した要素に hidden 属性を付けても効かないため、明示的に打ち消す */
+    [hidden] { display: none !important; }
+    .nav-right { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--text-sub); }
+    .nav-right button {
+      background: none; border: 1px solid var(--border); border-radius: 4px;
+      padding: 6px 12px; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer;
+    }
+    .nav-right button:hover { border-color: var(--green-mid); color: var(--green-dark); }
+
+    /* ===== COMMON ===== */
+    main { flex: 1; padding: 48px 24px 80px; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    .label-en {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.18em; color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .label-en::before { content: ''; display: block; width: 32px; height: 2px; background: var(--gold); flex-shrink: 0; }
+    .page-title {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: clamp(24px, 4vw, 36px); font-weight: 900; color: var(--green-dark);
+      line-height: 1.2; margin-bottom: 8px;
+    }
+    .page-sub { color: var(--text-sub); font-size: 14px; margin-bottom: 32px; }
+
+    /* ===== LOGIN ===== */
+    .login-card {
+      background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--gold);
+      padding: 28px 24px; max-width: 520px;
+    }
+    .login-card h2 {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 18px; font-weight: 900; color: var(--green-dark); margin-bottom: 8px;
+    }
+    .login-card p { font-size: 14px; color: var(--text-sub); margin-bottom: 20px; }
+    #gis-button { min-height: 44px; }
+    .notice {
+      display: none; margin-top: 16px; padding: 12px 16px; font-size: 14px;
+      border: 1px solid var(--border); background: var(--surface);
+    }
+    .notice.show { display: block; }
+    .notice.error { background: #fdecea; border-color: #f5c2bd; color: #a8342a; }
+    .notice.info { background: var(--gold-dim); border-color: var(--gold); color: var(--green-dark); }
+
+    /* ===== SUMMARY ===== */
+    .summary {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 2px solid var(--green-dark); border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .summary-item { padding: 20px 16px; border-right: 1px solid var(--border); }
+    .summary-item:last-child { border-right: none; }
+    .summary-label { font-size: 12px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.06em; margin-bottom: 6px; }
+    .summary-value {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: clamp(28px, 4vw, 40px); font-weight: 900; color: var(--green-dark); line-height: 1;
+    }
+    .summary-value small { font-family: 'Noto Sans JP', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-sub); margin-left: 4px; }
+    .summary-value.warn { color: #a8342a; }
+    .summary-note { font-size: 12px; color: var(--text-sub); margin-top: 6px; }
+
+    /* ===== TABS ===== */
+    .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 0; overflow-x: auto; }
+    .tab {
+      background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px;
+      padding: 12px 20px; font-family: inherit; font-size: 15px; font-weight: 700; color: var(--text-sub);
+      cursor: pointer; white-space: nowrap;
+    }
+    .tab:hover { color: var(--green-dark); }
+    .tab.active { color: var(--green-dark); border-bottom-color: var(--gold); }
+    .tab .count { font-weight: 500; font-size: 13px; margin-left: 6px; color: var(--text-sub); }
+
+    /* ===== TABLE ===== */
+    .table-meta { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; font-size: 13px; color: var(--text-sub); flex-wrap: wrap; gap: 8px; }
+    .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); }
+    table { border-collapse: collapse; width: 100%; min-width: 1100px; font-size: 13px; }
+    th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    th {
+      background: var(--green-dark); color: #fff; font-weight: 700; font-size: 12px;
+      white-space: nowrap; position: sticky; top: 0;
+    }
+    td { white-space: pre-wrap; word-break: break-word; max-width: 360px; }
+    td.num { text-align: right; white-space: nowrap; }
+    tr:nth-child(even) td { background: #FBFBF8; }
+    tr:hover td { background: var(--gold-dim); }
+    .empty { padding: 40px 16px; text-align: center; color: var(--text-sub); font-size: 14px; }
+
+    /* ===== FOOTER ===== */
+    footer { background: #0F1E09; color: rgba(255,255,255,0.4); padding: 24px; text-align: center; font-size: 12px; }
+
+    @media (max-width: 768px) {
+      main { padding: 32px 16px 60px; }
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .summary-item:nth-child(2) { border-right: none; }
+      .summary-item:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .nav-right span { display: none; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav>
+    <a href="index.html" class="logo">RECORE<span class="logo-sub">Community</span></a>
+    <div class="nav-right" id="nav-right" hidden>
+      <span id="viewer-email"></span>
+      <button type="button" id="btn-reload">再読込</button>
+      <button type="button" id="btn-logout">ログアウト</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="container">
+    <div class="label-en">ADMIN</div>
+    <h1 class="page-title">申込管理</h1>
+    <p class="page-sub">運営メンバー専用。イベントごとの申込状況を確認できます。</p>
+
+    <!-- ログイン前: ここ以外は何も描かない -->
+    <section id="login-view">
+      <div class="login-card">
+        <h2>運営メンバー専用</h2>
+        <p>許可された Google アカウントでログインしてください。</p>
+        <div id="gis-button"></div>
+        <div id="login-notice" class="notice"></div>
+      </div>
+    </section>
+
+    <!-- ログイン後 -->
+    <section id="data-view" hidden>
+      <div class="summary" id="summary"></div>
+      <div class="tabs" id="tabs"></div>
+      <div class="table-meta">
+        <span id="table-meta-left"></span>
+        <span id="table-meta-right"></span>
+      </div>
+      <div class="table-wrap" id="table-wrap"></div>
+    </section>
+  </div>
+</main>
+
+<footer>© 2026 RECORE Community by 株式会社RECORE.</footer>
+
+<script>
+// ===== 設定 =====
+// OAuth 2.0 クライアント ID。Google Cloud Console で発行後にここへ差し込む。
+// GAS 側のスクリプトプロパティ GOOGLE_CLIENT_ID と同じ値にすること。
+const GOOGLE_CLIENT_ID = 'GOOGLE_CLIENT_ID';
+
+// 申込受付と同じ GAS Web アプリ（action 付きで管理系に振り分けられる）
+const ADMIN_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwPjnAQYHOc6lL5sqcYhzsadNsmxQXv8E6huz60xY-4KtQfKuwS8nfkEaOhZJvExu1O/exec';
+
+// イベント定員（キーは GAS の EVENT_SHEETS と揃える）。
+// 未設定のイベントでは「残り枠」を表示しない。定員の正本はここ（GAS 側は持たない）。
+const EVENT_CAPACITY = {
+  'kanto-vol4': 20
+  // 'kansai-vol2': 未定
+};
+
+// 集計に使う列。列名で探す（列の並びが変わっても壊れないように）
+const COL_ATTENDEES = '参加人数';
+const COL_CARS = '車の台数';
+const NUMERIC_COLS = [COL_ATTENDEES, COL_CARS];
+
+// ===== 状態 =====
+let idToken = null;
+let events = [];
+let currentKey = null;
+
+const $ = (id) => document.getElementById(id);
+
+// ===== 認証（Google Identity Services）=====
+function initGis() {
+  if (GOOGLE_CLIENT_ID === 'GOOGLE_CLIENT_ID') {
+    showLoginNotice('error', 'クライアント ID が未設定です。管理者に連絡してください。');
+    return;
+  }
+  if (!window.google || !google.accounts || !google.accounts.id) {
+    showLoginNotice('error', 'ログイン機能を読み込めませんでした。ページを再読み込みしてください。');
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: (res) => handleCredential(res.credential),
+    auto_select: false,
+    ux_mode: 'popup'
+  });
+  google.accounts.id.renderButton($('gis-button'), {
+    type: 'standard', theme: 'outline', size: 'large', text: 'signin_with', shape: 'rectangular', logo_alignment: 'left'
+  });
+}
+
+// GIS から ID トークンを受け取ったら GAS に検証を依頼してデータを取る
+async function handleCredential(credential) {
+  if (!credential) return;
+  idToken = credential;
+  showLoginNotice('info', '認証中…');
+  await loadData();
+}
+
+function logout() {
+  idToken = null;
+  events = [];
+  currentKey = null;
+  $('data-view').hidden = true;
+  $('nav-right').hidden = true;
+  $('summary').innerHTML = '';
+  $('tabs').innerHTML = '';
+  $('table-wrap').innerHTML = '';
+  $('login-view').hidden = false;
+  showLoginNotice('', '');
+  if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+}
+
+// ===== データ取得 =====
+async function loadData() {
+  if (!idToken) return;
+  let result;
+  try {
+    // Content-Type は付けない（GAS はプリフライトに応答できないため。apply.html と同じ流儀）
+    const res = await fetch(ADMIN_ENDPOINT, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'list', idToken })
+    });
+    result = await res.json();
+  } catch (err) {
+    showLoginNotice('error', 'データの取得に失敗しました。通信環境を確認して再度お試しください。');
+    return;
+  }
+
+  if (!result || !result.ok) {
+    idToken = null;
+    const msg = (result && result.error) || '閲覧できませんでした';
+    showLoginNotice('error', msg);
+    return;
+  }
+
+  events = Array.isArray(result.events) ? result.events : [];
+  $('viewer-email').textContent = result.viewer || '';
+  $('login-view').hidden = true;
+  $('nav-right').hidden = false;
+  $('data-view').hidden = false;
+  showLoginNotice('', '');
+
+  if (!currentKey || !events.some(e => e.key === currentKey)) {
+    currentKey = events.length ? events[0].key : null;
+  }
+  render();
+}
+
+// ===== 描画 =====
+function render() {
+  renderTabs();
+  const ev = events.find(e => e.key === currentKey);
+  renderSummary(ev);
+  renderTable(ev);
+}
+
+function renderTabs() {
+  const tabs = $('tabs');
+  tabs.innerHTML = '';
+  events.forEach(ev => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tab' + (ev.key === currentKey ? ' active' : '');
+    b.dataset.key = ev.key;
+    b.textContent = ev.sheetName;
+    const c = document.createElement('span');
+    c.className = 'count';
+    c.textContent = ev.rows.length + '件';
+    b.appendChild(c);
+    b.addEventListener('click', () => { currentKey = ev.key; render(); });
+    tabs.appendChild(b);
+  });
+}
+
+function toNumber(v) {
+  const n = parseInt(String(v == null ? '' : v).replace(/[^\d-]/g, ''), 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
+// 集計。列は名前で探す。
+function summarize(ev) {
+  const rows = ev ? ev.rows : [];
+  const capacity = ev && Object.prototype.hasOwnProperty.call(EVENT_CAPACITY, ev.key) ? EVENT_CAPACITY[ev.key] : null;
+  const attendees = rows.reduce((s, r) => s + toNumber(r[COL_ATTENDEES]), 0);
+  const cars = rows.reduce((s, r) => s + toNumber(r[COL_CARS]), 0);
+  return {
+    companies: rows.length,
+    attendees,
+    cars,
+    capacity,
+    remaining: capacity == null ? null : capacity - attendees
+  };
+}
+
+function renderSummary(ev) {
+  const s = summarize(ev);
+  const items = [
+    { label: '申込社数', value: s.companies, unit: '社' },
+    { label: '合計参加人数', value: s.attendees, unit: '名' },
+    s.capacity == null
+      ? { label: '残り枠', value: '—', unit: '', note: '定員未設定' }
+      : { label: '残り枠', value: s.remaining, unit: '名', note: '定員 ' + s.capacity + '名', warn: s.remaining < 0 },
+    { label: '合計車台数', value: s.cars, unit: '台' }
+  ];
+  const el = $('summary');
+  el.innerHTML = '';
+  items.forEach(it => {
+    const d = document.createElement('div');
+    d.className = 'summary-item';
+    d.innerHTML =
+      '<div class="summary-label"></div>' +
+      '<div class="summary-value' + (it.warn ? ' warn' : '') + '"><span class="v"></span><small></small></div>' +
+      (it.note ? '<div class="summary-note"></div>' : '');
+    d.querySelector('.summary-label').textContent = it.label;
+    d.querySelector('.v').textContent = String(it.value);
+    d.querySelector('small').textContent = it.unit;
+    if (it.note) d.querySelector('.summary-note').textContent = it.note;
+    el.appendChild(d);
+  });
+}
+
+function renderTable(ev) {
+  const wrap = $('table-wrap');
+  wrap.innerHTML = '';
+  $('table-meta-left').textContent = ev ? ev.sheetName + '：' + ev.rows.length + '件' : '';
+  $('table-meta-right').textContent = '最終取得 ' + new Date().toLocaleString('ja-JP');
+
+  if (!ev || ev.rows.length === 0) {
+    const p = document.createElement('div');
+    p.className = 'empty';
+    p.textContent = 'まだ申込はありません。';
+    wrap.appendChild(p);
+    return;
+  }
+
+  const headers = ev.headers.length ? ev.headers : Object.keys(ev.rows[0]);
+  const table = document.createElement('table');
+  const thead = table.createTHead();
+  const hr = thead.insertRow();
+  const th0 = document.createElement('th');
+  th0.textContent = '#';
+  hr.appendChild(th0);
+  headers.forEach(h => {
+    const th = document.createElement('th');
+    th.textContent = h;
+    hr.appendChild(th);
+  });
+
+  const tbody = table.createTBody();
+  ev.rows.forEach((row, i) => {
+    const tr = tbody.insertRow();
+    const td0 = tr.insertCell();
+    td0.className = 'num';
+    td0.textContent = String(i + 1);
+    headers.forEach(h => {
+      const td = tr.insertCell();
+      td.textContent = row[h] == null ? '' : String(row[h]);
+      if (NUMERIC_COLS.includes(h)) td.className = 'num';
+    });
+  });
+  wrap.appendChild(table);
+}
+
+function showLoginNotice(type, msg) {
+  const n = $('login-notice');
+  n.className = 'notice' + (type ? ' show ' + type : '');
+  n.textContent = msg;
+}
+
+// ===== イベント =====
+$('btn-reload').addEventListener('click', () => loadData());
+$('btn-logout').addEventListener('click', logout);
+
+// GIS ライブラリの読み込み完了後に初期化（onload は下の <script> タグから呼ぶ）
+window.onGisLoad = initGis;
+window.handleCredential = handleCredential;
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="onGisLoad()" onerror="onGisLoad()"></script>
+
+</body>
+</html>
