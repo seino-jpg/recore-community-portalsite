@@ -2,7 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     { "source": "/kanto-vol4", "destination": "/kanto-vol4.html" },
-    { "source": "/apply", "destination": "/apply.html" }
+    { "source": "/apply", "destination": "/apply.html" },
+    { "source": "/admin", "destination": "/admin.html" }
   ],
   "headers": [
     {
