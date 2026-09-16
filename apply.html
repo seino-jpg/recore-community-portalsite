@@ -1036,6 +1036,27 @@
           <p class="form-note" id="transport-note">来客用駐車場は先着4台です。満車の場合は近隣のコインパーキングをご利用ください。</p>
         </div>
 
+        <div class="form-row" id="pickup-row" hidden>
+          <label>最寄り駅からの送迎<span class="form-required">必須</span></label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="pickup" value="希望する">
+              <span>希望する</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="pickup" value="希望しない（現地集合）">
+              <span>希望しない（現地集合）</span>
+            </label>
+          </div>
+          <p class="form-note" id="pickup-note">会場は最寄り駅から離れているため、ご希望の方を駅までお迎えに上がります。</p>
+        </div>
+
+        <div class="form-row" id="pickup-place-row" hidden>
+          <label for="f-pickup-place">ご希望の合流場所<span class="form-required">必須</span></label>
+          <input type="text" id="f-pickup-place" name="pickupPlace" placeholder="ご希望の駅・合流場所をご記入ください">
+          <p class="form-note">いただいた場所をもとに、後日事務局から合流場所と時間をすり合わせのうえご連絡します。</p>
+        </div>
+
         <div class="form-row">
           <label for="f-message">ご質問・ご要望<span class="form-optional">任意</span></label>
           <textarea id="f-message" name="message" placeholder="見学で特に見たい工程など、ご自由にご記入ください。"></textarea>
@@ -1083,7 +1104,10 @@ const EVENTS = {
     deadline: '2026-09-30',   // この日の23:59（JST）で受付終了
     place: '東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）',
     detail: 'ピッキング業務・ささげ業務・メディア倉庫の見学（各60分）\n12:00 オリエンテーション／12:15 ピッキング／13:30 ささげ／14:45 メディア倉庫／15:45 クロージング（16:00 終了）',
-    transportNote: '来客用駐車場は先着4台です。満車の場合は近隣のコインパーキングをご利用ください。'
+    transportNote: '来客用駐車場は先着4台です。満車の場合は近隣のコインパーキングをご利用ください。',
+    // 公共交通機関を選んだ方にだけ「最寄り駅からの送迎」を聞く。送迎を出さない回は pickup を false にする
+    pickup: true,
+    pickupNote: '会場は最寄り駅から離れているため、ご希望の方を駅までお迎えに上がります。'
   },
   'kansai-vol2': {
     title: '関西コミュニティ第2回イベント｜リサイクルショップ ソッキン 店舗見学会',
@@ -1093,7 +1117,8 @@ const EVENTS = {
     deadline: '2026-11-20',   // この日の23:59（JST）で受付終了
     place: '株式会社Canup 「リサイクルショップ ソッキン」店舗兼倉庫（大阪府摂津市鳥飼上1丁目16番5号）',
     detail: '店舗見学・テーマに併せての各社の成功事例共有・相談会',
-    transportNote: 'ご来店の際はお気軽にお問い合わせください。'
+    transportNote: 'ご来店の際はお気軽にお問い合わせください。',
+    pickup: false
   }
 };
 const DEFAULT_EVENT_KEY = 'kanto-vol4';
@@ -1143,6 +1168,41 @@ function showApplyMessage(type, html) {
   applyMessage.innerHTML = html;
 }
 
+// ===== 最寄り駅からの送迎 =====
+// 送迎がある回（pickup: true）で、交通手段に「公共交通機関」を選んだ方にだけ聞く。
+// さらに「希望する」を選んだときだけ合流場所の入力欄を出す。
+const pickupRow = document.getElementById('pickup-row');
+const pickupPlaceRow = document.getElementById('pickup-place-row');
+const hasPickup = Boolean(currentEvent.pickup);
+
+function isPickupTarget() {
+  const transport = applyForm.querySelector('input[name="transport"]:checked');
+  return hasPickup && Boolean(transport) && transport.value === '公共交通機関';
+}
+
+function syncPickupVisibility() {
+  const showPickup = isPickupTarget();
+  pickupRow.hidden = !showPickup;
+  if (!showPickup) {
+    applyForm.querySelectorAll('input[name="pickup"]').forEach(el => { el.checked = false; });
+  }
+
+  const pickup = applyForm.querySelector('input[name="pickup"]:checked');
+  const showPlace = showPickup && Boolean(pickup) && pickup.value === '希望する';
+  pickupPlaceRow.hidden = !showPlace;
+  if (!showPlace) {
+    applyForm.pickupPlace.value = '';
+  }
+}
+
+if (hasPickup) {
+  document.getElementById('pickup-note').textContent = currentEvent.pickupNote;
+  applyForm.querySelectorAll('input[name="transport"], input[name="pickup"]').forEach(el => {
+    el.addEventListener('change', syncPickupVisibility);
+  });
+}
+syncPickupVisibility();
+
 if (isClosed) {
   applyForm.style.display = 'none';
   showApplyMessage('error', '申込受付は終了しました（締切：' + deadlineLabel + '）。<br>ご参加をご希望の場合は <a href="mailto:seino@recore-corp.jp" style="color: inherit;">seino@recore-corp.jp</a> までご相談ください。');
@@ -1152,6 +1212,8 @@ applyForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const transport = applyForm.querySelector('input[name="transport"]:checked');
+  const pickup = applyForm.querySelector('input[name="pickup"]:checked');
+  const needsPickup = isPickupTarget();
 
   const data = {
     company: applyForm.company.value.trim(),
@@ -1160,6 +1222,8 @@ applyForm.addEventListener('submit', async (event) => {
     email: applyForm.email.value.trim(),
     tel: applyForm.tel.value.trim(),
     transport: transport ? transport.value : '',
+    pickup: needsPickup && pickup ? pickup.value : '',
+    pickupPlace: needsPickup && pickup && pickup.value === '希望する' ? applyForm.pickupPlace.value.trim() : '',
     message: applyForm.message.value.trim(),
     eventKey: currentKey,
     event: currentEvent.name,
@@ -1170,6 +1234,14 @@ applyForm.addEventListener('submit', async (event) => {
 
   if (!data.company || !data.name || !data.role || !data.email || !data.tel || !data.transport) {
     showApplyMessage('error', '必須項目（会社名・お名前・役職・メールアドレス・電話番号・当日の交通手段）をご入力ください。');
+    return;
+  }
+  if (needsPickup && !data.pickup) {
+    showApplyMessage('error', '最寄り駅からの送迎について、ご希望をお選びください。');
+    return;
+  }
+  if (data.pickup === '希望する' && !data.pickupPlace) {
+    showApplyMessage('error', 'ご希望の合流場所をご記入ください。');
     return;
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
