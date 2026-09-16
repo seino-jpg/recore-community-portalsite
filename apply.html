@@ -551,53 +551,9 @@
       margin-top: 6px;
     }
 
-    .radio-group {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .radio-option {
-      flex: 1;
-      min-width: 140px;
-      position: relative;
-    }
-
-    .radio-option input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .radio-option span {
-      display: block;
-      padding: 13px 16px;
-      font-size: 15px;
-      font-weight: 500;
-      text-align: center;
-      color: var(--text-sub);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .radio-option span:hover {
-      border-color: var(--green-mid);
-      color: var(--text);
-    }
-
-    .radio-option input:checked + span {
-      background: var(--green-dark);
-      border-color: var(--green-dark);
-      color: #fff;
-      font-weight: 700;
-    }
-
-    .radio-option input:focus-visible + span {
-      box-shadow: 0 0 0 3px var(--gold-dim);
+    .companion-list {
+      display: grid;
+      gap: 10px;
     }
 
     .form-submit {
@@ -979,6 +935,7 @@
         <strong id="event-title">関東コミュニティ第4回イベント｜ブックオフ出品倉庫 見学会</strong><br>
         <span id="event-date">2026年10月22日（木）12:00〜16:00（受付 11:30〜12:00）</span><br>
         <span id="event-place">東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）</span><br>
+        <span id="event-capacity" hidden>定員：20名<br></span>
         <span id="event-deadline" style="font-weight: 700;">申込締切：2026年9月30日（水）</span>
         <span id="event-lp-link" hidden><br><a href="kanto-vol4.html" style="color: var(--green-mid); font-weight: 700;">→ 当日の流れ・開催概要はこちら</a></span>
       </div>
@@ -990,13 +947,13 @@
         </div>
 
         <div class="form-row">
-          <label for="f-name">お名前<span class="form-required">必須</span></label>
+          <label for="f-name">代表者のお名前<span class="form-required">必須</span></label>
           <input type="text" id="f-name" name="name" required autocomplete="name" placeholder="山田 太郎">
-          <p class="form-note">複数名でご参加の場合は、お手数ですがお一人ずつお申し込みください。</p>
+          <p class="form-note">複数名でご参加の場合も、代表者の方がまとめてお申し込みください。</p>
         </div>
 
         <div class="form-row">
-          <label for="f-role">役職<span class="form-required">必須</span></label>
+          <label for="f-role">代表者の役職<span class="form-required">必須</span></label>
           <select id="f-role" name="role" required>
             <option value="" disabled selected>選択してください</option>
             <option value="経営者">経営者</option>
@@ -1018,43 +975,41 @@
         </div>
 
         <div class="form-row">
-          <label>当日の交通手段<span class="form-required">必須</span></label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="transport" value="公共交通機関">
-              <span>公共交通機関</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="transport" value="お車（駐車場を希望）">
-              <span>お車（駐車場を希望）</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="transport" value="お車（駐車場は不要）">
-              <span>お車（駐車場は不要）</span>
-            </label>
-          </div>
-          <p class="form-note" id="transport-note">来客用駐車場は先着4台です。満車の場合は近隣のコインパーキングをご利用ください。</p>
+          <label for="f-attendee-count">参加人数（代表者を含む）<span class="form-required">必須</span></label>
+          <select id="f-attendee-count" name="attendeeCount" required>
+            <option value="" disabled selected>選択してください</option>
+            <option value="1">1名（代表者のみ）</option>
+            <option value="2">2名</option>
+            <option value="3">3名</option>
+            <option value="4">4名</option>
+            <option value="5">5名</option>
+            <option value="6">6名</option>
+            <option value="7">7名</option>
+            <option value="8">8名</option>
+            <option value="9">9名</option>
+            <option value="10">10名</option>
+          </select>
+          <p class="form-note" id="attendee-note"></p>
         </div>
 
-        <div class="form-row" id="pickup-row" hidden>
-          <label>最寄り駅からの送迎<span class="form-required">必須</span></label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="pickup" value="希望する">
-              <span>希望する</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="pickup" value="希望しない（現地集合）">
-              <span>希望しない（現地集合）</span>
-            </label>
-          </div>
-          <p class="form-note" id="pickup-note">会場は最寄り駅から離れているため、ご希望の方を駅までお迎えに上がります。</p>
+        <div class="form-row" id="companions-row" hidden>
+          <label>ご同行者のお名前<span class="form-required">必須</span></label>
+          <div class="companion-list" id="companion-list"></div>
+          <p class="form-note">代表者以外の参加者全員のお名前をご記入ください。</p>
         </div>
 
-        <div class="form-row" id="pickup-place-row" hidden>
-          <label for="f-pickup-place">ご希望の合流場所<span class="form-required">必須</span></label>
-          <input type="text" id="f-pickup-place" name="pickupPlace" placeholder="ご希望の駅・合流場所をご記入ください">
-          <p class="form-note">いただいた場所をもとに、後日事務局から合流場所と時間をすり合わせのうえご連絡します。</p>
+        <div class="form-row">
+          <label for="f-car-count">お車の台数<span class="form-required">必須</span></label>
+          <select id="f-car-count" name="carCount" required>
+            <option value="" disabled selected>選択してください</option>
+            <option value="0">0台（公共交通機関でお越し）</option>
+            <option value="1">1台</option>
+            <option value="2">2台</option>
+            <option value="3">3台</option>
+            <option value="4">4台</option>
+            <option value="5">5台</option>
+          </select>
+          <p class="form-note" id="transport-note"></p>
         </div>
 
         <div class="form-row">
@@ -1104,10 +1059,8 @@ const EVENTS = {
     deadline: '2026-09-30',   // この日の23:59（JST）で受付終了
     place: '東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）',
     detail: 'ピッキング業務・ささげ業務・メディア倉庫の見学（各60分）\n12:00 オリエンテーション／12:15 ピッキング／13:30 ささげ／14:45 メディア倉庫／15:45 クロージング（16:00 終了）',
-    transportNote: '来客用駐車場は先着4台です。満車の場合は近隣のコインパーキングをご利用ください。',
-    // 公共交通機関を選んだ方にだけ「最寄り駅からの送迎」を聞く。送迎を出さない回は pickup を false にする
-    pickup: true,
-    pickupNote: '会場は最寄り駅から離れているため、ご希望の方を駅までお迎えに上がります。'
+    capacity: '20名',          // 表示のみ。定員到達での自動締切はしない（締切は deadline）
+    transportNote: '当日のスケジュール維持のため、できるだけ公共交通機関でのご来場をお願いしています。お車でお越しの場合も台数を事前に伺い、駐車場（敷地外含む）を調整しますのでご安心ください。'
   },
   'kansai-vol2': {
     title: '関西コミュニティ第2回イベント｜リサイクルショップ ソッキン 店舗見学会',
@@ -1117,8 +1070,7 @@ const EVENTS = {
     deadline: '2026-11-20',   // この日の23:59（JST）で受付終了
     place: '株式会社Canup 「リサイクルショップ ソッキン」店舗兼倉庫（大阪府摂津市鳥飼上1丁目16番5号）',
     detail: '店舗見学・テーマに併せての各社の成功事例共有・相談会',
-    transportNote: 'ご来店の際はお気軽にお問い合わせください。',
-    pickup: false
+    transportNote: 'ご来店の際はお気軽にお問い合わせください。'
   }
 };
 const DEFAULT_EVENT_KEY = 'kanto-vol4';
@@ -1136,6 +1088,11 @@ document.getElementById('event-title').textContent = currentEvent.title;
 document.getElementById('event-date').textContent = currentEvent.date;
 document.getElementById('event-place').textContent = currentEvent.place;
 document.getElementById('transport-note').textContent = currentEvent.transportNote;
+if (currentEvent.capacity) {
+  const cap = document.getElementById('event-capacity');
+  cap.firstChild.textContent = '定員：' + currentEvent.capacity;
+  cap.hidden = false;
+}
 
 // イベント特設ページ（LP）がある回だけ、申込カードから導線を出す
 const EVENT_LP = { 'kanto-vol4': 'kanto-vol4.html' };
@@ -1168,40 +1125,42 @@ function showApplyMessage(type, html) {
   applyMessage.innerHTML = html;
 }
 
-// ===== 最寄り駅からの送迎 =====
-// 送迎がある回（pickup: true）で、交通手段に「公共交通機関」を選んだ方にだけ聞く。
-// さらに「希望する」を選んだときだけ合流場所の入力欄を出す。
-const pickupRow = document.getElementById('pickup-row');
-const pickupPlaceRow = document.getElementById('pickup-place-row');
-const hasPickup = Boolean(currentEvent.pickup);
+// ===== 代表者まとめ申込 =====
+// 参加人数（代表者を含む）に応じて、2人目以降の氏名欄を出し入れする。
+// 入力済みの値は人数を変えても残す（減らした分だけ捨てる）。
+const attendeeCountSelect = document.getElementById('f-attendee-count');
+const companionsRow = document.getElementById('companions-row');
+const companionList = document.getElementById('companion-list');
+const MAX_ATTENDEES = 10;
 
-function isPickupTarget() {
-  const transport = applyForm.querySelector('input[name="transport"]:checked');
-  return hasPickup && Boolean(transport) && transport.value === '公共交通機関';
+function getCompanionInputs() {
+  return Array.from(companionList.querySelectorAll('input[name="companion"]'));
 }
 
-function syncPickupVisibility() {
-  const showPickup = isPickupTarget();
-  pickupRow.hidden = !showPickup;
-  if (!showPickup) {
-    applyForm.querySelectorAll('input[name="pickup"]').forEach(el => { el.checked = false; });
+function syncCompanionFields() {
+  const count = Math.min(MAX_ATTENDEES, Math.max(0, parseInt(attendeeCountSelect.value, 10) || 0));
+  const needed = Math.max(0, count - 1);
+  const current = getCompanionInputs();
+
+  current.slice(needed).forEach(el => el.parentNode.removeChild(el));
+  for (let i = current.length; i < needed; i++) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'companion';
+    input.autocomplete = 'off';
+    input.placeholder = (i + 2) + '人目のお名前';
+    input.setAttribute('aria-label', (i + 2) + '人目のお名前');
+    companionList.appendChild(input);
   }
-
-  const pickup = applyForm.querySelector('input[name="pickup"]:checked');
-  const showPlace = showPickup && Boolean(pickup) && pickup.value === '希望する';
-  pickupPlaceRow.hidden = !showPlace;
-  if (!showPlace) {
-    applyForm.pickupPlace.value = '';
-  }
+  companionsRow.hidden = needed === 0;
 }
 
-if (hasPickup) {
-  document.getElementById('pickup-note').textContent = currentEvent.pickupNote;
-  applyForm.querySelectorAll('input[name="transport"], input[name="pickup"]').forEach(el => {
-    el.addEventListener('change', syncPickupVisibility);
-  });
+attendeeCountSelect.addEventListener('change', syncCompanionFields);
+syncCompanionFields();
+
+if (currentEvent.capacity) {
+  document.getElementById('attendee-note').textContent = '定員は' + currentEvent.capacity + 'です。';
 }
-syncPickupVisibility();
 
 if (isClosed) {
   applyForm.style.display = 'none';
@@ -1211,19 +1170,19 @@ if (isClosed) {
 applyForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const transport = applyForm.querySelector('input[name="transport"]:checked');
-  const pickup = applyForm.querySelector('input[name="pickup"]:checked');
-  const needsPickup = isPickupTarget();
+  const attendeeCount = parseInt(attendeeCountSelect.value, 10) || 0;
+  const companions = getCompanionInputs().map(el => el.value.trim());
+  const name = applyForm.name.value.trim();
 
   const data = {
     company: applyForm.company.value.trim(),
-    name: applyForm.name.value.trim(),
+    name: name,
     role: applyForm.role.value,
     email: applyForm.email.value.trim(),
     tel: applyForm.tel.value.trim(),
-    transport: transport ? transport.value : '',
-    pickup: needsPickup && pickup ? pickup.value : '',
-    pickupPlace: needsPickup && pickup && pickup.value === '希望する' ? applyForm.pickupPlace.value.trim() : '',
+    attendeeCount: attendeeCount,
+    attendees: [name].concat(companions),   // 代表者を含む参加者全員の氏名
+    carCount: applyForm.carCount.value === '' ? null : parseInt(applyForm.carCount.value, 10),
     message: applyForm.message.value.trim(),
     eventKey: currentKey,
     event: currentEvent.name,
@@ -1232,16 +1191,12 @@ applyForm.addEventListener('submit', async (event) => {
     eventDetail: currentEvent.detail
   };
 
-  if (!data.company || !data.name || !data.role || !data.email || !data.tel || !data.transport) {
-    showApplyMessage('error', '必須項目（会社名・お名前・役職・メールアドレス・電話番号・当日の交通手段）をご入力ください。');
+  if (!data.company || !data.name || !data.role || !data.email || !data.tel || !attendeeCount || data.carCount === null) {
+    showApplyMessage('error', '必須項目（会社名・代表者のお名前・役職・メールアドレス・電話番号・参加人数・お車の台数）をご入力ください。');
     return;
   }
-  if (needsPickup && !data.pickup) {
-    showApplyMessage('error', '最寄り駅からの送迎について、ご希望をお選びください。');
-    return;
-  }
-  if (data.pickup === '希望する' && !data.pickupPlace) {
-    showApplyMessage('error', 'ご希望の合流場所をご記入ください。');
+  if (companions.some(v => !v)) {
+    showApplyMessage('error', 'ご同行者のお名前をすべてご記入ください。');
     return;
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
