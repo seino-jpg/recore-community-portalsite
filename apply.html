@@ -1159,7 +1159,8 @@ attendeeCountSelect.addEventListener('change', syncCompanionFields);
 syncCompanionFields();
 
 if (currentEvent.capacity) {
-  document.getElementById('attendee-note').textContent = '定員は' + currentEvent.capacity + 'です。';
+  document.getElementById('attendee-note').textContent =
+    '本イベント全体の定員が' + currentEvent.capacity + 'です（1社あたりの上限ではありません）。';
 }
 
 if (isClosed) {
