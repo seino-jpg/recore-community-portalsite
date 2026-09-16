@@ -87,6 +87,15 @@
     }
     .nav-links a:hover { border-bottom-color: var(--gold); }
 
+    /* 運営メンバー向けの入口。ほかはページ内アンカーなので細い区切りで分ける */
+    .nav-links a.nav-admin {
+      padding-left: 30px;
+      border-left: 1px solid rgba(255,255,255,0.3);
+      opacity: 0.78;
+    }
+    .nav-links a.nav-admin:hover { opacity: 1; }
+    header.is-solid .nav-links a.nav-admin { border-left-color: var(--border); }
+
     header.is-solid .logo { color: var(--green-dark); text-shadow: none; }
     header.is-solid .logo-sub { color: var(--text-sub); }
     header.is-solid .nav-links a { color: var(--text); text-shadow: none; }
@@ -343,6 +352,7 @@
       .hero-photo { object-position: 46% 46%; }
       .nav-links { gap: 16px; }
       .nav-links a { font-size: 13px; }
+      .nav-links a.nav-admin { padding-left: 16px; }
       .hero-inner { padding-top: 56px; }
       .hero-stat { padding-right: 24px; margin-right: 24px; }
       .hero-stat-value { font-size: 21px; }
@@ -362,6 +372,8 @@
       header nav { flex-direction: column; align-items: flex-start; gap: 9px; }
       .nav-links { flex-wrap: wrap; gap: 8px 16px; }
       .nav-links a { font-size: 12.5px; }
+      /* 折り返すと区切り線が行頭に来て不自然なので外す */
+      .nav-links a.nav-admin { padding-left: 0; border-left: none; }
       .hero-inner { padding-top: 132px; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -382,6 +394,7 @@
       <a href="#about">コミュニティとは</a>
       <a href="#reports">イベントレポート</a>
       <a href="#join">参加方法</a>
+      <a href="/admin" class="nav-admin">運営用</a>
     </div>
   </nav>
   </div>
