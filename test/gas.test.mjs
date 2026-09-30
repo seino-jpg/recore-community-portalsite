@@ -46,7 +46,7 @@ function makeGas({ props = {}, slack = () => ({ ok: true }), site = () => ({ ok:
   vm.createContext(sandbox);
   for (const f of FILES) vm.runInContext(readFileSync(path.join(GAS_DIR, f), 'utf8'), sandbox, { filename: f });
   const post = (obj) => JSON.parse(sandbox.doPost({ postData: { contents: JSON.stringify(obj) } }).getContent());
-  return { post, calls, notifyTo: sandbox.NOTIFY_TO };
+  return { post, calls, notifyTo: sandbox.NOTIFY_TO, slackChannel: sandbox.SLACK_CHANNEL };
 }
 
 const PROPS = { SITE_SHARED_SECRET: SECRET, SITE_API_URL: 'https://site.example.test/api/apply', SLACK_BOT_TOKEN: 'xoxb-test' };
@@ -77,7 +77,7 @@ test('GAS: 申込通知 — 秘密付きの要求でメールと Slack を送り
   assert.match(m.body, /【開催場所】\n会場A/);
   assert.equal(g.calls.slack.length, 1);
   const s = g.calls.slack[0];
-  assert.equal(s.channel, 'C08PTUBAWGZ');
+  assert.equal(s.channel, g.slackChannel);  // 送信先は GAS の定数のまま（チャンネル ID はリポジトリに書かない）
   assert.match(s.text, /\*電話番号：\* \+819000000000/);
   assert.match(s.text, /\*受付日時：\* 2026\/09\/28 12:00/);
   assert.match(s.text, /<https:\/\/recore-community-portalsite\.vercel\.app\/admin\|申し込み一覧を開く>/);
