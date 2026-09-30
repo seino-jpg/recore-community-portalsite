@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["sin1"],
   "rewrites": [
     { "source": "/kanto-vol4", "destination": "/kanto-vol4.html" },
     { "source": "/apply", "destination": "/apply.html" },
@@ -13,5 +14,8 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }
+  ],
+  "crons": [
+    { "path": "/api/cron-notify", "schedule": "*/10 * * * *" }
   ]
 }
