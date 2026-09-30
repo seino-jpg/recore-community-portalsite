@@ -665,17 +665,21 @@ const io = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
-// 申込締切（9/30 23:59 JST）を過ぎたら、申込導線を受付終了表示に切り替える
-const DEADLINE = new Date('2026-09-30T23:59:59+09:00').getTime();
-if (Date.now() >= DEADLINE) {
-  document.querySelectorAll('a[href^="apply.html"]').forEach(a => {
-    a.textContent = '申込受付は終了しました';
-    a.removeAttribute('href');
-    a.style.pointerEvents = 'none';
-    a.style.opacity = '0.55';
-  });
-  document.querySelector('.cta-deadline').textContent = '申込受付は終了しました';
-}
+// 申込締切（events.json の deadline の 23:59 JST）を過ぎたら、申込導線を受付終了表示に切り替える
+fetch('events.json', { cache: 'no-cache' })
+  .then(res => res.json())
+  .then(defs => {
+    const deadline = new Date(defs.events['kanto-vol4'].deadline + 'T23:59:59+09:00').getTime();
+    if (Date.now() < deadline) return;
+    document.querySelectorAll('a[href^="apply.html"]').forEach(a => {
+      a.textContent = '申込受付は終了しました';
+      a.removeAttribute('href');
+      a.style.pointerEvents = 'none';
+      a.style.opacity = '0.55';
+    });
+    document.querySelector('.cta-deadline').textContent = '申込受付は終了しました';
+  })
+  .catch(() => {});   // 読めなくても表示は変えない（締切後の送信は API が止める）
 </script>
 
 </body>
