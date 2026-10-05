@@ -1,7 +1,7 @@
 # 申込の GAS とスプレッドシートを廃止する：レビュー記録
 
-状態: 戻し
-設計書: design.md（確定 2026-10-05）　実装記録: implementation.md（検証済み 2026-10-05 → 戻し）
+状態: セルフレビュー中
+設計書: design.md（確定 2026-10-05）　実装記録: implementation.md（検証済み 2026-10-05）
 更新: 2026-10-05
 
 ## セルフレビュー（1回目・全体）
@@ -22,6 +22,15 @@
 | 11 | ④ | U2・U8・U11 と、U7・U12 の本番での確認は、切替時にしかできない | implementation.md 検証表 | 軽微 | PR 本文（リリースの確認項目） |
 | 12 | ④ | メールアドレスの検証が緩く、Gmail が 400 を返すと6回再送したあと未通知のまま残る（GAS のときと同じ） | api/_lib/validate.js:4 | 軽微 | PR 本文「既知の制約」 |
 | — | ②③ | 問題なし：手順表に無い変更は無い。流儀は gas.js・_sheet.mjs と同じ。公開してはいけない値は diff に無い | — | — | — |
+
+## セルフレビュー（2回目・差分）
+見た範囲: recore-community-portalsite@9b85dd6..5fc747b
+
+| # | 観点 | 指摘 | 根拠 | 重さ | 仕分け |
+|---|---|---|---|---|---|
+| 1 | 前回 #1 | 直った。確認メールの並びが GAS の sendConfirmationMail と全行同じ（署名のアドレスだけ送信元・D4） | api/_lib/messages.js:48-100、Mail.js:8-63 | — | — |
+| 2 | テストの期待値 | notifier.test は全文一致、apply.test は末尾の区切り線まで確かめている | test/notifier.test.mjs:38-77、test/apply.test.mjs:41 | — | — |
+| 3 | 新しいブロッカー | なし（コードの変更は1行。他の文面に触れていない） | diff 全体 | — | — |
 
 ## recore-review
 対象外（自分のリポジトリ seino-jpg/recore-community-portalsite。RECORE のコア機能ではない）
