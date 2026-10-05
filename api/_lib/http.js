@@ -30,7 +30,7 @@ export function methodNotAllowed(res, allow) {
   sendJson(res, 405, { ok: false, error: 'Method Not Allowed' });
 }
 
-// 一定時間で fetch を打ち切る（GAS が応答しないとき U8 に落とす）
+// 一定時間で fetch を打ち切る（送信先が応答しないとき U8 に落とす）
 export async function fetchWithTimeout(fetchFn, url, init, timeoutMs) {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), timeoutMs);

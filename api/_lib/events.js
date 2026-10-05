@@ -19,7 +19,7 @@ export function isClosed(ev, now = Date.now()) {
   return now >= Date.parse(ev.deadline + 'T23:59:59' + JST_OFFSET);
 }
 
-// GAS に渡すイベント表示値（申込行のイベント名は時点値なので別に持つ）
+// メール・Slack に使うイベント表示値（申込行のイベント名は時点値なので別に持つ）
 export function eventDisplay(ev) {
   return { name: ev.name, date_text: ev.date_text, place: ev.place, detail: ev.detail };
 }

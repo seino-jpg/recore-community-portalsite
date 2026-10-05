@@ -67,7 +67,7 @@ test('U15 不正トークン: 別 aud・期限切れ・未検証・許可外・�
 test('U16 取消: status=cancelled・取消日時と操作者・履歴1件・Slack 通知・残り枠が増える', async () => {
   const { ctx, fetch } = adminCtx();
   const ids = await seed(ctx);
-  const gasBefore = fetch.calls.gas.length;
+  const slackBefore = fetch.calls.slack.length;
   const r = await handleAdmin(ctx, sql, { action: 'cancel', idToken: EDITOR, id: ids.a });
   assert.equal(r.status, 200);
   assert.equal(r.body.application.status, 'cancelled');
@@ -83,11 +83,23 @@ test('U16 取消: status=cancelled・取消日時と操作者・履歴1件・Sla
   assert.deepEqual(hist[0].before, { status: 'active' });
   assert.equal(hist[0].after.status, 'cancelled');
 
-  const notify = fetch.calls.gas.slice(gasBefore);
+  // 運営 Slack にだけ通知（申込者へのメールは送らない）
+  const notify = fetch.calls.slack.slice(slackBefore);
   assert.equal(notify.length, 1);
-  assert.equal(notify[0].action, 'notify_change');
-  assert.equal(notify[0].type, 'cancel');
-  assert.equal(notify[0].secret, TEST_ENV.GAS_SHARED_SECRET);
+  assert.equal(notify[0].text, [
+    '*【申込取消】* 関東コミュニティ第4回イベント（ブックオフ出品倉庫 見学会）',
+    '',
+    '*会社名：* テスト株式会社',
+    '*代表者：* テスト 太郎（経営者）',
+    '*メールアドレス：* test@example.com',
+    '*電話番号：* 090-0000-0000',
+    '*参加人数：* 3名（テスト 太郎、テスト 花子、テスト 次郎）',
+    '*お車の台数：* 1台',
+    '*操作者：* editor@example.com',
+    '',
+    '<https://recore-community-portalsite.vercel.app/admin|申し込み一覧を開く>'
+  ].join('\n'));
+  assert.equal(fetch.calls.sent.length, 2);   // seed の申込者2通だけ
 
   // 一覧では取消行が残り、集計から外れる
   const list = await handleAdmin(ctx, sql, { action: 'list', idToken: VIEWER });
@@ -100,7 +112,7 @@ test('U16 取消: status=cancelled・取消日時と操作者・履歴1件・Sla
 test('U17 人数変更: 同行者を1名追加 → attendees 4要素・履歴に before/after・Slack 通知', async () => {
   const { ctx, fetch } = adminCtx();
   const ids = await seed(ctx);
-  const gasBefore = fetch.calls.gas.length;
+  const slackBefore = fetch.calls.slack.length;
   const r = await handleAdmin(ctx, sql, {
     action: 'update', idToken: EDITOR, id: ids.a,
     attendees: ['テスト 太郎', 'テスト 花子', 'テスト 次郎', 'テスト 三郎'], carCount: 1, message: ''
@@ -114,10 +126,11 @@ test('U17 人数変更: 同行者を1名追加 → attendees 4要素・履歴に
   assert.deepEqual(hist.before, { attendees: ['テスト 太郎', 'テスト 花子', 'テスト 次郎'] });
   assert.deepEqual(hist.after, { attendees: ['テスト 太郎', 'テスト 花子', 'テスト 次郎', 'テスト 三郎'] });
 
-  const notify = fetch.calls.gas.slice(gasBefore);
+  const notify = fetch.calls.slack.slice(slackBefore);
   assert.equal(notify.length, 1);
-  assert.equal(notify[0].type, 'update');
-  assert.deepEqual(notify[0].after, { attendees: ['テスト 太郎', 'テスト 花子', 'テスト 次郎', 'テスト 三郎'] });
+  assert.match(notify[0].text, /^\*【申込変更】\* /);
+  assert.match(notify[0].text, /\n\*参加者：\* 3名（テスト 太郎、テスト 花子、テスト 次郎） → 4名（テスト 太郎、テスト 花子、テスト 次郎、テスト 三郎）\n/);
+  assert.doesNotMatch(notify[0].text, /お車の台数/);
 
   // 台数・要望だけの変更も履歴は変えた項目だけ
   const r2 = await handleAdmin(ctx, sql, { action: 'update', idToken: EDITOR, id: ids.a, carCount: 2, message: '駐車場希望' });
@@ -125,6 +138,8 @@ test('U17 人数変更: 同行者を1名追加 → attendees 4要素・履歴に
   const h2 = await sql`SELECT * FROM application_changes WHERE application_id = ${ids.a} ORDER BY changed_at`;
   assert.deepEqual(h2[1].before, { car_count: 1, message: '' });
   assert.deepEqual(h2[1].after, { car_count: 2, message: '駐車場希望' });
+  const n2 = fetch.calls.slack.at(-1).text;
+  assert.match(n2, /\*お車の台数：\* 1台 → 2台\n\*ご質問・ご要望：\* なし → 駐車場希望\n/);
 
   // 変更なし・不正値は 400
   assert.equal((await handleAdmin(ctx, sql, { action: 'update', idToken: EDITOR, id: ids.a, carCount: 2 })).status, 400);
@@ -149,7 +164,7 @@ test('U18 取消行の変更・再取消・再送は拒否', async () => {
 test('U18b 清野さん以外の取消・変更・再送: 閲覧のみの運営は 403、DB も履歴も変わらない', async () => {
   const { ctx, fetch } = adminCtx();
   const ids = await seed(ctx);
-  const gasBefore = fetch.calls.gas.length;
+  const slackBefore = fetch.calls.slack.length;
   const list = await handleAdmin(ctx, sql, { action: 'list', idToken: VIEWER });
   assert.equal(list.body.canEdit, false);
   for (const action of ['cancel', 'update', 'resend']) {
@@ -161,7 +176,7 @@ test('U18b 清野さん以外の取消・変更・再送: 閲覧のみの運営�
   assert.equal(row.car_count, 1);
   const [{ n }] = await sql`SELECT count(*)::int AS n FROM application_changes`;
   assert.equal(n, 0);
-  assert.equal(fetch.calls.gas.length, gasBefore);
+  assert.equal(fetch.calls.slack.length, slackBefore);
   // 編集者は canEdit=true
   assert.equal((await handleAdmin(ctx, sql, { action: 'list', idToken: EDITOR })).body.canEdit, true);
 });
@@ -177,14 +192,15 @@ test('U19 連絡先の変更: API はメール・電話・会社名を受け付�
 });
 
 test('U10 再送ボタン: 未通知の行を手動で再送し履歴に notify、通知未完了件数が減る', async () => {
-  let gasDown = true;
-  const { ctx, fetch } = adminCtx({ gas: () => { if (gasDown) throw new Error('down'); return { ok: true, mail: { ok: true }, slack: { ok: true } }; } });
+  let down = true;
+  const fail = (ok) => () => { if (down) throw new Error('down'); return ok; };
+  const { ctx, fetch } = adminCtx({ gmail: fail({ id: 'm' }), slack: fail({ ok: true }) });
   const a = await handleApply(ctx, sql, sampleInput());
   assert.equal(a.body.mailSent, false);
   let list = await handleAdmin(ctx, sql, { action: 'list', idToken: EDITOR });
   assert.equal(list.body.events[0].summary.pending, 1);
 
-  gasDown = false;
+  down = false;
   const r = await handleAdmin(ctx, sql, { action: 'resend', idToken: EDITOR, id: a.body.id });
   assert.equal(r.status, 200);
   assert.equal(r.body.mailSent, true);
@@ -195,7 +211,8 @@ test('U10 再送ボタン: 未通知の行を手動で再送し履歴に notify�
   assert.equal(hist.changed_by, 'editor@example.com');
   // 送信済みの行の再送は 400
   assert.equal((await handleAdmin(ctx, sql, { action: 'resend', idToken: EDITOR, id: a.body.id })).status, 400);
-  assert.equal(fetch.calls.gas.filter((p) => p.action === 'notify_application').length, 2);
+  assert.equal(fetch.calls.sent.length, 1);
+  assert.equal(fetch.calls.slack.length, 2);
 });
 
 test('U23 残り枠がマイナス表示になる', async () => {

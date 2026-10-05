@@ -5,7 +5,7 @@ import { listEvents, getEvent, eventDisplay } from './events.js';
 import { toApplicationView } from './db.js';
 import { normalizeAttendees, isUuid } from './validate.js';
 import { deliverNotification } from './notify.js';
-import { requestChangeNotify } from './gas.js';
+import { sendChangeNotify } from './notifier.js';
 
 export async function handleAdmin(ctx, sql, body) {
   const data = body && typeof body === 'object' ? body : {};
@@ -153,7 +153,7 @@ async function resend(ctx, sql, id, actor) {
 async function notifyChange(ctx, type, row, actor, before, after) {
   try {
     const ev = getEvent(row.event_key);
-    const r = await requestChangeNotify(ctx, {
+    const r = await sendChangeNotify(ctx, {
       type,
       application: toApplicationView(row),
       event: ev ? eventDisplay(ev) : { name: row.event_name },
