@@ -1,6 +1,6 @@
 # 申込の GAS とスプレッドシートを廃止する：実装記録
 
-状態: 実装中
+状態: 検証済み
 設計書: design.md（確定 2026-10-05）
 更新: 2026-10-05
 
@@ -30,7 +30,7 @@
 | 4 | portal | `api/_lib/notifier.js`（新規）・`api/_lib/gas.js`（削除） | 申込通知（メール→Slack、Slack 失敗時は運営宛メール、認証切れなら Slack に注記）と変更通知。設定が欠けていれば送らない。戻り値は gas.js と同じ形 | D1・D4・D5・D6・D9／U1・U3〜U6・U9 |
 | 5 | portal | `api/_lib/notify.js`・`admin-core.js`・`cron-core.js` | 呼び先を notifier.js に替える | D1／U4・U6・U9 |
 | 6 | portal | `api/_lib/apply-core.js` | GAS からの転送（`source=gas_forward`）の受付を消す | D7／U7・U12 |
-| 7 | portal | `api/_lib/events.js`・`db.js`・`http.js`・`auth.js`・`validate.js` のコメント | 「GAS に渡す」等の説明を今の実態に直す（コメントだけ） | U12 |
+| 7 | portal | `api/_lib/events.js`・`db.js`・`http.js` のコメント | 「GAS に渡す」等の説明を今の実態に直す（コメントだけ）。`auth.js`・`validate.js` は「GAS と同じ検証」という来歴の説明なので直さない | U12 |
 | 8 | portal | `test/helpers.mjs`・`apply`・`admin`・`cron` の各テスト、`test/gas.test.mjs`（削除）、`test/notifier.test.mjs`（新規） | GAS のモックを Gmail・Slack・トークンのモックに替え、ユースケースを確かめる | 全ユースケース |
 
 DB（`db/schema.sql`）は変えない（設計「DB は変えない」）。`source` の `gas_forward` は使われなくなるが、制約から外すとスキーマ変更になるので残す。
@@ -48,7 +48,7 @@ DB（`db/schema.sql`）は変えない（設計「DB は変えない」）。`so
 
 | # | ユースケース | 結果 | 確かめ方 |
 |---|---|---|---|
-| U1 | 通常の申込 | 通った | apply.test「U1」: DB に1行・送信日時2つ・メール1通（差出人「RECOREコミュニティ事務局 <community@…>」・返信先 community@・件名）・Slack 1件（チャンネル・Bot トークン）。notifier.test「新 U1」: メール本文と Slack 文面の全文が GAS と一致（署名のアドレスだけ送信元） |
+| U1 | 通常の申込 | 通った | apply.test「U1」: DB に1行・送信日時2つ・メール1通（差出人「RECOREコミュニティ事務局 <community@…>」・返信先 community@・件名）・Slack 1件（チャンネル・Bot トークン）。notifier.test「新 U1」: メール本文と Slack 文面の全文。**レビューの戻り（2026-10-05）で末尾の区切り線の欠落を直し**、GAS の Code.js・Mail.js・Slack.js を Node の vm でそのまま動かした出力と、確認メール（署名のアドレスだけ置換）・件名・運営宛メール・件名・Slack の申込・取消・変更の7種類が全部一致することを確かめた |
 | U2 | 申込者が返信 | 切替時に本番で確認 | 返信先が community@ になることは U1 で確認済み。転送（清野さん・上田さん）は community@ の Gmail 設定なので、切替①で設定し、本番のテスト申込に返信して確かめる |
 | U3 | Slack だけ失敗 | 通った | apply.test「新 U3」: 運営2名に直接1通（community@ を経由しない）・件名と本文が GAS と同じ・`slack_sent_at` が入り、切り替えた理由が残る。Slack もメールも失敗したら `slack_sent_at` は空のまま、両方の失敗が残る。cron.test: 再送で申込者へのメールを二重に送らない |
 | U4 | Gmail が一時的に失敗 | 通った | apply.test「新 U4」: 例外・HTTP 500・429 でも保存は成功・mailSent=false・失敗内容あり。Slack に認証切れの注記は出ない。cron.test「U8」: 復旧後の Cron で届き、メールは1通だけ。admin.test「U10」: 再送ボタンで届き、未通知が 1→0 |
@@ -75,3 +75,5 @@ DB（`db/schema.sql`）は変えない（設計「DB は変えない」）。`so
 
 | 日付 | 指摘 | 対応 |
 |---|---|---|
+| 2026-10-05 | review.md #1：確認メール末尾の区切り線が抜け、テストも抜けた文面を正解にしていた | `messages.js` に区切り線を足し、notifier.test・apply.test の期待値を直した。GAS のコードを vm で動かした出力と7種類の文面が一致することを確かめた。`npm test` 40 件通過 |
+| 2026-10-05 | review.md #2・#5：design.md の状態が「設計中」のまま／手順7の記録が実態と違う | design.md を合意済みの「確定」に、手順7を実態（auth.js・validate.js は直さない）に合わせた |

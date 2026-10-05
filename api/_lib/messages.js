@@ -93,6 +93,7 @@ export function confirmationMail(record, fromAddress) {
   body.push(SENDER_NAME);
   body.push(fromAddress);
   body.push(SITE_URL);
+  body.push(LINE);
   return {
     subject: '【RECOREコミュニティ】お申し込みを受け付けました',
     body: body.join('\n')

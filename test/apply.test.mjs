@@ -38,7 +38,7 @@ test('U1 通常の申込: DB に1行（source=site）・メール・Slack 送信
   // イベント表示値は events.json から（クライアントの本文は使わない）
   assert.match(m.body, /【開催場所】\n東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）/);
   assert.match(m.body, /参加者：テスト 太郎、テスト 花子、テスト 次郎/);
-  assert.match(m.body, /RECOREコミュニティ事務局\ncommunity@example.com\nhttps:\/\/recore-community-portalsite.vercel.app\/$/);
+  assert.match(m.body, /RECOREコミュニティ事務局\ncommunity@example.com\nhttps:\/\/recore-community-portalsite.vercel.app\/\n────────────────────────$/);
   assert.equal(fetch.calls.slack.length, 1);
   const s = fetch.calls.slack[0];
   assert.equal(s.channel, 'CTEST');

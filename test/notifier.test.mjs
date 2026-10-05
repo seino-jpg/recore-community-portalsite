@@ -73,7 +73,8 @@ test('（新 U1）確認メールの全文は GAS の文面と同じ（署名の
     '────────────────────────',
     'RECOREコミュニティ事務局',
     'community@example.com',
-    'https://recore-community-portalsite.vercel.app/'
+    'https://recore-community-portalsite.vercel.app/',
+    '────────────────────────'
   ].join('\n'));
   assert.equal(fetch.calls.slack[0].text, [
     '*【イベント申し込み】* ' + EVENT.name,
