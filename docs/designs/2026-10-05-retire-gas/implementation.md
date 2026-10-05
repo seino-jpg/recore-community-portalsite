@@ -65,7 +65,7 @@ DB（`db/schema.sql`）は変えない（設計「DB は変えない」）。`so
 
 | リポジトリ | ブランチ | 向き先 | マージ順 | デプロイ時の作業 |
 |---|---|---|---|---|
-| seino-jpg/recore-community-portalsite | `feature/applications-db`（PR #8） | main | 1 | 設計「切替の流れ」①〜④。本番の環境変数は、追加：`GMAIL_CLIENT_ID`・`GMAIL_CLIENT_SECRET`・`GMAIL_REFRESH_TOKEN`・`MAIL_FROM`（community@recore-corp.jp）・`OPERATOR_EMAILS`（seino@・ueda@）・`SLACK_BOT_TOKEN`・`SLACK_CHANNEL_ID`・`ADMIN_EMAILS`（GAS から移す）／削除：`GAS_URL`・`GAS_SHARED_SECRET`（10/5 に入れたもの）。本番 DB のスキーマは 10/5 に適用済み |
+| seino-jpg/recore-community-portalsite | `feature/applications-db`（PR #8） | main | 1 | 設計「切替の流れ」①〜④。本番の環境変数は、追加：`GMAIL_CLIENT_ID`・`GMAIL_CLIENT_SECRET`・`GMAIL_REFRESH_TOKEN`・`MAIL_FROM`（community@recore-corp.jp）・`OPERATOR_EMAILS`（清野さん・上田さん）・`SLACK_BOT_TOKEN`・`SLACK_CHANNEL_ID`・`ADMIN_EMAILS`（GAS から移す）／削除：`GAS_URL`・`GAS_SHARED_SECRET`（10/5 に入れたもの）。本番 DB のスキーマは 10/5 に適用済み |
 | seino-jpg/recore-community-portalsite | `feature/applications-db-front`（PR #9） | main | 2 | PR #8 を取り込んでからマージする。直後に GAS のデプロイをアーカイブ（Apps Script の「デプロイを管理」）。そのあと切替⑥ |
 | ~/gas-community-form | — | — | — | デプロイしない。master の a8322fc（送信専用版）は使わない |
 
