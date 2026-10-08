@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vol.4 運営ボード（モック）</title>
+  <!-- 設計用の静的モック。本番コードではない。?tab=prep|day ?today=YYYY-MM-DD ?now=HH:MM ?edit=1 で状態を切り替える -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #1E3A14; --green-mid: #2D4E1C; --gold: #C4D44A;
+      --gold-dim: rgba(196,212,74,0.15); --text: #2C2C2C; --text-sub: #6A6A6A;
+      --bg: #F7F7F2; --surface: #FFFFFF; --border: #DDE0D8;
+      --red: #a8342a; --red-bg: #fdecea; --red-border: #f5c2bd;
+    }
+    body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    [hidden] { display: none !important; }
+
+    header { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; }
+    nav { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 12px 28px; }
+    .logo { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 20px; font-weight: 900; color: var(--green-dark); text-decoration: none; white-space: nowrap; }
+    .logo-sub { color: var(--gold); font-size: 12px; display: block; font-weight: 700; letter-spacing: 0.08em; }
+    .pages { display: flex; gap: 4px; }
+    .pages a { padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: 700; color: var(--text-sub); text-decoration: none; white-space: nowrap; }
+    .pages a.current { background: var(--green-dark); color: #fff; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-sub); }
+    .nav-right button { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 6px 12px; font-family: inherit; font-size: 13px; color: var(--text); }
+
+    main { padding: 36px 24px 80px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .label-en { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; color: var(--gold); margin-bottom: 10px; }
+    .label-en::before { content: ''; width: 32px; height: 2px; background: var(--gold); }
+    .page-title { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(24px, 4vw, 34px); font-weight: 900; color: var(--green-dark); line-height: 1.25; }
+    .page-sub { color: var(--text-sub); font-size: 14px; margin: 6px 0 24px; }
+
+    .summary { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid var(--green-dark); border-bottom: 1px solid var(--border); margin-bottom: 28px; background: var(--surface); }
+    .summary-item { padding: 16px; border-right: 1px solid var(--border); }
+    .summary-item:last-child { border-right: none; }
+    .summary-label { font-size: 12px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; }
+    .summary-value { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 32px; font-weight: 900; color: var(--green-dark); line-height: 1; }
+    .summary-value small { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-sub); margin-left: 4px; }
+    .summary-value.warn { color: var(--red); }
+
+    .tabbar { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--border); margin-bottom: 16px; gap: 12px; }
+    .tabs { display: flex; }
+    .tab { background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; padding: 10px 18px; font-family: inherit; font-size: 15px; font-weight: 700; color: var(--text-sub); white-space: nowrap; }
+    .tab.active { color: var(--green-dark); border-bottom-color: var(--gold); }
+    .tab .count { font-weight: 500; font-size: 13px; margin-left: 6px; }
+    .btn { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 6px 12px; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer; white-space: nowrap; }
+    .btn.primary { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .btn.danger { color: var(--red); border-color: var(--red-border); }
+    .btn.add { margin-bottom: 8px; font-weight: 700; color: var(--green-dark); border-color: var(--green-mid); }
+
+    .group-label { font-size: 12px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.06em; margin: 20px 0 8px; }
+    .list { background: var(--surface); border: 1px solid var(--border); }
+    .row { display: grid; grid-template-columns: 92px 1fr 150px 92px 120px 56px; gap: 12px; align-items: start; padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .row:last-child { border-bottom: none; }
+    .row.done { color: var(--text-sub); }
+    .row.done .title { text-decoration: line-through; text-decoration-color: rgba(0,0,0,0.25); }
+    .title { font-weight: 700; }
+    .note { font-size: 12.5px; color: var(--text-sub); white-space: pre-wrap; margin-top: 2px; }
+    .meta { font-size: 13px; }
+    .meta-label { display: none; }
+    .updated { font-size: 11.5px; color: var(--text-sub); line-height: 1.4; }
+    .due.overdue { color: var(--red); font-weight: 700; }
+    .pill { display: inline-block; border-radius: 12px; padding: 2px 10px; font-size: 12px; font-weight: 700; border: 1px solid; white-space: nowrap; cursor: pointer; }
+    .pill.todo { color: var(--text-sub); border-color: var(--border); background: #fff; }
+    .pill.doing { color: #7a5b00; border-color: #e8d48a; background: #fff8dc; }
+    .pill.done { color: var(--green-dark); border-color: var(--gold); background: var(--gold-dim); }
+    .pill::after { content: ' ▾'; font-size: 10px; opacity: 0.6; }
+
+    /* 当日スケジュール */
+    .srow { display: grid; grid-template-columns: 120px 1fr 56px; gap: 14px; padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 14px; position: relative; }
+    .srow:last-child { border-bottom: none; }
+    .time { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; font-size: 17px; color: var(--green-dark); line-height: 1.3; white-space: nowrap; }
+    .time .end { display: block; font-size: 13px; font-weight: 700; color: var(--text-sub); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .chip { font-size: 12px; padding: 1px 8px; border-radius: 3px; background: #F1F2EC; color: var(--text); }
+    .chip b { color: var(--text-sub); font-weight: 500; margin-right: 4px; }
+    .srow.now { background: var(--gold-dim); box-shadow: inset 4px 0 0 var(--gold); }
+    .now-badge { display: inline-block; margin-left: 8px; padding: 0 8px; border-radius: 10px; background: var(--green-dark); color: #fff; font-size: 11px; font-weight: 700; vertical-align: 2px; }
+    .srow.past { opacity: 0.55; }
+
+    /* 編集 */
+    .edit { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 12px; background: #FBFBF8; padding: 14px; border: 1px solid var(--green-mid); border-radius: 4px; }
+    .edit label { font-size: 12px; font-weight: 700; color: var(--text-sub); display: flex; flex-direction: column; gap: 4px; }
+    .edit input, .edit select, .edit textarea { font-family: inherit; font-size: 14px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; background: #fff; color: var(--text); }
+    .edit .wide { grid-column: 1 / -1; }
+    .edit .half { grid-column: span 2; }
+    .edit .actions { grid-column: 1 / -1; display: flex; gap: 8px; }
+    .edit .actions .spacer { flex: 1; }
+    .conflict { grid-column: 1 / -1; background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); padding: 10px 12px; font-size: 13px; border-radius: 4px; }
+    .conflict dl { display: grid; grid-template-columns: 64px 1fr; gap: 2px 8px; margin-top: 6px; color: var(--text); }
+    .conflict dt { color: var(--text-sub); }
+
+    footer { background: #0F1E09; color: rgba(255,255,255,0.4); padding: 20px; text-align: center; font-size: 12px; }
+
+    @media (max-width: 768px) {
+      header { padding: 10px 16px; }
+      nav { flex-wrap: wrap; }
+      .logo { font-size: 16px; }
+      .logo-sub { font-size: 10px; }
+      .pages { order: 3; width: 100%; }
+      .pages a { flex: 1; text-align: center; padding: 6px 8px; font-size: 13px; border: 1px solid var(--border); }
+      .pages a.current { border-color: var(--green-dark); }
+      .nav-right span, .nav-right .reload { display: none; }
+      main { padding: 24px 16px 60px; }
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .summary-item:nth-child(2) { border-right: none; }
+      .summary-item:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .summary-value { font-size: 26px; }
+      .row { grid-template-columns: 1fr auto; gap: 4px 10px; }
+      .row > .status { grid-column: 1; grid-row: 1; }
+      .row > .actions { grid-column: 2; grid-row: 1; justify-self: end; }
+      .row > .body { grid-column: 1 / -1; }
+      .row > .meta { grid-column: 1 / -1; display: flex; gap: 6px; }
+      .meta-label { display: inline; color: var(--text-sub); }
+      .row > .updated { grid-column: 1 / -1; }
+      .srow { grid-template-columns: 74px 1fr auto; gap: 10px; }
+      .time { font-size: 15px; }
+      .edit { grid-template-columns: 1fr 1fr; }
+      .edit .half { grid-column: 1 / -1; }
+      .tab { padding: 10px 12px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav>
+    <a class="logo" href="#">RECORE<span class="logo-sub">Community</span></a>
+    <div class="pages">
+      <a href="#">申込管理</a>
+      <a href="#" class="current">Vol.4 運営ボード</a>
+    </div>
+    <div class="nav-right">
+      <span>seino@recore-corp.jp</span>
+      <button class="reload">再読込</button>
+      <button>ログアウト</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="container">
+    <div class="label-en">OPERATIONS</div>
+    <h1 class="page-title">関東コミュニティ Vol.4 運営ボード</h1>
+    <p class="page-sub">10/22（木）ブックオフ出品倉庫 見学会（東名横浜ロジスティクスセンター）。運営メンバーなら誰でも追加・編集できます。</p>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="tabbar">
+      <div class="tabs">
+        <button class="tab" data-tab="prep">準備事項<span class="count" id="count-prep"></span></button>
+        <button class="tab" data-tab="day">当日スケジュール<span class="count" id="count-day"></span></button>
+      </div>
+    </div>
+
+    <section id="view-prep">
+      <button class="btn add">＋ 準備事項を追加</button>
+      <div id="prep-open"></div>
+      <div class="group-label" id="done-label"></div>
+      <div id="prep-done"></div>
+    </section>
+
+    <section id="view-day" hidden>
+      <button class="btn add">＋ 予定を追加</button>
+      <div class="list" id="day-list"></div>
+    </section>
+  </div>
+</main>
+<footer>© 2026 RECORE Community by 株式会社RECORE.</footer>
+
+<script>
+// 初期データ（D11）。状態の一部（進行中・最終更新）は画面の例として入れている
+const TASKS = [
+  { title: '募集要項を公開・告知する（一次締切 9/30）', owner: '清野', due: '2026-09-30', status: 'done', note: '', by: 'seino', at: '9/30 18:10' },
+  { title: '参加フォームに交通手段・車の台数の項目を入れる', owner: '清野', due: '2026-09-30', status: 'done', note: '駐車枠の上限も明記', by: 'seino', at: '9/25 19:32' },
+  { title: '22番会議室を14時以降で予約し、鍵の受け渡し方法を確認する', owner: 'ブックオフ側', due: null, status: 'doing', note: '13〜14時は他の予約で埋まっている', by: 'staff-a', at: '10/8 10:12' },
+  { title: '確定人数からレンタカーと自家用車の構成を決めて予約する', owner: '清野', due: '2026-10-09', status: 'todo', note: '7〜8人乗り2台が目安。南町田で借りて返す。運転担当も決める', by: 'seino', at: '10/8 11:30' },
+  { title: '集合場所（南町田／新横浜）を決めて参加者に通知する', owner: '清野', due: '2026-10-09', status: 'todo', note: '新横浜の北口ロータリーは待機できない。案内に遅延時の対応も書く', by: 'seino', at: '10/8 11:30' },
+  { title: '昼食候補の混雑状況と駐車場を確認する（13〜14時・20人規模）', owner: 'ブックオフ側', due: '2026-10-09', status: 'todo', note: '', by: 'seino', at: '10/8 11:30' },
+  { title: '14時までの荷物置き場を決める', owner: '清野', due: null, status: 'todo', note: '車内保管の案あり。集合場所・車両と合わせて決める', by: 'seino', at: '10/8 11:30' },
+  { title: '当日のしおりを作って参加者に配る', owner: '清野', due: '2026-10-20', status: 'todo', note: '倉庫と他部署のつながり・見どころ・質問タイムの案内', by: 'seino', at: '10/8 11:30' },
+  { title: '案内にモバイルバッテリー持参を書き、撮影機材を手配する', owner: '清野', due: '2026-10-20', status: 'todo', note: 'ハンディカム＋予備バッテリー。会場で充電できる場所はほぼない', by: 'seino', at: '10/8 11:30' }
+];
+const SCHEDULE = [
+  { start: '11:30', end: '12:00', title: '受付・集合', owner: '', place: '東名横浜ロジスティクスセンター', note: '' },
+  { start: '12:00', end: '12:15', title: 'オリエンテーション', owner: '', place: '', note: '' },
+  { start: '12:15', end: '13:15', title: 'ピッキング業務 見学', owner: '', place: '', note: '' },
+  { start: '13:15', end: '13:30', title: '休憩', owner: '', place: '', note: '' },
+  { start: '13:30', end: '14:30', title: 'ささげ業務 見学', owner: '', place: '', note: '' },
+  { start: '14:00', end: null, title: '22番会議室が使えるようになる（荷物置き場・拠点）', owner: 'ブックオフ側', place: '22番会議室', note: '13〜14時は他の予約' },
+  { start: '14:30', end: '14:45', title: '休憩', owner: '', place: '', note: '' },
+  { start: '14:45', end: '15:45', title: 'メディア倉庫 見学', owner: '', place: '同施設内の別エリア', note: '' },
+  { start: '15:45', end: '16:00', title: 'クロージング・質疑応答', owner: '', place: '', note: '' }
+];
+
+const q = new URLSearchParams(location.search);
+const TODAY = q.get('today') || '2026-10-08';
+const NOW = q.get('now');
+const EVENT_DAY = '2026-10-22';
+const tab = q.get('tab') || (TODAY === EVENT_DAY ? 'day' : 'prep');
+const editIndex = q.get('edit') ? 3 : -1;
+const STATUS = { todo: '未着手', doing: '進行中', done: '完了' };
+
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function md(d) { if (!d) return '期日なし'; const [, m, day] = d.split('-'); return `${+m}/${+day}`; }
+function daysBetween(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000); }
+
+function taskRow(t, i) {
+  const overdue = t.status !== 'done' && t.due && t.due < TODAY;
+  if (i === editIndex) return editRow(t);
+  return `<div class="row ${t.status === 'done' ? 'done' : ''}">
+    <div class="status"><span class="pill ${t.status}">${STATUS[t.status]}</span></div>
+    <div class="body"><div class="title">${esc(t.title)}</div>${t.note ? `<div class="note">${esc(t.note)}</div>` : ''}</div>
+    <div class="meta"><span class="meta-label">担当</span>${esc(t.owner || '—')}</div>
+    <div class="meta due ${overdue ? 'overdue' : ''}"><span class="meta-label">期日</span>${md(t.due)}</div>
+    <div class="updated">${esc(t.by)}<br>${esc(t.at)}</div>
+    <div class="actions"><button class="btn">編集</button></div>
+  </div>`;
+}
+
+function editRow(t) {
+  return `<div class="row"><div class="edit">
+    <div class="conflict"><b>staff-a が 10/8 13:05 に先にこの行を更新しました。</b>保存はしていません。最新の内容を確かめて、必要なら直してもう一度保存してください（あなたの入力は下に残しています）。
+      <dl><dt>状態</dt><dd>進行中</dd><dt>メモ</dt><dd>7〜8人乗り2台で仮押さえ済み（南町田店）。運転は社内2名</dd><dt>更新</dt><dd>staff-a・10/8 13:05</dd></dl>
+    </div>
+    <label class="wide">やること<input value="${esc(t.title)}"></label>
+    <label>担当<input value="${esc(t.owner)}"></label>
+    <label>期日<input type="date" value="${t.due || ''}"></label>
+    <label class="half">状態<select><option>未着手</option><option selected>完了</option><option>進行中</option></select></label>
+    <label class="wide">メモ<textarea rows="2">7〜8人乗り2台を予約した。運転担当は未定</textarea></label>
+    <div class="actions"><button class="btn primary">保存</button><button class="btn">キャンセル</button><span class="spacer"></span><button class="btn danger">削除</button></div>
+  </div></div>`;
+}
+
+function toMin(hm) { const [h, m] = hm.split(':'); return +h * 60 + +m; }
+function schedRow(s) {
+  let cls = '';
+  let badge = '';
+  if (TODAY === EVENT_DAY && NOW) {
+    const n = toMin(NOW), a = toMin(s.start), b = s.end ? toMin(s.end) : a;
+    if (s.end ? (a <= n && n < b) : false) { cls = 'now'; badge = '<span class="now-badge">いま</span>'; }
+    else if (b <= n && s.end) cls = 'past';
+  }
+  const chips = [s.owner && `<span class="chip"><b>担当</b>${esc(s.owner)}</span>`, s.place && `<span class="chip"><b>場所</b>${esc(s.place)}</span>`].filter(Boolean).join('');
+  return `<div class="srow ${cls}">
+    <div class="time">${s.start}${s.end ? `<span class="end">〜${s.end}</span>` : ''}</div>
+    <div><div class="title">${esc(s.title)}${badge}</div>${chips ? `<div class="chips">${chips}</div>` : ''}${s.note ? `<div class="note">${esc(s.note)}</div>` : ''}</div>
+    <div><button class="btn">編集</button></div>
+  </div>`;
+}
+
+function render() {
+  const open = TASKS.map((t, i) => [t, i]).filter(([t]) => t.status !== 'done')
+    .sort(([a], [b]) => (a.due || '9999') < (b.due || '9999') ? -1 : (a.due || '9999') > (b.due || '9999') ? 1 : 0);
+  const done = TASKS.map((t, i) => [t, i]).filter(([t]) => t.status === 'done');
+  const overdue = open.filter(([t]) => t.due && t.due < TODAY).length;
+  const left = daysBetween(TODAY, EVENT_DAY);
+  document.getElementById('summary').innerHTML = [
+    ['開催まで', left > 0 ? `${left}<small>日</small>` : left === 0 ? '当日' : '終了'],
+    ['未完了', `${open.length}<small>件</small>`],
+    ['期日切れ', `${overdue}<small>件</small>`, overdue ? 'warn' : ''],
+    ['完了', `${done.length}<small>/ ${TASKS.length}件</small>`]
+  ].map(([l, v, c]) => `<div class="summary-item"><div class="summary-label">${l}</div><div class="summary-value ${c || ''}">${v}</div></div>`).join('');
+  document.getElementById('count-prep').textContent = `${open.length}件`;
+  document.getElementById('count-day').textContent = `${SCHEDULE.length}件`;
+  document.getElementById('prep-open').innerHTML = `<div class="list">${open.map(([t, i]) => taskRow(t, i)).join('')}</div>`;
+  document.getElementById('done-label').textContent = `完了 ${done.length}件`;
+  document.getElementById('prep-done').innerHTML = `<div class="list">${done.map(([t, i]) => taskRow(t, i)).join('')}</div>`;
+  document.getElementById('day-list').innerHTML = SCHEDULE.slice().sort((a, b) => toMin(a.start) - toMin(b.start)).map(schedRow).join('');
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.getElementById('view-prep').hidden = tab !== 'prep';
+  document.getElementById('view-day').hidden = tab !== 'day';
+}
+render();
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { q.set('tab', b.dataset.tab); location.search = q.toString(); }));
+</script>
+</body>
+</html>
