@@ -15,5 +15,8 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }
+  ],
+  "crons": [
+    { "path": "/api/cron-notify", "schedule": "0 0 * * *" }
   ]
 }
