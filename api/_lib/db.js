@@ -16,6 +16,7 @@ export function toApplicationView(row) {
     id: row.id,
     event_key: row.event_key,
     event_name: row.event_name,
+    category: row.category,
     company: row.company,
     representative_name: row.representative_name,
     role: row.role,

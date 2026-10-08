@@ -179,11 +179,35 @@ export function changeSlackText(type, record, changedBy, before, after) {
 }
 
 export function changeSubject(type, record) {
-  return (type === 'cancel' ? '【申込取消】' : '【申込変更】') + record.company + ' ' + record.name + ' 様｜' + record.event;
+  const head = { cancel: '【申込取消】', update: '【申込変更】', register: '【運営登録】' }[type];
+  return head + record.company + ' ' + record.name + ' 様｜' + record.event;
+}
+
+// 参加者の区分（attendee-category D21）の表示名
+export const CATEGORY_LABELS = { general: '一般参加者', recore: 'RECORE', vendor: 'ベンダー', staff: '運営' };
+
+function categoryLabel(v) {
+  return CATEGORY_LABELS[v] || String(v || '');
+}
+
+/** 運営登録の Slack 文面（D26）。宛先のメールが無いので、登録者を添えて運営にだけ流す */
+export function registerSlackText(record, category, registeredBy) {
+  return [
+    '*【運営登録】* ' + record.event,
+    '',
+    '*区分：* ' + categoryLabel(category),
+    '*会社名：* ' + record.company,
+    '*参加人数：* ' + record.attendeeCount + '名（' + formatAttendees(record) + '）',
+    '*お車の台数：* ' + formatCarCount(record),
+    '*メモ：* ' + (record.message || 'なし'),
+    '*登録者：* ' + String(registeredBy || ''),
+    '',
+    '<' + ADMIN_URL + '|申し込み一覧を開く>'
+  ].join('\n');
 }
 
 function changeLabel(key) {
-  return { attendees: '参加者', car_count: 'お車の台数', message: 'ご質問・ご要望' }[key] || key;
+  return { category: '区分', attendees: '参加者', car_count: 'お車の台数', message: 'ご質問・ご要望' }[key] || key;
 }
 
 function changeValue(key, v) {
@@ -192,5 +216,6 @@ function changeValue(key, v) {
     return list.length + '名（' + list.join('、') + '）';
   }
   if (key === 'car_count') return formatCarCount({ carCount: parseInt(v, 10) });
+  if (key === 'category') return categoryLabel(v);
   return v ? String(v) : 'なし';
 }
