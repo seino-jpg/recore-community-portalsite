@@ -43,3 +43,20 @@ CREATE TABLE IF NOT EXISTS application_changes (
 
 CREATE INDEX IF NOT EXISTS application_changes_application_idx
   ON application_changes (application_id, changed_at);
+
+-- 参加者の区分と運営による登録（2026-10-05-attendee-category の D21・D22）
+-- 区分は申込1件ごと。フォーム・移行の行は general（既存行も DEFAULT で general になる）
+ALTER TABLE applications
+  ADD COLUMN IF NOT EXISTS category text NOT NULL DEFAULT 'general'
+  CHECK (category IN ('general', 'recore', 'vendor', 'staff'));
+
+-- /admin からの登録（source = 'admin'）と、その履歴（action = 'create'）を許す
+ALTER TABLE applications DROP CONSTRAINT IF EXISTS applications_source_check;
+
+ALTER TABLE applications ADD CONSTRAINT applications_source_check
+  CHECK (source IN ('site', 'gas_forward', 'sheet_import', 'admin'));
+
+ALTER TABLE application_changes DROP CONSTRAINT IF EXISTS application_changes_action_check;
+
+ALTER TABLE application_changes ADD CONSTRAINT application_changes_action_check
+  CHECK (action IN ('cancel', 'update', 'notify', 'import', 'create'));

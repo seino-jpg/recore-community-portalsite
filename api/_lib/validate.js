@@ -52,3 +52,38 @@ export function validateApplication(data) {
 function str(v) {
   return String(v ?? '').trim();
 }
+
+// 参加者の区分（attendee-category D21）。フォームからの申込は general
+export const CATEGORIES = ['general', 'recore', 'vendor', 'staff'];
+export const RECORE_COMPANY = '株式会社RECORE';
+
+/**
+ * /admin からの運営登録の入力検証（D24）。区分・会社名・参加者氏名・台数・メモだけを受ける。
+ * 区分が RECORE で会社名が空なら「株式会社RECORE」を入れる。代表者は氏名の先頭。
+ * 戻り値: { ok: true, record } または { ok: false, error }
+ */
+export function validateRegistration(data) {
+  const d = data && typeof data === 'object' ? data : {};
+  const category = str(d.category);
+  const record = {
+    category,
+    company: str(d.company) || (category === 'recore' ? RECORE_COMPANY : ''),
+    attendees: normalizeAttendees(d.attendees),
+    carCount: parseInt(d.carCount, 10),
+    message: str(d.message)
+  };
+
+  if (!CATEGORIES.includes(category)) {
+    return { ok: false, error: '区分を選んでください' };
+  }
+  if (!record.company) {
+    return { ok: false, error: '会社名を入力してください' };
+  }
+  if (record.attendees.length < 1) {
+    return { ok: false, error: '参加者氏名を1名以上入力してください' };
+  }
+  if (!(record.carCount >= 0 && record.carCount <= 5)) {
+    return { ok: false, error: 'お車の台数は0〜5台で入力してください' };
+  }
+  return { ok: true, record };
+}

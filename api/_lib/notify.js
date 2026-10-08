@@ -75,10 +75,12 @@ export async function deliverNotification(ctx, sql, row, { changedBy, recordHist
 }
 
 // Cron が拾う対象: 有効行で未通知・試行 6 回未満。移行行は通知済みで入るので条件上含まれない
+// 運営登録（source = 'admin'）は宛先のメールが無く、申込通知を送らない（attendee-category D26）
 export async function findPendingForCron(sql, limit = 20) {
   return sql`
     SELECT * FROM applications
     WHERE status = 'active'
+      AND source <> 'admin'
       AND (mail_sent_at IS NULL OR slack_sent_at IS NULL)
       AND notify_attempts < ${MAX_NOTIFY_ATTEMPTS}
     ORDER BY received_at

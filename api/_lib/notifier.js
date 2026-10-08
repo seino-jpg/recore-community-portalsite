@@ -8,7 +8,7 @@ import { isGmailConfigured, sendMail } from './gmail.js';
 import { isSlackConfigured, postToSlack } from './slack.js';
 import {
   toRecord, confirmationMail, operatorApplicationMail, operatorTextMail,
-  applicationSlackText, changeSlackText, changeSubject
+  applicationSlackText, changeSlackText, changeSubject, registerSlackText
 } from './messages.js';
 
 export const MAIL_AUTH_NOTE = '確認メールを送れていません（メール送信の認証が切れています）';
@@ -40,14 +40,16 @@ export async function sendApplicationNotify(ctx, { application, event, send, dup
 }
 
 /**
- * 取消・変更の通知。運営 Slack にだけ送る（旧 D14）。
+ * 取消・変更・運営登録の通知。運営 Slack にだけ送る（旧 D14・attendee-category D26）。
  * 戻り値: { sent: true, slack: {ok, error, fallback} } または { sent: false, reason, error }
  */
 export async function sendChangeNotify(ctx, { type, application, event, changedBy, before, after }) {
   if (!isNotifyConfigured(ctx.env)) return { sent: false, reason: 'not_configured' };
-  if (type !== 'cancel' && type !== 'update') return { sent: false, reason: 'rejected', error: '不明な type です: ' + type };
+  if (type !== 'cancel' && type !== 'update' && type !== 'register') return { sent: false, reason: 'rejected', error: '不明な type です: ' + type };
   const record = toRecord(application, event);
-  const text = changeSlackText(type, record, changedBy, before, after);
+  const text = type === 'register'
+    ? registerSlackText(record, application.category, changedBy)
+    : changeSlackText(type, record, changedBy, before, after);
   const subject = changeSubject(type, record);
   return { sent: true, slack: await notifyOperators(ctx, text, (reason) => operatorTextMail(subject, text, reason)) };
 }
