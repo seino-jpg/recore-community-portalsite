@@ -10,7 +10,7 @@ export function getSql(env = process.env) {
   return cached.sql;
 }
 
-// 申込行を API の応答・GAS 送信用の形にする（列名は DB のまま。人数は配列の長さ）
+// 申込行を API の応答・通知文面用の形にする（列名は DB のまま。人数は配列の長さ）
 export function toApplicationView(row) {
   return {
     id: row.id,

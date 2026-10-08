@@ -1,10 +1,10 @@
 // Cron 再送の本体（D8）。api/cron-notify.js から呼ぶ。
-import { isGasConfigured } from './gas.js';
+import { isNotifyConfigured } from './notifier.js';
 import { deliverNotification, findPendingForCron, CRON_ACTOR } from './notify.js';
 
 export async function runCron(ctx, sql) {
-  // GAS の設定が無い環境（プレビュー等）では何もしない。行は未通知のまま残す
-  if (!isGasConfigured(ctx.env)) return { skipped: true, reason: 'gas_not_configured', processed: 0 };
+  // 通知の設定が無い環境（プレビュー等）では何もしない。行は未通知のまま残す
+  if (!isNotifyConfigured(ctx.env)) return { skipped: true, reason: 'notify_not_configured', processed: 0 };
 
   const rows = await findPendingForCron(sql);
   const results = [];
