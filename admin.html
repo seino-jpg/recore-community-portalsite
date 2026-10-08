@@ -147,6 +147,7 @@
     td.actions { white-space: nowrap; }
     td.col-received_at, td.col-status { min-width: 120px; }
     td.col-notify { min-width: 200px; }
+    td.col-category { white-space: nowrap; }
     .act {
       background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
       padding: 4px 10px; margin-right: 6px; font-family: inherit; font-size: 12px; color: var(--text); cursor: pointer;
@@ -154,6 +155,44 @@
     .act:hover { border-color: var(--green-mid); color: var(--green-dark); }
     .act.primary { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
     .act.danger { color: #a8342a; border-color: #f5c2bd; }
+    /* 区分（一般参加者は無地。お客さんの行を基準にする） */
+    .cat { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .cat-recore { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--green-dark); }
+    .cat-vendor { background: #e8f0fb; border: 1px solid #b7cdee; color: #1f4f8f; }
+    .cat-staff { background: #f1ecf7; border: 1px solid #d3c4e6; color: #5b3b86; }
+
+    /* ===== 区分の絞り込み・運営登録 ===== */
+    .filter-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 16px; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 4px 14px; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer;
+    }
+    .chip .count { margin-left: 6px; color: var(--text-sub); }
+    .chip.active { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .chip.active .count { color: rgba(255,255,255,0.75); }
+    .btn-register {
+      background: var(--green-dark); border: 1px solid var(--green-dark); border-radius: 4px; color: #fff;
+      padding: 6px 16px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .register-panel {
+      background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--gold);
+      padding: 20px 24px; margin-top: 16px; font-size: 14px;
+    }
+    .register-panel h2 { font-size: 15px; font-weight: 700; color: var(--green-dark); margin-bottom: 4px; }
+    .register-panel .panel-sub { font-size: 12px; color: var(--text-sub); margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: start; margin-bottom: 12px; }
+    .form-row > .form-label { font-size: 13px; font-weight: 700; color: var(--text-sub); padding-top: 6px; }
+    .radios { display: flex; gap: 16px; flex-wrap: wrap; padding-top: 5px; }
+    .radios label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+    .register-panel input[type="text"], .register-panel select {
+      font-family: inherit; font-size: 14px; padding: 5px 8px;
+      border: 1px solid var(--border); border-radius: 4px; background: var(--surface);
+    }
+    .register-panel input[name="reg-company"], .register-panel input[name="reg-message"] { width: 100%; max-width: 420px; }
+    .attendee-inputs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .attendee-inputs input { width: 150px; }
+    .panel-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
     td textarea, td select {
       width: 220px; font-family: inherit; font-size: 13px; padding: 4px 6px;
       border: 1px solid var(--border); border-radius: 4px; background: var(--surface);
@@ -168,6 +207,7 @@
       .summary-item:nth-child(2) { border-right: none; }
       .summary-item:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
       .nav-right span { display: none; }
+      .form-row { grid-template-columns: 1fr; gap: 4px; }
     }
   </style>
 </head>
@@ -203,6 +243,11 @@
     <section id="data-view" hidden>
       <div class="summary" id="summary"></div>
       <div class="tabs" id="tabs"></div>
+      <div class="filter-bar">
+        <div class="chips" id="chips"></div>
+        <button type="button" class="btn-register" id="btn-register" hidden>＋参加者を登録</button>
+      </div>
+      <div id="register-panel"></div>
       <div class="table-meta">
         <span id="table-meta-left"></span>
         <span id="table-meta-right"></span>
@@ -225,6 +270,7 @@ const ADMIN_ENDPOINT = '/api/admin';
 // 一覧の列（API の申込行の項目 → 見出し）
 const COLUMNS = [
   { key: 'received_at', label: '受付日時', render: r => formatJst(r.received_at) },
+  { key: 'category', label: '区分' },
   { key: 'company', label: '会社名' },
   { key: 'representative_name', label: '代表者氏名' },
   { key: 'role', label: '役職' },
@@ -238,12 +284,24 @@ const COLUMNS = [
   { key: 'notify', label: '通知', render: r => notifyLabel(r) }
 ];
 
+// 参加者の区分（API の CATEGORIES と同じ値）。一覧・絞り込みは短い名前、登録パネルは正式な名前
+const CATEGORIES = [
+  { key: 'general', short: '一般', label: '一般参加者' },
+  { key: 'recore', short: 'RECORE', label: 'RECORE' },
+  { key: 'vendor', short: 'ベンダー', label: 'ベンダー' },
+  { key: 'staff', short: '運営', label: '運営' }
+];
+const RECORE_COMPANY = '株式会社RECORE';
+
 // ===== 状態 =====
 let idToken = null;
 let events = [];
 let currentKey = null;
 let canEdit = false;
+let canRegister = false;
 let editingId = null;
+let currentCategory = 'all';   // 一覧の絞り込み。集計は絞らない
+let registering = null;        // 登録パネルを開いている間 { token }
 
 const $ = (id) => document.getElementById(id);
 
@@ -281,7 +339,10 @@ function logout() {
   events = [];
   currentKey = null;
   canEdit = false;
+  canRegister = false;
   editingId = null;
+  currentCategory = 'all';
+  registering = null;
   $('data-view').hidden = true;
   $('nav-right').hidden = true;
   $('summary').innerHTML = '';
@@ -321,6 +382,7 @@ async function loadData() {
 
   events = Array.isArray(result.events) ? result.events : [];
   canEdit = Boolean(result.canEdit);
+  canRegister = Boolean(result.canRegister);
   editingId = null;
   $('viewer-email').textContent = result.viewer || '';
   $('login-view').hidden = true;
@@ -339,7 +401,14 @@ function render() {
   renderTabs();
   const ev = events.find(e => e.key === currentKey);
   renderSummary(ev);
+  renderChips(ev);
+  renderRegisterPanel(ev);
   renderTable(ev);
+}
+
+// 有効な申込の件数（社数は一般参加者だけで数えるので、タブ・一覧の件数はこちら）
+function activeCount(rows) {
+  return rows.filter(r => r.status === 'active').length;
 }
 
 function renderTabs() {
@@ -353,9 +422,9 @@ function renderTabs() {
     b.textContent = ev.name;
     const c = document.createElement('span');
     c.className = 'count';
-    c.textContent = ev.summary.companies + '件';
+    c.textContent = activeCount(ev.rows) + '件';
     b.appendChild(c);
-    b.addEventListener('click', () => { currentKey = ev.key; editingId = null; render(); });
+    b.addEventListener('click', () => { currentKey = ev.key; editingId = null; currentCategory = 'all'; registering = null; render(); });
     tabs.appendChild(b);
   });
 }
@@ -370,11 +439,13 @@ function formatJst(iso) {
   return `${p.year}/${p.month}/${p.day} ${p.hour === '24' ? '00' : p.hour}:${p.minute}:${p.second}`;
 }
 
+// 運営登録の行は申込通知を送らないので、未完了に数えない
 function isPending(r) {
-  return r.status === 'active' && (!r.mail_sent_at || !r.slack_sent_at);
+  return r.status === 'active' && r.source !== 'admin' && (!r.mail_sent_at || !r.slack_sent_at);
 }
 
 function notifyLabel(r) {
+  if (r.source === 'admin') return '運営登録';
   if (r.status !== 'active' && !r.mail_sent_at && !r.slack_sent_at) return '—';
   const parts = [];
   parts.push(r.mail_sent_at ? 'メール済' : 'メール未');
@@ -384,12 +455,13 @@ function notifyLabel(r) {
   return s;
 }
 
-// 集計は API が有効行だけで計算した値をそのまま出す
+// 集計は API が有効行だけで計算した値をそのまま出す（社数は一般参加者のみ・人数は全区分と内訳）
 function renderSummary(ev) {
-  const s = ev ? ev.summary : { companies: 0, attendees: 0, cars: 0, capacity: null, remaining: null, pending: 0 };
+  const s = ev ? ev.summary : { companies: 0, attendees: 0, cars: 0, capacity: null, remaining: null, pending: 0, byCategory: {} };
+  const by = s.byCategory || {};
   const items = [
-    { label: '申込社数', value: s.companies, unit: '社' },
-    { label: '合計参加人数', value: s.attendees, unit: '名' },
+    { label: '申込社数', value: s.companies, unit: '社', note: '一般参加者のみ' },
+    { label: '合計参加人数', value: s.attendees, unit: '名', note: CATEGORIES.map(c => c.short + (by[c.key] || 0)).join('・') },
     s.capacity == null
       ? { label: '残り枠', value: '—', unit: '', note: '定員未設定' }
       : { label: '残り枠', value: s.remaining, unit: '名', note: '定員 ' + s.capacity + '名', warn: s.remaining < 0 },
@@ -412,14 +484,50 @@ function renderSummary(ev) {
   });
 }
 
+// 区分の絞り込み。件数は有効な申込の件数。一覧だけを絞り、上の集計は変えない
+function renderChips(ev) {
+  const el = $('chips');
+  el.innerHTML = '';
+  if (!ev) return;
+  const options = [{ key: 'all', short: 'すべて' }].concat(CATEGORIES);
+  options.forEach(o => {
+    const rows = o.key === 'all' ? ev.rows : ev.rows.filter(r => r.category === o.key);
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (o.key === currentCategory ? ' active' : '');
+    b.dataset.category = o.key;
+    b.textContent = o.short;
+    const c = document.createElement('span');
+    c.className = 'count';
+    c.textContent = String(activeCount(rows));
+    b.appendChild(c);
+    b.addEventListener('click', () => { currentCategory = o.key; editingId = null; render(); });
+    el.appendChild(b);
+  });
+  $('btn-register').hidden = !canRegister || Boolean(registering);
+}
+
+function categoryCell(td, row) {
+  const c = CATEGORIES.find(x => x.key === row.category);
+  if (!c || c.key === 'general') {
+    td.textContent = c ? c.short : String(row.category || '');
+    return;
+  }
+  const span = document.createElement('span');
+  span.className = 'cat cat-' + c.key;
+  span.textContent = c.short;
+  td.appendChild(span);
+}
+
 function renderTable(ev) {
   const wrap = $('table-wrap');
   wrap.innerHTML = '';
   const left = $('table-meta-left');
   left.innerHTML = '';
+  const rows = !ev ? [] : (currentCategory === 'all' ? ev.rows : ev.rows.filter(r => r.category === currentCategory));
   if (ev) {
-    const cancelled = ev.rows.filter(r => r.status === 'cancelled').length;
-    left.appendChild(document.createTextNode(ev.name + '：' + ev.summary.companies + '件' + (cancelled ? '（取消 ' + cancelled + '件）' : '')));
+    const cancelled = rows.filter(r => r.status === 'cancelled').length;
+    left.appendChild(document.createTextNode(ev.name + '：' + activeCount(rows) + '件' + (cancelled ? '（取消 ' + cancelled + '件）' : '')));
     if (ev.summary.pending > 0) {
       const badge = document.createElement('span');
       badge.className = 'badge-pending';
@@ -429,10 +537,10 @@ function renderTable(ev) {
   }
   $('table-meta-right').textContent = '最終取得 ' + new Date().toLocaleString('ja-JP');
 
-  if (!ev || ev.rows.length === 0) {
+  if (rows.length === 0) {
     const p = document.createElement('div');
     p.className = 'empty';
-    p.textContent = 'まだ申込はありません。';
+    p.textContent = ev && ev.rows.length ? '該当する申込はありません。' : 'まだ申込はありません。';
     wrap.appendChild(p);
     return;
   }
@@ -455,7 +563,7 @@ function renderTable(ev) {
   }
 
   const tbody = table.createTBody();
-  ev.rows.forEach((row, i) => {
+  rows.forEach((row, i) => {
     const tr = tbody.insertRow();
     if (row.status === 'cancelled') tr.className = 'cancelled';
     tr.dataset.id = row.id;
@@ -466,7 +574,20 @@ function renderTable(ev) {
     COLUMNS.forEach(c => {
       const td = tr.insertCell();
       td.className = 'col-' + c.key + (c.num ? ' num' : '');
-      if (editing && c.key === 'attendees') {
+      if (editing && c.key === 'category') {
+        const sel = document.createElement('select');
+        sel.name = 'edit-category';
+        CATEGORIES.forEach(x => {
+          const o = document.createElement('option');
+          o.value = x.key;
+          o.textContent = x.label;
+          if (x.key === row.category) o.selected = true;
+          sel.appendChild(o);
+        });
+        td.appendChild(sel);
+      } else if (c.key === 'category') {
+        categoryCell(td, row);
+      } else if (editing && c.key === 'attendees') {
         const ta = document.createElement('textarea');
         ta.name = 'edit-attendees';
         ta.rows = Math.max(2, row.attendees.length);
@@ -554,11 +675,12 @@ async function saveEdit(row) {
   const attendees = tr.querySelector('textarea[name="edit-attendees"]').value.split('\n').map(v => v.trim()).filter(Boolean);
   const carCount = parseInt(tr.querySelector('select[name="edit-car-count"]').value, 10);
   const message = tr.querySelector('textarea[name="edit-message"]').value.trim();
+  const category = tr.querySelector('select[name="edit-category"]').value;
   if (attendees.length === 0) {
     alert('参加者氏名を1名以上入力してください。');
     return;
   }
-  const done = await runAction({ action: 'update', id: row.id, attendees, carCount, message }, '変更しました');
+  const done = await runAction({ action: 'update', id: row.id, category, attendees, carCount, message }, '変更しました');
   if (done) editingId = null;
 }
 
@@ -580,6 +702,122 @@ async function resendRow(row) {
   await loadData();
 }
 
+// ===== 運営登録（閲覧の許可リストの全員。締切後でも登録できる）=====
+// パネルを開くたびに submission_token を作り、連打や再試行で同じ登録が2件にならないようにする
+function openRegister() {
+  registering = { token: crypto.randomUUID() };
+  render();
+}
+
+function closeRegister() {
+  registering = null;
+  render();
+}
+
+function renderRegisterPanel(ev) {
+  const el = $('register-panel');
+  if (!registering || !ev) {
+    el.innerHTML = '';
+    delete el.dataset.token;
+    return;
+  }
+  // 絞り込みなどで再描画しても、入力中の内容を消さない
+  if (el.dataset.token === registering.token) return;
+  el.dataset.token = registering.token;
+  el.innerHTML =
+    '<div class="register-panel">' +
+      '<h2>参加者を登録</h2>' +
+      '<p class="panel-sub">登録先：<span class="reg-event"></span>。締切後でも登録できます。確認メールは送らず、運営 Slack にだけ通知します。</p>' +
+      '<div class="form-row"><div class="form-label">区分</div><div class="radios"></div></div>' +
+      '<div class="form-row"><div class="form-label">会社名</div><div><input type="text" name="reg-company" aria-label="会社名"></div></div>' +
+      '<div class="form-row"><div class="form-label">参加者</div><div><div class="attendee-inputs"></div>' +
+        '<button type="button" class="act" data-act="add-attendee" style="margin-top:8px">＋1名追加</button></div></div>' +
+      '<div class="form-row"><div class="form-label">車の台数</div><div><select name="reg-car-count" aria-label="車の台数"></select></div></div>' +
+      '<div class="form-row"><div class="form-label">メモ</div><div><input type="text" name="reg-message" aria-label="メモ" placeholder="任意"></div></div>' +
+      '<div class="panel-actions">' +
+        '<button type="button" class="act" data-act="cancel">やめる</button>' +
+        '<button type="button" class="act primary" data-act="submit">登録する</button>' +
+      '</div>' +
+    '</div>';
+  el.querySelector('.reg-event').textContent = ev.name;
+
+  const radios = el.querySelector('.radios');
+  ['recore', 'vendor', 'staff', 'general'].forEach(key => {
+    const c = CATEGORIES.find(x => x.key === key);
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'reg-category';
+    input.value = key;
+    if (key === 'recore') input.checked = true;
+    input.addEventListener('change', () => onRegisterCategory(key));
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(c.label));
+    radios.appendChild(label);
+  });
+  el.querySelector('input[name="reg-company"]').value = RECORE_COMPANY;
+
+  addAttendeeInput();
+  const sel = el.querySelector('select[name="reg-car-count"]');
+  for (let n = 0; n <= 5; n++) {
+    const o = document.createElement('option');
+    o.value = String(n);
+    o.textContent = n + '台';
+    sel.appendChild(o);
+  }
+  el.querySelector('[data-act="add-attendee"]').addEventListener('click', addAttendeeInput);
+  el.querySelector('[data-act="cancel"]').addEventListener('click', closeRegister);
+  el.querySelector('[data-act="submit"]').addEventListener('click', submitRegister);
+}
+
+// RECORE を選ぶと会社名を自動で入れ、外すと自動で入れた値だけ消す
+function onRegisterCategory(key) {
+  const input = $('register-panel').querySelector('input[name="reg-company"]');
+  if (key === 'recore' && !input.value.trim()) input.value = RECORE_COMPANY;
+  if (key !== 'recore' && input.value.trim() === RECORE_COMPANY) input.value = '';
+}
+
+function addAttendeeInput() {
+  const box = $('register-panel').querySelector('.attendee-inputs');
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.name = 'reg-attendee';
+  const n = box.children.length + 1;
+  input.placeholder = n === 1 ? '氏名（代表者）' : '氏名';
+  input.setAttribute('aria-label', '参加者氏名' + n);
+  box.appendChild(input);
+  if (n > 1) input.focus();
+}
+
+async function submitRegister() {
+  const el = $('register-panel');
+  const checked = el.querySelector('input[name="reg-category"]:checked');
+  const category = checked ? checked.value : '';
+  const company = el.querySelector('input[name="reg-company"]').value.trim();
+  const attendees = Array.from(el.querySelectorAll('input[name="reg-attendee"]')).map(i => i.value.trim()).filter(Boolean);
+  const carCount = parseInt(el.querySelector('select[name="reg-car-count"]').value, 10);
+  const message = el.querySelector('input[name="reg-message"]').value.trim();
+  if (!company) {
+    alert('会社名を入力してください。');
+    return;
+  }
+  if (attendees.length === 0) {
+    alert('参加者氏名を1名以上入力してください。');
+    return;
+  }
+  const btn = el.querySelector('[data-act="submit"]');
+  btn.disabled = true;
+  const done = await runAction({
+    action: 'register', submission_token: registering.token, eventKey: currentKey,
+    category, company, attendees, carCount, message
+  }, '登録しました');
+  if (done) {
+    closeRegister();
+  } else {
+    btn.disabled = false;
+  }
+}
+
 function showLoginNotice(type, msg) {
   const n = $('login-notice');
   n.className = 'notice' + (type ? ' show ' + type : '');
@@ -589,6 +827,7 @@ function showLoginNotice(type, msg) {
 // ===== イベント =====
 $('btn-reload').addEventListener('click', () => loadData());
 $('btn-logout').addEventListener('click', logout);
+$('btn-register').addEventListener('click', openRegister);
 
 // GIS ライブラリの読み込み完了後に初期化（onload は下の <script> タグから呼ぶ）
 window.onGisLoad = initGis;
