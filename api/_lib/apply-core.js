@@ -1,25 +1,16 @@
-// 申込受付の本体（D4・D7・D9・D11）。api/apply.js から呼ぶ。
+// 申込受付の本体（D4・D7・D9）。api/apply.js から呼ぶ。
 // 戻り値: { status, body }
-import { randomUUID } from 'node:crypto';
 import { getEvent, isClosed } from './events.js';
 import { validateApplication, isUuid } from './validate.js';
 import { deliverNotification } from './notify.js';
-import { isGasConfigured } from './gas.js';
 
 export async function handleApply(ctx, sql, body) {
   const data = body && typeof body === 'object' ? body : null;
   if (!data) return reply(400, { ok: false, error: 'リクエスト本文がありません' });
 
-  // GAS からの転送（旧 HTML の申込・D11）。共有シークレットが一致しなければ受けない
-  let source = 'site';
-  let token = data.submission_token;
-  if (data.source === 'gas_forward') {
-    if (!isGasConfigured(ctx.env) || String(data.secret || '') !== ctx.env.GAS_SHARED_SECRET) {
-      return reply(403, { ok: false, error: '転送元を確認できません' });
-    }
-    source = 'gas_forward';
-    if (!isUuid(token)) token = randomUUID();
-  } else if (!isUuid(token)) {
+  const source = 'site';
+  const token = data.submission_token;
+  if (!isUuid(token)) {
     return reply(400, { ok: false, error: '送信情報が不正です。ページを再読み込みしてお試しください' });
   }
 
