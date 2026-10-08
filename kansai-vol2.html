@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>関西コミュニティ Vol.2 ｜ うまくいった一手を持ち寄る、関西RECOREユーザーの戦略会議 | RECORE Community</title>
+<meta name="description" content="2026年12月4日（金）16:00–19:00、Canup様本部にて開催。「また来たくなる店のつくり方」を議題に、販促・店内イベント・SNSの工夫を導入企業どうしで語り合うRECORE関西コミュニティ第2回イベント。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="関西コミュニティ Vol.2 ｜ うまくいった一手を持ち寄る、関西RECOREユーザーの戦略会議">
+<meta property="og:description" content="2026年12月4日（金）16:00–19:00｜Canup様本部。各社の「うまくいったこと」を持ち寄り、導入企業どうしで語り合う3時間。">
+<meta property="og:image" content="https://recore-community-portalsite.vercel.app/img/warehouse-aisle.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1E3A14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#1E3A14;
+    --green-700:#2F5A20;
+    --green-100:#E8F0E2;
+    --ink:#1D2419;
+    --muted:#5C6657;
+    --line:#D9DFD3;
+    --bg:#FAFBF8;
+    --todo-bg:#FFF3C4;
+    --todo-ink:#7A5B00;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:var(--ink);background:var(--bg);line-height:1.85;-webkit-text-size-adjust:100%}
+  a{color:var(--green-700)}
+  a:focus-visible,button:focus-visible{outline:3px solid #8DBF6A;outline-offset:2px}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+
+  /* 公開前に必ず確認が必要な箇所（公開前に .todo を検索して全て解消すること） */
+  .todo{background:var(--todo-bg);color:var(--todo-ink);padding:0 .35em;border-radius:3px;font-weight:700}
+
+  header.site{background:var(--green-900);color:#fff}
+  header.site .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:14px;padding-bottom:14px;gap:12px}
+  header.site a{color:#fff;text-decoration:none;font-size:14px}
+  header.site .brand{font-weight:900;letter-spacing:.04em}
+
+  .hero{background:var(--green-900);color:#fff;padding:56px 0 64px}
+  .hero .vol{font-size:15px;font-weight:700;opacity:.85;margin:0}
+  .hero .date{display:flex;align-items:baseline;gap:14px;margin:8px 0 4px}
+  .hero .date .md{font-size:clamp(64px,14vw,112px);font-weight:900;line-height:1;letter-spacing:-.02em}
+  .hero .date .yw{font-size:18px;font-weight:700;opacity:.9}
+  .hero .time{font-size:17px;margin:0 0 28px;opacity:.95}
+  .hero h1{font-size:clamp(28px,6vw,44px);line-height:1.35;margin:0 0 16px;font-weight:900}
+  .hero .lead{max-width:36em;margin:0 0 28px;opacity:.92}
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 24px;margin:0 0 32px;padding:0;list-style:none}
+  .facts li{border-top:1px solid rgba(255,255,255,.35);padding-top:8px;font-size:15px}
+  .facts b{display:block;font-size:12px;opacity:.75;font-weight:500}
+  .btns{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-block;padding:14px 26px;border-radius:6px;font-weight:700;text-decoration:none;font-size:16px}
+  .btn.primary{background:#fff;color:var(--green-900)}
+  .btn.ghost{border:2px solid rgba(255,255,255,.7);color:#fff}
+
+  section{padding:64px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(24px,4.5vw,32px);line-height:1.4;margin:0 0 12px;font-weight:900;color:var(--green-900)}
+  section .sub{color:var(--muted);margin:0 0 32px;max-width:38em}
+
+  .notice{background:var(--green-100);border-left:5px solid var(--green-700);padding:16px 20px;border-radius:0 6px 6px 0;margin:0 0 32px}
+  .notice p{margin:0}
+
+  .theme{border:1px solid var(--line);background:#fff;border-radius:8px;padding:24px;margin-bottom:18px}
+  .theme h3{margin:0 0 6px;font-size:20px;color:var(--green-900)}
+  .theme .meta{font-size:14px;color:var(--muted);margin:0 0 10px}
+  .theme ul{margin:10px 0 0;padding-left:1.2em}
+
+  .prep{display:grid;gap:14px;margin-top:8px}
+  .prep div{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+  .prep h3{margin:0 0 4px;font-size:17px;color:var(--green-900)}
+  .prep p{margin:0;font-size:15px}
+
+  .checklist{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:12px}
+  .checklist li{position:relative;background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px 20px 18px 68px}
+  .checklist li::before{content:"✓";position:absolute;left:20px;top:18px;width:32px;height:32px;border-radius:50%;background:var(--green-700);color:#fff;display:grid;place-items:center;font-weight:900;font-size:16px}
+  .checklist h3{margin:0 0 4px;font-size:17px;color:var(--green-900)}
+  .checklist p{margin:0;font-size:15px}
+
+  ol.timeline{list-style:none;margin:0;padding:0}
+  ol.timeline li{display:grid;grid-template-columns:150px 1fr;gap:6px 20px;padding:18px 0;border-top:1px solid var(--line)}
+  ol.timeline li:last-child{border-bottom:1px solid var(--line)}
+  ol.timeline time{font-weight:700;color:var(--green-700);font-variant-numeric:tabular-nums}
+  ol.timeline h3{margin:0 0 2px;font-size:17px}
+  ol.timeline p{margin:0;font-size:15px;color:var(--muted)}
+  .note{font-size:14px;color:var(--muted);margin-top:14px}
+
+  table.outline{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line)}
+  table.outline th,table.outline td{padding:16px 18px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:15px}
+  table.outline th{width:8.5em;background:var(--green-100);color:var(--green-900);font-weight:700}
+  table.outline td small{display:block;color:var(--muted);margin-top:4px}
+  .route{margin:0 0 16px}
+  .route:last-child{margin:0}
+  .route b{display:block;color:var(--green-900);margin-bottom:2px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:0 0 24px}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px 16px;text-align:center}
+  .stat b{display:block;font-size:30px;line-height:1.25;color:var(--green-900);font-weight:900}
+  .stat span{font-size:13px;color:var(--muted)}
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:0 0 20px}
+  .gallery figure{margin:0}
+  .gallery img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:8px}
+  .gallery .ph{aspect-ratio:4/3;border-radius:8px;display:grid;place-items:center;text-align:center;padding:12px;background:var(--todo-bg);color:var(--todo-ink);font-weight:700;font-size:14px;border:2px dashed #D9B73A}
+  .gallery figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+  .links{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:15px;margin:0}
+  ul.caution{margin:24px 0 0;padding-left:1.2em;font-size:15px}
+
+  .cta{background:var(--green-900);color:#fff;text-align:center;border-bottom:none}
+  .cta h2{color:#fff}
+  .cta .sub{color:rgba(255,255,255,.85);margin-left:auto;margin-right:auto}
+  .cta .btns{justify-content:center}
+  .cta small{display:block;margin-top:20px;opacity:.85}
+  .cta a:not(.btn){color:#fff}
+
+  footer{padding:36px 0 96px;font-size:14px;color:var(--muted);text-align:center}
+  footer nav{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:center;margin:12px 0}
+
+  .sticky{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px;z-index:10}
+  .sticky .btn{padding:10px 20px;font-size:15px;background:var(--green-900);color:#fff}
+
+  @media (max-width:600px){
+    ol.timeline li{grid-template-columns:1fr}
+    table.outline th,table.outline td{display:block;width:auto}
+    table.outline th{border-bottom:none;padding-bottom:6px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html">RECORE COMMUNITY</a>
+    <a href="index.html#events">← イベント一覧へ戻る</a>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <p class="vol">関西コミュニティ Vol.2</p>
+    <div class="date"><span class="md">12.4</span><span class="yw">2026 / FRI</span></div>
+    <p class="time">16:00 — 19:00（受付 15:00〜）</p>
+    <h1>うまくいった一手を持ち寄る、<br>関西RECOREユーザーの戦略会議</h1>
+    <p class="lead">ディスカッション中心の会です。各社の「うまくいったこと」を持ち寄り、関西の導入企業が顔を合わせて意見を交わします。自社の運営に取り入れられるヒントを、その場で持ち帰ってください。</p>
+    <ul class="facts">
+      <li><b>VENUE</b>Canup様本部</li>
+      <li><b>ENTRY</b>参加費 無料 ／ 定員15名</li>
+      <li><b>DEADLINE</b>11月15日（日）23:59 締切</li>
+    </ul>
+    <div class="btns">
+      <a class="btn primary" href="apply.html?event=kansai-vol2">参加を申し込む</a>
+      <a class="btn ghost" href="#timetable">当日の流れを見る</a>
+    </div>
+  </div>
+</div>
+
+<!-- AUDIENCE -->
+<section id="audience">
+  <div class="wrap">
+    <h2>こんな方におすすめです。</h2>
+    <p class="sub">他社の取り組みを聞いて、自社の運営に取り入れるヒントを持ち帰りたい方に向けた会です。</p>
+    <ul class="checklist">
+      <li>
+        <h3>お客様対応・顧客管理を、もっと良くしたい方</h3>
+        <p>販促施策、店内イベント、SNS運用など、「お客様にまた来てもらう」ための工夫を、他社の実例から取り入れたい方。</p>
+      </li>
+      <li>
+        <h3>在庫の管理や、売れ残りの対策に悩んでいる方</h3>
+        <p>滞留している商品をどう見つけ、どう動かしているか。各社のやり方を聞いて、自社の運営に当てはめたい方。</p>
+      </li>
+      <li>
+        <h3>関西の導入企業どうしで、つながりをつくりたい方</h3>
+        <p>議題のあとの懇親会も含めて、同じ立場の方と顔を合わせて話したい方。</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- PROGRAM -->
+<section id="program">
+  <div class="wrap">
+    <h2>議題を絞って、深く話す。</h2>
+    <p class="sub">中心となるメイン議題を深掘りし、サブ議題で関連する話題を補います。事前にお伝えする議題に絞って話します。参加者どうしの会話が主役です。RECOREからの進行は最小限にとどめます。</p>
+
+    <div class="notice">
+      <p><b>議題は事前にお知らせします。</b>お申し込みの方へ、開催前に議題と事前アンケートをご案内します。</p>
+    </div>
+
+    <div class="theme">
+      <h3>メイン議題　また来たくなる店のつくり方</h3>
+      <p class="meta">販促・店内イベント・SNS、各社の工夫を持ち寄る｜16:30 — 18:00</p>
+      <p>お客様への対応・顧客管理は、企業の規模を問わず誰もが向き合う課題です。自社の販促や、最近うまくいった店内イベントなど、各社の取り組みを持ち寄り、参加者どうしで質問し合いながら深めます。</p>
+      <ul>
+        <li>各社の販促施策（ポイント制度、DM・LINE配信など）</li>
+        <li>最近うまくいった店内イベントの事例</li>
+        <li>SNS運用・広告まわりの取り組み</li>
+        <li>RECOREを使った顧客管理の活用事例</li>
+      </ul>
+    </div>
+
+    <div class="theme">
+      <h3>サブ議題　売れ残りを出さない、在庫の回し方</h3>
+      <p class="meta">18:00 — 18:50</p>
+      <p>在庫運用・在庫管理のなかでも、売れずに残っている商品をどう管理し、売れ残りをどう防ぐかに絞って話します。各社の管理方法や施策を、会場の倉庫を見ながらその場で質問し合います。</p>
+      <ul>
+        <li>滞留している商品の見つけ方（何か月動かなければ滞留とみなすか）</li>
+        <li>RECOREでの見分け方・管理方法（どう管理するのが望ましいか）</li>
+        <li>売れ残りを防ぐ施策（値下げ、まとめ売り、陳列替え、販路の見直しなど）</li>
+        <li>動かすか、手放すかの判断基準</li>
+      </ul>
+    </div>
+
+    <div class="theme">
+      <h3>RECORE 新機能のご紹介</h3>
+      <p class="meta">16:10 — 16:30</p>
+      <p>RECOREの新機能をご紹介します。ご利用中の運営にどう使えるか、その場でご質問ください。</p>
+    </div>
+  </div>
+</section>
+
+<!-- PREPARATION -->
+<section id="prep">
+  <div class="wrap">
+    <h2>当日までにお願いしたいこと</h2>
+    <p class="sub">議論を深めるため、事前に少しだけ準備をお願いします。</p>
+    <div class="prep">
+      <div>
+        <h3>事前アンケートのご提出</h3>
+        <p>参加申し込みをされた方へ事前アンケートを送付いたします。自社の取り組みや課題を事前アンケートにご記入ください。提出内容は参加者間で事前に共有します。提出期限は11月30日（月）です。</p>
+      </div>
+      <div>
+        <h3>参加者リストの事前確認</h3>
+        <p>当日お会いする企業名・ご担当者名を、事前にご案内します。誰と何を話したいか、考えておくと当日がスムーズです。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMETABLE -->
+<section id="timetable">
+  <div class="wrap">
+    <h2>当日の流れ</h2>
+    <p class="sub">受付は 15:00 から。16:00 の開始までにお集まりください。</p>
+    <ol class="timeline">
+      <li>
+        <time>15:00 — 16:00</time>
+        <div><h3>受付・集合</h3><p>Canup様本部にて受付をします。お名刺を1枚ご用意ください。</p></div>
+      </li>
+      <li>
+        <time>16:00 — 16:10</time>
+        <div><h3>オープニング・自己紹介</h3><p>当日の流れのご案内と、参加者の自己紹介。</p></div>
+      </li>
+      <li>
+        <time>16:10 — 16:30</time>
+        <div><h3>RECORE 新機能のご紹介</h3><p>RECOREの新機能をご紹介します。</p></div>
+      </li>
+      <li>
+        <time>16:30 — 18:00</time>
+        <div><h3>メイン議題 ディスカッション</h3><p>また来たくなる店のつくり方</p></div>
+      </li>
+      <li>
+        <time>18:00 — 18:50</time>
+        <div><h3>サブ議題 ディスカッション</h3><p>売れ残りを出さない、在庫の回し方</p></div>
+      </li>
+      <li>
+        <time>18:50 — 19:00</time>
+        <div><h3>クロージング</h3><p>振り返りと、次回に向けたご意見のご共有。</p></div>
+      </li>
+      <li>
+        <time>19:30 〜</time>
+        <div><h3>懇親会（約2〜3時間）</h3><p>場所は追ってご案内します。</p></div>
+      </li>
+    </ol>
+    <p class="note">※ 進行状況により、各パートの時間は前後する場合があります。</p>
+  </div>
+</section>
+
+<!-- OUTLINE -->
+<section id="outline">
+  <div class="wrap">
+    <h2>開催概要</h2>
+    <table class="outline">
+      <tr><th>イベント名</th><td>RECORE 関西コミュニティ 第2回イベント<br>うまくいった一手を持ち寄る、関西RECOREユーザーの戦略会議</td></tr>
+      <tr><th>開催日時</th><td>2026年12月4日（金）16:00 〜 19:00<small>受付 15:00〜16:00</small></td></tr>
+      <tr><th>開催場所</th><td>Canup様 本部<small>〒566-0062 大阪府摂津市鳥飼上1丁目16-5（府道16号線沿い）<br><a href="https://maps.app.goo.gl/W93ksT1tCHaqjcLc9" target="_blank" rel="noopener">Googleマップで見る</a></small></td></tr>
+      <tr><th>内容</th><td>ディスカッション（メイン議題：顧客対応・顧客管理／サブ議題：在庫運用・在庫管理）、RECORE新機能のご紹介、懇親会</td></tr>
+      <tr><th>対象</th><td>RECORE をご利用中の企業様<small>複数名でご参加の場合は、代表者の方が参加者全員のお名前をまとめてお申し込みください。</small></td></tr>
+      <tr><th>定員</th><td>15名</td></tr>
+      <tr><th>参加費</th><td>無料</td></tr>
+      <tr><th>交通手段</th><td>
+        <div class="route">
+          <b>お車でお越しの場合</b>
+          ・専用駐車場をお借りしています。<br>
+          ・当日のスケジュール維持のため、できるだけ公共交通機関でお越しください。お車でも問題ありません。お申し込み時に台数を伺い、敷地外の駐車場も含めて事前に調整します。<br>
+          ・高速出口から：近畿自動車道「摂津南IC」から約10分（<a href="https://www.google.com/maps/dir/?api=1&amp;origin=%E6%91%82%E6%B4%A5%E5%8D%97IC&amp;destination=%E5%A4%A7%E9%98%AA%E5%BA%9C%E6%91%82%E6%B4%A5%E5%B8%82%E9%B3%A5%E9%A3%BC%E4%B8%8A1-16-5%20%E3%83%AA%E3%82%B5%E3%82%A4%E3%82%AF%E3%83%AB%E3%82%B7%E3%83%A7%E3%83%83%E3%83%97%20%E3%82%BD%E3%83%83%E3%82%AD%E3%83%B3&amp;travelmode=driving" target="_blank" rel="noopener">Googleマップでルートを見る</a>）
+        </div>
+        <div class="route">
+          <b>公共交通機関でお越しの場合</b>
+          ・梅田駅から：<a href="https://www.google.com/maps/dir/?api=1&amp;origin=%E6%A2%85%E7%94%B0%E9%A7%85&amp;destination=%E5%A4%A7%E9%98%AA%E5%BA%9C%E6%91%82%E6%B4%A5%E5%B8%82%E9%B3%A5%E9%A3%BC%E4%B8%8A1-16-5%20%E3%83%AA%E3%82%B5%E3%82%A4%E3%82%AF%E3%83%AB%E3%82%B7%E3%83%A7%E3%83%83%E3%83%97%20%E3%82%BD%E3%83%83%E3%82%AD%E3%83%B3&amp;travelmode=transit" target="_blank" rel="noopener">Googleマップでルートを見る</a><br>
+          ・電車：大阪モノレール「摂津駅」から徒歩約25分<br>
+          ・バス：JR千里丘駅・阪急摂津市駅から阪急バスに乗り、「上鳥飼」バス停で下車。徒歩約5分<br>
+          ・会場の地図：<a href="https://maps.app.goo.gl/W93ksT1tCHaqjcLc9" target="_blank" rel="noopener">Googleマップで見る</a>
+        </div>
+      </td></tr>
+      <tr><th>懇親会</th><td>開催します（19:30〜、約2〜3時間）<small>場所、会費、申込方法は追ってご案内します。</small></td></tr>
+      <tr><th>申込締切</th><td>2026年11月15日（日）23:59</td></tr>
+      <tr><th>主催</th><td>RECORE コミュニティ（株式会社RECORE）<small>お問い合わせ：<a href="mailto:ueda@recore-corp.jp">ueda@recore-corp.jp</a></small></td></tr>
+    </table>
+    <ul class="caution">
+      <li>申込締切を過ぎるとフォームは自動で受付を終了します。締切後のご参加希望は、上記メールアドレスまでご相談ください。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- HOST -->
+<section id="host">
+  <div class="wrap">
+    <h2>会場のご紹介｜リユースショップ「ソッキン」</h2>
+    <p class="sub">今回の会場は、リユースショップ「ソッキン」を運営する株式会社Canup様の本社です。SNSを軸にお客様を集める、関西でも注目のお店です。</p>
+
+    <div class="stats">
+      <div class="stat"><b>16万人以上</b><span>Instagram・TikTok 総フォロワー数</span></div>
+      <div class="stat"><b>約300坪</b><span>大型家具・家電が並ぶ倉庫型の売り場</span></div>
+      <div class="stat"><b>5万点以上</b><span>出張買取の実績</span></div>
+    </div>
+
+    <p>入荷した商品をInstagramやTikTokで紹介し、開放日に倉庫を一般のお客様へ開放して販売するスタイルです。SNSでの発信から来店・購入へつなげる運営は、当日のメイン議題「また来たくなる店のつくり方」の、わかりやすい実例にもなります。</p>
+
+    <p class="links">
+      <a href="https://www.tiktok.com/@sokkin_0515" target="_blank" rel="noopener">ソッキンのTikTok</a>
+      <a href="https://shop.sokkinn.com/pages/store" target="_blank" rel="noopener">店舗・アクセス（ソッキン公式）</a>
+    </p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="wrap">
+    <p style="margin:0 0 8px"><b>申込締切 11月15日（日）23:59</b></p>
+    <h2>関西の仲間と、運営の悩みを持ち寄る。</h2>
+    <p class="sub">お申し込み後、担当より事前アンケートと当日の詳細をご連絡します。</p>
+    <div class="btns">
+      <a class="btn primary" href="apply.html?event=kansai-vol2">参加を申し込む</a>
+      <a class="btn ghost" href="index.html#events">ほかのイベントを見る</a>
+    </div>
+    <small>ご不明な点は <a href="mailto:ueda@recore-corp.jp">ueda@recore-corp.jp</a> までお気軽にお問い合わせください。</small>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>RECORE Community</b> — 孤独な試行錯誤を終わらせる。</p>
+    <nav>
+      <a href="index.html">ポータルトップ</a>
+      <a href="https://recore-corp.jp/">コーポレートサイト</a>
+      <a href="https://recore-pos.com/">RECORE サービスHP</a>
+      <a href="mailto:ueda@recore-corp.jp">お問い合わせ</a>
+    </nav>
+    <p>© 2026 RECORE Community by 株式会社RECORE. All rights reserved.</p>
+  </div>
+</footer>
+
+<div class="sticky">
+  <span>12月4日（金）開催<br>申込締切 11/15</span>
+  <a class="btn" href="apply.html?event=kansai-vol2">申し込む</a>
+</div>
+
+<script>
+  // 申込締切（2026/11/15 23:59 JST）を過ぎたら申込ボタンを無効化
+  (function(){
+    var deadline = new Date('2026-11-15T23:59:59+09:00');
+    if (new Date() <= deadline) return;
+    document.querySelectorAll('a[href^="apply.html"]').forEach(function(a){
+      a.removeAttribute('href');
+      a.setAttribute('aria-disabled','true');
+      a.textContent = '受付を終了しました';
+      a.style.opacity = '.6';
+      a.style.pointerEvents = 'none';
+    });
+  })();
+</script>
+</body>
+</html>

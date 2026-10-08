@@ -47,8 +47,8 @@ test('U14 閲覧: 許可リストのアカウントに一覧と集計（有効�
   assert.equal(kanto.rows.find((x) => x.id === ids.b).tel, '+819000000000');
   assert.equal(kanto.rows.find((x) => x.id === ids.a).attendee_count, 3);
   assert.equal(r.body.events[1].rows.length, 0);
-  assert.equal(r.body.events[1].summary.capacity, null);
-  assert.equal(r.body.events[1].summary.remaining, null);
+  assert.equal(r.body.events[1].summary.capacity, 15);
+  assert.equal(r.body.events[1].summary.remaining, 15);
 });
 
 test('U15 不正トークン: 別 aud・期限切れ・未検証・許可外・発行元不正・無効 は 403 でデータを返さない', async () => {

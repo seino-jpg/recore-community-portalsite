@@ -3,6 +3,7 @@
   "regions": ["sin1"],
   "rewrites": [
     { "source": "/kanto-vol4", "destination": "/kanto-vol4.html" },
+    { "source": "/kansai-vol2", "destination": "/kansai-vol2.html" },
     { "source": "/apply", "destination": "/apply.html" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/admin/ops", "destination": "/ops.html" }
