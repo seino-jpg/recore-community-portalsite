@@ -143,6 +143,26 @@
     tr:nth-child(even) td { background: #FBFBF8; }
     tr:hover td { background: var(--gold-dim); }
     .empty { padding: 40px 16px; text-align: center; color: var(--text-sub); font-size: 14px; }
+    /* 取消行は薄く残す（集計には含めない） */
+    tr.cancelled td { opacity: 0.45; }
+    .badge-pending {
+      display: inline-block; margin-left: 12px; padding: 2px 10px; border-radius: 12px;
+      background: #fdecea; border: 1px solid #f5c2bd; color: #a8342a; font-weight: 700; font-size: 12px;
+    }
+    td.actions { white-space: nowrap; }
+    td.col-received_at, td.col-status { min-width: 120px; }
+    td.col-notify { min-width: 200px; }
+    .act {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+      padding: 4px 10px; margin-right: 6px; font-family: inherit; font-size: 12px; color: var(--text); cursor: pointer;
+    }
+    .act:hover { border-color: var(--green-mid); color: var(--green-dark); }
+    .act.primary { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .act.danger { color: #a8342a; border-color: #f5c2bd; }
+    td textarea, td select {
+      width: 220px; font-family: inherit; font-size: 13px; padding: 4px 6px;
+      border: 1px solid var(--border); border-radius: 4px; background: var(--surface);
+    }
 
     /* ===== FOOTER ===== */
     footer { background: #0F1E09; color: rgba(255,255,255,0.4); padding: 24px; text-align: center; font-size: 12px; }
@@ -209,29 +229,34 @@
 
 <script>
 // ===== 設定 =====
-// OAuth 2.0 クライアント ID。Google Cloud Console で発行後にここへ差し込む。
-// GAS 側のスクリプトプロパティ GOOGLE_CLIENT_ID と同じ値にすること。
+// OAuth 2.0 クライアント ID。サイト API の環境変数 GOOGLE_CLIENT_ID と同じ値にすること。
 const GOOGLE_CLIENT_ID = '642574052479-lt9bufovhol8iepsi6srft2cm4jj1v9b.apps.googleusercontent.com';
 
-// 申込受付と同じ GAS Web アプリ（action 付きで管理系に振り分けられる）
-const ADMIN_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwPjnAQYHOc6lL5sqcYhzsadNsmxQXv8E6huz60xY-4KtQfKuwS8nfkEaOhZJvExu1O/exec';
+// 申込の正本（サイト側 DB）を読むサイト API。ID トークンを検証して許可リストと照合する
+const ADMIN_ENDPOINT = '/api/admin';
 
-// イベント定員（キーは GAS の EVENT_SHEETS と揃える）。
-// 未設定のイベントでは「残り枠」を表示しない。定員の正本はここ（GAS 側は持たない）。
-const EVENT_CAPACITY = {
-  'kanto-vol4': 20,
-  'kansai-vol2': 15
-};
-
-// 集計に使う列。列名で探す（列の並びが変わっても壊れないように）
-const COL_ATTENDEES = '参加人数';
-const COL_CARS = '車の台数';
-const NUMERIC_COLS = [COL_ATTENDEES, COL_CARS];
+// 一覧の列（API の申込行の項目 → 見出し）
+const COLUMNS = [
+  { key: 'received_at', label: '受付日時', render: r => formatJst(r.received_at) },
+  { key: 'company', label: '会社名' },
+  { key: 'representative_name', label: '代表者氏名' },
+  { key: 'role', label: '役職' },
+  { key: 'email', label: 'メールアドレス' },
+  { key: 'tel', label: '電話番号' },
+  { key: 'attendee_count', label: '参加人数', num: true },
+  { key: 'attendees', label: '参加者氏名', render: r => r.attendees.join('、') },
+  { key: 'car_count', label: '車の台数', num: true },
+  { key: 'message', label: 'ご質問・ご要望' },
+  { key: 'status', label: '状態', render: r => r.status === 'cancelled' ? '取消（' + formatJst(r.cancelled_at) + '）' : '有効' },
+  { key: 'notify', label: '通知', render: r => notifyLabel(r) }
+];
 
 // ===== 状態 =====
 let idToken = null;
 let events = [];
 let currentKey = null;
+let canEdit = false;
+let editingId = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -256,7 +281,7 @@ function initGis() {
   });
 }
 
-// GIS から ID トークンを受け取ったら GAS に検証を依頼してデータを取る
+// GIS から ID トークンを受け取ったら API に検証を依頼してデータを取る
 async function handleCredential(credential) {
   if (!credential) return;
   idToken = credential;
@@ -268,6 +293,8 @@ function logout() {
   idToken = null;
   events = [];
   currentKey = null;
+  canEdit = false;
+  editingId = null;
   $('data-view').hidden = true;
   $('nav-right').hidden = true;
   $('summary').innerHTML = '';
@@ -278,17 +305,21 @@ function logout() {
   if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
 }
 
+// ===== API =====
+async function callApi(payload) {
+  const res = await fetch(ADMIN_ENDPOINT, {
+    method: 'POST',
+    body: JSON.stringify({ ...payload, idToken })
+  });
+  return res.json();
+}
+
 // ===== データ取得 =====
 async function loadData() {
   if (!idToken) return;
   let result;
   try {
-    // Content-Type は付けない（GAS はプリフライトに応答できないため。apply.html と同じ流儀）
-    const res = await fetch(ADMIN_ENDPOINT, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'list', idToken })
-    });
-    result = await res.json();
+    result = await callApi({ action: 'list' });
   } catch (err) {
     showLoginNotice('error', 'データの取得に失敗しました。通信環境を確認して再度お試しください。');
     return;
@@ -302,6 +333,8 @@ async function loadData() {
   }
 
   events = Array.isArray(result.events) ? result.events : [];
+  canEdit = Boolean(result.canEdit);
+  editingId = null;
   $('viewer-email').textContent = result.viewer || '';
   $('login-view').hidden = true;
   $('nav-right').hidden = false;
@@ -330,38 +363,43 @@ function renderTabs() {
     b.type = 'button';
     b.className = 'tab' + (ev.key === currentKey ? ' active' : '');
     b.dataset.key = ev.key;
-    b.textContent = ev.sheetName;
+    b.textContent = ev.name;
     const c = document.createElement('span');
     c.className = 'count';
-    c.textContent = ev.rows.length + '件';
+    c.textContent = ev.summary.companies + '件';
     b.appendChild(c);
-    b.addEventListener('click', () => { currentKey = ev.key; render(); });
+    b.addEventListener('click', () => { currentKey = ev.key; editingId = null; render(); });
     tabs.appendChild(b);
   });
 }
 
-function toNumber(v) {
-  const n = parseInt(String(v == null ? '' : v).replace(/[^\d-]/g, ''), 10);
-  return Number.isFinite(n) ? n : 0;
+// JST 表示（yyyy/MM/dd HH:mm:ss）
+function formatJst(iso) {
+  if (!iso) return '';
+  const p = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  }).formatToParts(new Date(iso)).reduce((o, x) => { o[x.type] = x.value; return o; }, {});
+  return `${p.year}/${p.month}/${p.day} ${p.hour === '24' ? '00' : p.hour}:${p.minute}:${p.second}`;
 }
 
-// 集計。列は名前で探す。
-function summarize(ev) {
-  const rows = ev ? ev.rows : [];
-  const capacity = ev && Object.prototype.hasOwnProperty.call(EVENT_CAPACITY, ev.key) ? EVENT_CAPACITY[ev.key] : null;
-  const attendees = rows.reduce((s, r) => s + toNumber(r[COL_ATTENDEES]), 0);
-  const cars = rows.reduce((s, r) => s + toNumber(r[COL_CARS]), 0);
-  return {
-    companies: rows.length,
-    attendees,
-    cars,
-    capacity,
-    remaining: capacity == null ? null : capacity - attendees
-  };
+function isPending(r) {
+  return r.status === 'active' && (!r.mail_sent_at || !r.slack_sent_at);
 }
 
+function notifyLabel(r) {
+  if (r.status !== 'active' && !r.mail_sent_at && !r.slack_sent_at) return '—';
+  const parts = [];
+  parts.push(r.mail_sent_at ? 'メール済' : 'メール未');
+  parts.push(r.slack_sent_at ? 'Slack済' : 'Slack未');
+  let s = parts.join('・');
+  if (isPending(r)) s += '（' + r.notify_attempts + '回試行' + (r.notify_last_error ? '：' + r.notify_last_error : '') + '）';
+  return s;
+}
+
+// 集計は API が有効行だけで計算した値をそのまま出す
 function renderSummary(ev) {
-  const s = summarize(ev);
+  const s = ev ? ev.summary : { companies: 0, attendees: 0, cars: 0, capacity: null, remaining: null, pending: 0 };
   const items = [
     { label: '申込社数', value: s.companies, unit: '社' },
     { label: '合計参加人数', value: s.attendees, unit: '名' },
@@ -390,7 +428,18 @@ function renderSummary(ev) {
 function renderTable(ev) {
   const wrap = $('table-wrap');
   wrap.innerHTML = '';
-  $('table-meta-left').textContent = ev ? ev.sheetName + '：' + ev.rows.length + '件' : '';
+  const left = $('table-meta-left');
+  left.innerHTML = '';
+  if (ev) {
+    const cancelled = ev.rows.filter(r => r.status === 'cancelled').length;
+    left.appendChild(document.createTextNode(ev.name + '：' + ev.summary.companies + '件' + (cancelled ? '（取消 ' + cancelled + '件）' : '')));
+    if (ev.summary.pending > 0) {
+      const badge = document.createElement('span');
+      badge.className = 'badge-pending';
+      badge.textContent = '通知未完了 ' + ev.summary.pending + '件';
+      left.appendChild(badge);
+    }
+  }
   $('table-meta-right').textContent = '最終取得 ' + new Date().toLocaleString('ja-JP');
 
   if (!ev || ev.rows.length === 0) {
@@ -401,32 +450,147 @@ function renderTable(ev) {
     return;
   }
 
-  const headers = ev.headers.length ? ev.headers : Object.keys(ev.rows[0]);
   const table = document.createElement('table');
   const thead = table.createTHead();
   const hr = thead.insertRow();
   const th0 = document.createElement('th');
   th0.textContent = '#';
   hr.appendChild(th0);
-  headers.forEach(h => {
+  COLUMNS.forEach(c => {
     const th = document.createElement('th');
-    th.textContent = h;
+    th.textContent = c.label;
     hr.appendChild(th);
   });
+  if (canEdit) {
+    const th = document.createElement('th');
+    th.textContent = '操作';
+    hr.appendChild(th);
+  }
 
   const tbody = table.createTBody();
   ev.rows.forEach((row, i) => {
     const tr = tbody.insertRow();
+    if (row.status === 'cancelled') tr.className = 'cancelled';
+    tr.dataset.id = row.id;
     const td0 = tr.insertCell();
     td0.className = 'num';
     td0.textContent = String(i + 1);
-    headers.forEach(h => {
+    const editing = canEdit && editingId === row.id;
+    COLUMNS.forEach(c => {
       const td = tr.insertCell();
-      td.textContent = row[h] == null ? '' : String(row[h]);
-      if (NUMERIC_COLS.includes(h)) td.className = 'num';
+      td.className = 'col-' + c.key + (c.num ? ' num' : '');
+      if (editing && c.key === 'attendees') {
+        const ta = document.createElement('textarea');
+        ta.name = 'edit-attendees';
+        ta.rows = Math.max(2, row.attendees.length);
+        ta.value = row.attendees.join('\n');
+        ta.setAttribute('aria-label', '参加者氏名（1行に1名・先頭が代表者）');
+        td.appendChild(ta);
+      } else if (editing && c.key === 'car_count') {
+        const sel = document.createElement('select');
+        sel.name = 'edit-car-count';
+        for (let n = 0; n <= 5; n++) {
+          const o = document.createElement('option');
+          o.value = String(n);
+          o.textContent = n + '台';
+          if (n === row.car_count) o.selected = true;
+          sel.appendChild(o);
+        }
+        td.appendChild(sel);
+      } else if (editing && c.key === 'message') {
+        const ta = document.createElement('textarea');
+        ta.name = 'edit-message';
+        ta.rows = 3;
+        ta.value = row.message || '';
+        td.appendChild(ta);
+      } else {
+        td.textContent = c.render ? c.render(row) : (row[c.key] == null ? '' : String(row[c.key]));
+      }
     });
+    if (canEdit) {
+      const td = tr.insertCell();
+      td.className = 'actions';
+      renderActions(td, row, editing);
+    }
   });
   wrap.appendChild(table);
+}
+
+// 取消・変更・再送のボタン。編集できる人（API が canEdit=true を返した人）にだけ出す
+function renderActions(td, row, editing) {
+  if (row.status !== 'active') return;
+  if (editing) {
+    td.appendChild(actionButton('保存', 'primary', () => saveEdit(row)));
+    td.appendChild(actionButton('やめる', '', () => { editingId = null; render(); }));
+    return;
+  }
+  td.appendChild(actionButton('変更', '', () => { editingId = row.id; render(); }));
+  td.appendChild(actionButton('取消', 'danger', () => cancelRow(row)));
+  if (isPending(row)) td.appendChild(actionButton('再送', '', () => resendRow(row)));
+}
+
+function actionButton(label, kind, onClick) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'act' + (kind ? ' ' + kind : '');
+  b.textContent = label;
+  b.addEventListener('click', onClick);
+  return b;
+}
+
+// ===== 取消・変更・再送 =====
+async function runAction(payload, okMessage) {
+  let result;
+  try {
+    result = await callApi(payload);
+  } catch (err) {
+    alert('通信に失敗しました。再度お試しください。');
+    return false;
+  }
+  if (!result || !result.ok) {
+    alert((result && result.error) || '処理できませんでした');
+    return false;
+  }
+  if (okMessage && result.notified === false) alert(okMessage + '（運営 Slack への通知は送れませんでした）');
+  await loadData();
+  return true;
+}
+
+async function cancelRow(row) {
+  const ok = confirm(row.company + '（' + row.representative_name + ' 様）の申込を取り消します。\n取消後は編集できません。よろしいですか？');
+  if (!ok) return;
+  await runAction({ action: 'cancel', id: row.id }, '取り消しました');
+}
+
+async function saveEdit(row) {
+  const tr = document.querySelector('tr[data-id="' + row.id + '"]');
+  const attendees = tr.querySelector('textarea[name="edit-attendees"]').value.split('\n').map(v => v.trim()).filter(Boolean);
+  const carCount = parseInt(tr.querySelector('select[name="edit-car-count"]').value, 10);
+  const message = tr.querySelector('textarea[name="edit-message"]').value.trim();
+  if (attendees.length === 0) {
+    alert('参加者氏名を1名以上入力してください。');
+    return;
+  }
+  const done = await runAction({ action: 'update', id: row.id, attendees, carCount, message }, '変更しました');
+  if (done) editingId = null;
+}
+
+async function resendRow(row) {
+  const ok = confirm(row.company + '（' + row.representative_name + ' 様）の未送信の通知（メール・Slack）を再送します。よろしいですか？');
+  if (!ok) return;
+  let result;
+  try {
+    result = await callApi({ action: 'resend', id: row.id });
+  } catch (err) {
+    alert('通信に失敗しました。再度お試しください。');
+    return;
+  }
+  if (!result || !result.ok) {
+    alert((result && result.error) || '再送できませんでした');
+    return;
+  }
+  if (result.error) alert('再送しましたが一部失敗しました：' + result.error);
+  await loadData();
 }
 
 function showLoginNotice(type, msg) {

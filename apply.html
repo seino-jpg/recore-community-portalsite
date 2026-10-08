@@ -1046,76 +1046,13 @@ const io = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
-// ===== イベントの登録 =====
-// 新しいイベントを増やすときは、ここに1ブロック足して
+// ===== イベント定義 =====
+// イベントの正本はリポジトリの events.json（フォーム・LP・/admin・API が同じ定義を読む）。
+// 新しいイベントを増やすときは events.json に1ブロック足して、
 // トップページのボタンを apply.html?event=<キー> にするだけでよい。
-// キーは Google Apps Script 側の EVENT_SHEETS と揃えること（申し込みの記録先タブが決まる）。
-const EVENTS = {
-  'kanto-vol4': {
-    title: '関東コミュニティ第4回イベント｜ブックオフ出品倉庫 見学会',
-    name: '関東コミュニティ第4回イベント（ブックオフ出品倉庫 見学会）',
-    lead: '関東コミュニティ第4回イベントへのお申し込みはこちらから。<br>受付後、担当より詳細をご連絡します。',
-    date: '2026年10月22日（木）12:00〜16:00（受付 11:30〜12:00）',
-    deadline: '2026-09-30',   // この日の23:59（JST）で受付終了
-    place: '東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）',
-    detail: 'ピッキング業務・ささげ業務・メディア倉庫の見学（各60分）\n12:00 オリエンテーション／12:15 ピッキング／13:30 ささげ／14:45 メディア倉庫／15:45 クロージング（16:00 終了）',
-    capacity: '20名',          // 表示のみ。定員到達での自動締切はしない（締切は deadline）
-    transportNote: '当日のスケジュール維持のため、できるだけ公共交通機関でのご来場をお願いしています。お車でお越しの場合も台数を事前に伺い、駐車場（敷地外含む）を調整しますのでご安心ください。'
-  },
-  'kansai-vol2': {
-    title: '関西コミュニティ第2回イベント｜うまくいった一手を持ち寄る、関西RECOREユーザーの戦略会議',
-    name: '関西コミュニティ第2回イベント（うまくいった一手を持ち寄る、関西RECOREユーザーの戦略会議）',
-    lead: '関西コミュニティ第2回イベントへのお申し込みはこちらから。<br>受付後、担当より詳細をご連絡します。',
-    date: '2026年12月4日（金）16:00〜19:00（受付 15:00〜16:00）／懇親会 19:30〜（約2〜3時間）',
-    deadline: '2026-11-15',   // この日の23:59（JST）で受付終了
-    place: '株式会社Canup「リサイクルショップ ソッキン」店舗兼倉庫（〒566-0062 大阪府摂津市鳥飼上1丁目16-5）',
-    detail: 'メイン議題「また来たくなる店のつくり方」／サブ議題「売れ残りを出さない、在庫の回し方」／RECORE新機能のご紹介\n16:10 新機能紹介／16:30 メイン議題／18:00 サブ議題／18:50 クロージング／19:30 懇親会（場所・会費・申込方法は追ってご案内）',
-    capacity: '15名',          // 表示のみ。定員到達での自動締切はしない（締切は deadline）
-    transportNote: '専用駐車場をお借りしています。当日のスケジュール維持のため、できるだけ公共交通機関でお越しください。お車でも問題ありません。お申し込み時に台数を伺い、敷地外の駐車場も含めて事前に調整します。'
-  }
-};
-const DEFAULT_EVENT_KEY = 'kanto-vol4';
-
-const currentKey = (() => {
-  const key = new URLSearchParams(location.search).get('event');
-  return EVENTS[key] ? key : DEFAULT_EVENT_KEY;
-})();
-const currentEvent = EVENTS[currentKey];
-
-// ページの表示をイベントに合わせて差し替える
-document.title = currentEvent.title.split('｜')[0] + ' 参加申し込み | RECORE Community';
-document.getElementById('apply-lead').innerHTML = currentEvent.lead;
-document.getElementById('event-title').textContent = currentEvent.title;
-document.getElementById('event-date').textContent = currentEvent.date;
-document.getElementById('event-place').textContent = currentEvent.place;
-document.getElementById('transport-note').textContent = currentEvent.transportNote;
-if (currentEvent.capacity) {
-  const cap = document.getElementById('event-capacity');
-  cap.firstChild.textContent = '定員：' + currentEvent.capacity;
-  cap.hidden = false;
-}
-
-// イベント特設ページ（LP）がある回だけ、申込カードから導線を出す
-const EVENT_LP = { 'kanto-vol4': 'kanto-vol4.html', 'kansai-vol2': 'kansai-vol2.html' };
-if (EVENT_LP[currentKey]) {
-  const lp = document.getElementById('event-lp-link');
-  lp.querySelector('a').href = EVENT_LP[currentKey];
-  lp.hidden = false;
-}
-
-// ===== 申込締切 =====
-// deadline の日付の 23:59（JST）を過ぎたらフォームを閉じる
-const deadlineLabel = (() => {
-  const [y, m, d] = currentEvent.deadline.split('-').map(Number);
-  const dt = new Date(Date.UTC(y, m - 1, d));
-  const youbi = '日月火水木金土'[dt.getUTCDay()];
-  return `${y}年${m}月${d}日（${youbi}）`;
-})();
-document.getElementById('event-deadline').textContent = '申込締切：' + deadlineLabel;
-const isClosed = Date.now() >= new Date(currentEvent.deadline + 'T23:59:59+09:00').getTime();
-
-// ===== 参加申し込みフォーム =====
-const APPLY_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwPjnAQYHOc6lL5sqcYhzsadNsmxQXv8E6huz60xY-4KtQfKuwS8nfkEaOhZJvExu1O/exec';
+// フォームが API に送るのは eventKey だけ（イベント名・会場などは API が events.json から引く）。
+const EVENTS_URL = 'events.json';
+const APPLY_ENDPOINT = '/api/apply';
 
 const applyForm = document.getElementById('apply-form');
 const applyMessage = document.getElementById('form-message');
@@ -1124,6 +1061,15 @@ const applyButton = document.getElementById('apply-submit');
 function showApplyMessage(type, html) {
   applyMessage.className = 'form-message ' + type;
   applyMessage.innerHTML = html;
+}
+
+// 二重送信防止の申込トークン（送信ごとに作る。連打・通信リトライは同じトークンで届く）
+let submissionToken = crypto.randomUUID();
+
+async function loadEvents() {
+  const res = await fetch(EVENTS_URL, { cache: 'no-cache' });
+  if (!res.ok) throw new Error('events.json ' + res.status);
+  return res.json();
 }
 
 // ===== 代表者まとめ申込 =====
@@ -1159,76 +1105,136 @@ function syncCompanionFields() {
 attendeeCountSelect.addEventListener('change', syncCompanionFields);
 syncCompanionFields();
 
-if (currentEvent.capacity) {
-  document.getElementById('attendee-note').textContent =
-    '本イベント全体の定員が' + currentEvent.capacity + 'です（1社あたりの上限ではありません）。';
-}
-
-if (isClosed) {
-  applyForm.style.display = 'none';
-  showApplyMessage('error', '申込受付は終了しました（締切：' + deadlineLabel + '）。<br>ご参加をご希望の場合は <a href="mailto:seino@recore-corp.jp" style="color: inherit;">seino@recore-corp.jp</a> までご相談ください。');
-}
-
-applyForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-
-  const attendeeCount = parseInt(attendeeCountSelect.value, 10) || 0;
-  const companions = getCompanionInputs().map(el => el.value.trim());
-  const name = applyForm.name.value.trim();
-
-  const data = {
-    company: applyForm.company.value.trim(),
-    name: name,
-    role: applyForm.role.value,
-    email: applyForm.email.value.trim(),
-    tel: applyForm.tel.value.trim(),
-    attendeeCount: attendeeCount,
-    attendees: [name].concat(companions),   // 代表者を含む参加者全員の氏名
-    carCount: applyForm.carCount.value === '' ? null : parseInt(applyForm.carCount.value, 10),
-    message: applyForm.message.value.trim(),
-    eventKey: currentKey,
-    event: currentEvent.name,
-    eventDate: currentEvent.date,
-    eventPlace: currentEvent.place,
-    eventDetail: currentEvent.detail
-  };
-
-  if (!data.company || !data.name || !data.role || !data.email || !data.tel || !attendeeCount || data.carCount === null) {
-    showApplyMessage('error', '必須項目（会社名・代表者のお名前・役職・メールアドレス・電話番号・参加人数・お車の台数）をご入力ください。');
-    return;
-  }
-  if (companions.some(v => !v)) {
-    showApplyMessage('error', 'ご同行者のお名前をすべてご記入ください。');
-    return;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-    showApplyMessage('error', 'メールアドレスの形式をご確認ください。');
-    return;
-  }
-
-  applyButton.disabled = true;
-  applyButton.textContent = '送信中…';
-  applyMessage.className = 'form-message';
-
+async function initApply() {
+  let defs;
   try {
-    // Content-Type は text/plain（プリフライトを避けるため）
-    const res = await fetch(APPLY_ENDPOINT, {
-      method: 'POST',
-      body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    if (!result.ok) throw new Error(result.error || 'unknown');
-
-    applyForm.reset();
-    applyForm.style.display = 'none';
-    showApplyMessage('success', 'お申し込みありがとうございます。<br>受付確認のメールをお送りしましたのでご確認ください。追って担当より詳細をご連絡します。');
+    defs = await loadEvents();
   } catch (err) {
-    showApplyMessage('error', '送信に失敗しました。お手数ですが <a href="mailto:seino@recore-corp.jp" style="color: inherit;">seino@recore-corp.jp</a> まで直接ご連絡ください。');
-  } finally {
-    applyButton.disabled = false;
-    applyButton.textContent = '申し込む';
+    applyForm.style.display = 'none';
+    showApplyMessage('error', 'イベント情報を読み込めませんでした。ページを再読み込みしてください。');
+    return;
   }
-});
+
+  const currentKey = (() => {
+    const key = new URLSearchParams(location.search).get('event');
+    return defs.events[key] ? key : defs.defaultEventKey;
+  })();
+  const currentEvent = defs.events[currentKey];
+
+  // ページの表示をイベントに合わせて差し替える
+  document.title = currentEvent.title.split('｜')[0] + ' 参加申し込み | RECORE Community';
+  document.getElementById('apply-lead').innerHTML = currentEvent.lead;
+  document.getElementById('event-title').textContent = currentEvent.title;
+  document.getElementById('event-date').textContent = currentEvent.date_text;
+  document.getElementById('event-place').textContent = currentEvent.place;
+  document.getElementById('transport-note').textContent = currentEvent.transportNote;
+  const capacityLabel = currentEvent.capacity != null ? currentEvent.capacity + '名' : '';
+  if (capacityLabel) {
+    const cap = document.getElementById('event-capacity');
+    cap.firstChild.textContent = '定員：' + capacityLabel;
+    cap.hidden = false;
+    document.getElementById('attendee-note').textContent =
+      '本イベント全体の定員が' + capacityLabel + 'です（1社あたりの上限ではありません）。';
+  }
+
+  // イベント特設ページ（LP）がある回だけ、申込カードから導線を出す
+  const EVENT_LP = { 'kanto-vol4': 'kanto-vol4.html', 'kansai-vol2': 'kansai-vol2.html' };
+  if (EVENT_LP[currentKey]) {
+    const lp = document.getElementById('event-lp-link');
+    lp.querySelector('a').href = EVENT_LP[currentKey];
+    lp.hidden = false;
+  }
+
+  // ===== 申込締切 =====
+  // deadline の日付の 23:59（JST）を過ぎたらフォームを閉じる（API もサーバー側で同じ判定をする）
+  const deadlineLabel = (() => {
+    const [y, m, d] = currentEvent.deadline.split('-').map(Number);
+    const dt = new Date(Date.UTC(y, m - 1, d));
+    const youbi = '日月火水木金土'[dt.getUTCDay()];
+    return `${y}年${m}月${d}日（${youbi}）`;
+  })();
+  document.getElementById('event-deadline').textContent = '申込締切：' + deadlineLabel;
+  const isClosed = Date.now() >= new Date(currentEvent.deadline + 'T23:59:59+09:00').getTime();
+
+  const closedMessage = '申込受付は終了しました（締切：' + deadlineLabel + '）。<br>ご参加をご希望の場合は <a href="mailto:seino@recore-corp.jp" style="color: inherit;">seino@recore-corp.jp</a> までご相談ください。';
+  if (isClosed) {
+    applyForm.style.display = 'none';
+    showApplyMessage('error', closedMessage);
+  }
+
+  applyForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const attendeeCount = parseInt(attendeeCountSelect.value, 10) || 0;
+    const companions = getCompanionInputs().map(el => el.value.trim());
+    const name = applyForm.name.value.trim();
+
+    const data = {
+      eventKey: currentKey,
+      submission_token: submissionToken,
+      company: applyForm.company.value.trim(),
+      name: name,
+      role: applyForm.role.value,
+      email: applyForm.email.value.trim(),
+      tel: applyForm.tel.value.trim(),
+      attendeeCount: attendeeCount,
+      attendees: [name].concat(companions),   // 代表者を含む参加者全員の氏名
+      carCount: applyForm.carCount.value === '' ? null : parseInt(applyForm.carCount.value, 10),
+      message: applyForm.message.value.trim()
+    };
+
+    if (!data.company || !data.name || !data.role || !data.email || !data.tel || !attendeeCount || data.carCount === null) {
+      showApplyMessage('error', '必須項目（会社名・代表者のお名前・役職・メールアドレス・電話番号・参加人数・お車の台数）をご入力ください。');
+      return;
+    }
+    if (companions.some(v => !v)) {
+      showApplyMessage('error', 'ご同行者のお名前をすべてご記入ください。');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      showApplyMessage('error', 'メールアドレスの形式をご確認ください。');
+      return;
+    }
+
+    applyButton.disabled = true;
+    applyButton.textContent = '送信中…';
+    applyMessage.className = 'form-message';
+
+    try {
+      // Content-Type は text/plain（旧 GAS 経路と同じ流儀。API は同一オリジン）
+      const res = await fetch(APPLY_ENDPOINT, {
+        method: 'POST',
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if (!result.ok) {
+        if (result.code === 'closed') {
+          applyForm.style.display = 'none';
+          showApplyMessage('error', closedMessage);
+          return;
+        }
+        throw new Error(result.error || 'unknown');
+      }
+
+      applyForm.reset();
+      applyForm.style.display = 'none';
+      submissionToken = crypto.randomUUID();   // 次の申込は別トークン
+      if (result.mailSent) {
+        showApplyMessage('success', 'お申し込みありがとうございます。<br>受付確認のメールをお送りしましたのでご確認ください。追って担当より詳細をご連絡します。');
+      } else {
+        // 申込は保存済み。確認メールは再送の仕組みで追って届く
+        showApplyMessage('success', 'お申し込みを受け付けました。<br>受付確認のメールは追ってお送りします。追って担当より詳細をご連絡します。');
+      }
+    } catch (err) {
+      showApplyMessage('error', '送信に失敗しました。お手数ですが <a href="mailto:seino@recore-corp.jp" style="color: inherit;">seino@recore-corp.jp</a> まで直接ご連絡ください。');
+    } finally {
+      applyButton.disabled = false;
+      applyButton.textContent = '申し込む';
+    }
+  });
+}
+
+initApply();
 </script>
 
 </body>
