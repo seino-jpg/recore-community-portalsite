@@ -1,6 +1,6 @@
 # 関東 Vol.4 の運営ボード：レビュー記録
 
-状態: セルフレビュー中
+状態: 承認済み
 設計書: design.md（確定 2026-10-08）　実装記録: implementation.md（検証済み 2026-10-08）
 更新: 2026-10-08
 
@@ -20,7 +20,7 @@
 | 9 | ③ | テストが helpers.mjs を使わず内製。本番らしい DB 名での中止 guard が無い | test/ops.test.mjs | 軽微 | PR 本文「既知の制約」（PR #8 マージ後に helpers へ寄せる） |
 | 10 | ③ | ログインが `auto_select: true`＋同じタブの再読込でトークンを使い回す（admin.html と違う） | ops.html | 軽微 | PR 本文「設計上の判断」（D12：当日は開きっぱなし・再読込が多い） |
 | 11 | ④ | U1〜U18 全行に結果あり。字数の境界はテスト済み | implementation.md 検証表 | — | 問題なし |
-| 12 | ④ | U17 は test と vercel dev で確認。実際のプレビュー URL は未確認 | implementation.md U17 | 軽微 | PR 作成後に確認して PR 本文に追記 |
+| 12 | ④ | U17 は test と vercel dev で確認。実際のプレビュー URL は未確認 | implementation.md U17 | 軽微 | PR 作成後に確認した：プレビューで `/admin/ops` 表示・`/api/ops` 403（設定なし）。PR 本文に追記 |
 | 13 | ④ | 375px は初期データの長さでだけ確認（100字・1000字の折返しは未記録） | implementation.md U12 | 軽微 | PR 本文「既知の制約」 |
 | 14 | 追加 | 削除は更新時刻を照合しない（他の人の変更ごと消えうる） | ops-core.js `remove` | 軽微 | PR 本文「既知の制約」（D8 は確認のみ。5名で起きにくい） |
 | 15 | 追加 | 編集中の行を他の人が削除すると、再読込で編集フォームが黙って消える | ops.html `render` | 軽微 | PR 本文「既知の制約」 |
@@ -41,10 +41,12 @@
 ## PR
 | リポジトリ | PR | 向き先 | マージ順 |
 |---|---|---|---|
+| seino-jpg/recore-community-portalsite | https://github.com/seino-jpg/recore-community-portalsite/pull/12（draft） | main | PR #8・#9 より先でよい |
 
 ## 依頼
 | 相手 | 送ったもの | 日付 |
 |---|---|---|
+| 清野さん | draft PR #12（自分のリポジトリのため、しょうさん・QA への依頼は対象外） | 2026-10-08 |
 
 ## しょうさんの指摘
 | # | 指摘 | 種類 | 対応 | 返信 |
