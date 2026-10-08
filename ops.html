@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Vol.4 運営ボード | RECORE Community</title>
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#1E3A14">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #1E3A14; --green-mid: #2D4E1C; --gold: #C4D44A;
+      --gold-dim: rgba(196,212,74,0.15); --text: #2C2C2C; --text-sub: #6A6A6A;
+      --bg: #F7F7F2; --surface: #FFFFFF; --border: #DDE0D8;
+      --red: #a8342a; --red-bg: #fdecea; --red-border: #f5c2bd;
+    }
+    body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+    /* display を指定した要素に hidden 属性を付けても効かないため、明示的に打ち消す */
+    [hidden] { display: none !important; }
+
+    /* ===== HEADER ===== */
+    header { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; }
+    nav { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 12px 28px; }
+    .logo { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 20px; font-weight: 900; color: var(--green-dark); text-decoration: none; white-space: nowrap; }
+    .logo-sub { color: var(--gold); font-size: 12px; display: block; font-weight: 700; letter-spacing: 0.08em; }
+    .pages { display: flex; gap: 4px; }
+    .pages a { padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: 700; color: var(--text-sub); text-decoration: none; white-space: nowrap; }
+    .pages a:hover { color: var(--green-dark); }
+    .pages a.current { background: var(--green-dark); color: #fff; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-sub); }
+    .nav-right button { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 6px 12px; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer; }
+    .nav-right button:hover { border-color: var(--green-mid); color: var(--green-dark); }
+
+    /* ===== COMMON ===== */
+    main { flex: 1; padding: 36px 24px 80px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .label-en { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; color: var(--gold); margin-bottom: 10px; }
+    .label-en::before { content: ''; display: block; width: 32px; height: 2px; background: var(--gold); flex-shrink: 0; }
+    .page-title { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(24px, 4vw, 34px); font-weight: 900; color: var(--green-dark); line-height: 1.25; }
+    .page-sub { color: var(--text-sub); font-size: 14px; margin: 6px 0 24px; }
+    .btn { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 6px 12px; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer; white-space: nowrap; }
+    .btn:hover { border-color: var(--green-mid); color: var(--green-dark); }
+    .btn:disabled { opacity: 0.5; cursor: default; }
+    .btn.primary { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .btn.danger { color: var(--red); border-color: var(--red-border); }
+    .btn.add { margin-bottom: 8px; font-weight: 700; color: var(--green-dark); border-color: var(--green-mid); }
+
+    /* ===== LOGIN・お知らせ ===== */
+    .login-card { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--gold); padding: 28px 24px; max-width: 520px; }
+    .login-card h2 { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 18px; font-weight: 900; color: var(--green-dark); margin-bottom: 8px; }
+    .login-card p { font-size: 14px; color: var(--text-sub); margin-bottom: 20px; }
+    #gis-button, #gis-relogin { min-height: 44px; }
+    .notice { display: none; margin-top: 16px; padding: 12px 16px; font-size: 14px; border: 1px solid var(--border); background: var(--surface); white-space: pre-wrap; }
+    .notice.show { display: block; }
+    .notice.error { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+    .notice.info { background: var(--gold-dim); border-color: var(--gold); color: var(--green-dark); }
+    .relogin { margin-bottom: 20px; padding: 14px 16px; background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); font-size: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 200; max-width: min(560px, calc(100% - 32px)); padding: 10px 16px; border-radius: 4px; font-size: 14px; background: var(--green-dark); color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .toast.error { background: var(--red); }
+
+    /* ===== SUMMARY・TABS ===== */
+    .summary { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid var(--green-dark); border-bottom: 1px solid var(--border); margin-bottom: 28px; background: var(--surface); }
+    .summary-item { padding: 16px; border-right: 1px solid var(--border); }
+    .summary-item:last-child { border-right: none; }
+    .summary-label { font-size: 12px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; }
+    .summary-value { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 32px; font-weight: 900; color: var(--green-dark); line-height: 1; }
+    .summary-value small { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-sub); margin-left: 4px; }
+    .summary-value.warn { color: var(--red); }
+    .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+    .tab { background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; padding: 10px 18px; font-family: inherit; font-size: 15px; font-weight: 700; color: var(--text-sub); white-space: nowrap; cursor: pointer; }
+    .tab:hover { color: var(--green-dark); }
+    .tab.active { color: var(--green-dark); border-bottom-color: var(--gold); }
+    .tab .count { font-weight: 500; font-size: 13px; margin-left: 6px; }
+
+    /* ===== 準備事項 ===== */
+    .group-label { font-size: 12px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.06em; margin: 20px 0 8px; }
+    .list { background: var(--surface); border: 1px solid var(--border); }
+    .list:empty { display: none; }
+    .empty { padding: 32px 16px; text-align: center; color: var(--text-sub); font-size: 14px; background: var(--surface); border: 1px solid var(--border); }
+    .row { display: grid; grid-template-columns: 92px 1fr 150px 92px 120px 56px; gap: 12px; align-items: start; padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .row:last-child, .srow:last-child { border-bottom: none; }
+    .row.done { color: var(--text-sub); }
+    .row.done .title { text-decoration: line-through; text-decoration-color: rgba(0,0,0,0.25); }
+    .title { font-weight: 700; word-break: break-word; }
+    .note { font-size: 12.5px; color: var(--text-sub); white-space: pre-wrap; word-break: break-word; margin-top: 2px; }
+    .meta { font-size: 13px; word-break: break-word; }
+    .meta-label { display: none; }
+    .updated { font-size: 11.5px; color: var(--text-sub); line-height: 1.4; word-break: break-all; }
+    .due.overdue { color: var(--red); font-weight: 700; }
+    select.pill { appearance: none; -webkit-appearance: none; border-radius: 12px; padding: 2px 22px 2px 10px; font-family: inherit; font-size: 12px; font-weight: 700; border: 1px solid; cursor: pointer;
+      background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+      background-position: calc(100% - 11px) 55%, calc(100% - 7px) 55%; background-size: 4px 4px; background-repeat: no-repeat; }
+    select.pill.todo { color: var(--text-sub); border-color: var(--border); background-color: #fff; }
+    select.pill.doing { color: #7a5b00; border-color: #e8d48a; background-color: #fff8dc; }
+    select.pill.done { color: var(--green-dark); border-color: var(--gold); background-color: #f4f7dc; }
+
+    /* ===== 当日スケジュール ===== */
+    .srow { display: grid; grid-template-columns: 120px 1fr 56px; gap: 14px; padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .time { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; font-size: 17px; color: var(--green-dark); line-height: 1.3; white-space: nowrap; }
+    .time .end { display: block; font-size: 13px; font-weight: 700; color: var(--text-sub); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .chip { font-size: 12px; padding: 1px 8px; border-radius: 3px; background: #F1F2EC; color: var(--text); word-break: break-word; }
+    .chip b { color: var(--text-sub); font-weight: 500; margin-right: 4px; }
+    .srow.now { background: var(--gold-dim); box-shadow: inset 4px 0 0 var(--gold); }
+    .srow.past { opacity: 0.55; }
+    .now-badge { display: none; margin-left: 8px; padding: 0 8px; border-radius: 10px; background: var(--green-dark); color: #fff; font-size: 11px; font-weight: 700; vertical-align: 2px; }
+    .srow.now .now-badge { display: inline-block; }
+
+    /* ===== 編集フォーム ===== */
+    .edit { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 12px; background: #FBFBF8; padding: 14px; border: 1px solid var(--green-mid); border-radius: 4px; }
+    .edit label { font-size: 12px; font-weight: 700; color: var(--text-sub); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .edit input, .edit select, .edit textarea { font-family: inherit; font-size: 16px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; background: #fff; color: var(--text); width: 100%; min-width: 0; }
+    .edit textarea { resize: vertical; }
+    .edit .wide { grid-column: 1 / -1; }
+    .edit .half { grid-column: span 2; }
+    .edit .actions { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; }
+    .edit .actions .spacer { flex: 1; }
+    .edit .error { grid-column: 1 / -1; color: var(--red); font-size: 13px; font-weight: 700; }
+    .conflict { grid-column: 1 / -1; background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); padding: 10px 12px; font-size: 13px; border-radius: 4px; }
+    .conflict dl { display: grid; grid-template-columns: 64px 1fr; gap: 2px 8px; margin-top: 6px; color: var(--text); }
+    .conflict dt { color: var(--text-sub); }
+    .conflict dd { white-space: pre-wrap; word-break: break-word; }
+
+    footer { background: #0F1E09; color: rgba(255,255,255,0.4); padding: 20px; text-align: center; font-size: 12px; }
+
+    @media (max-width: 768px) {
+      header { padding: 10px 16px; }
+      nav { flex-wrap: wrap; }
+      .logo { font-size: 16px; }
+      .logo-sub { font-size: 10px; }
+      .pages { order: 3; width: 100%; }
+      .pages a { flex: 1; text-align: center; padding: 6px 8px; border: 1px solid var(--border); }
+      .pages a.current { border-color: var(--green-dark); }
+      .nav-right span, .nav-right #btn-reload { display: none; }
+      main { padding: 24px 16px 60px; }
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .summary-item:nth-child(2) { border-right: none; }
+      .summary-item:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .summary-value { font-size: 26px; }
+      .row { grid-template-columns: 1fr auto; gap: 4px 10px; }
+      .row > .status { grid-column: 1; grid-row: 1; }
+      .row > .actions { grid-column: 2; grid-row: 1; justify-self: end; }
+      .row > .body, .row > .meta, .row > .updated { grid-column: 1 / -1; }
+      .row > .meta { display: flex; gap: 6px; }
+      .meta-label { display: inline; color: var(--text-sub); }
+      .srow { grid-template-columns: 74px 1fr auto; gap: 10px; }
+      .time { font-size: 15px; }
+      .edit { grid-template-columns: 1fr 1fr; }
+      .edit .half { grid-column: 1 / -1; }
+      .tab { padding: 10px 12px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav>
+    <a href="/" class="logo">RECORE<span class="logo-sub">Community</span></a>
+    <div class="pages">
+      <a href="/admin">申込管理</a>
+      <a href="/admin/ops" class="current" aria-current="page">Vol.4 運営ボード</a>
+    </div>
+    <div class="nav-right" id="nav-right" hidden>
+      <span id="viewer-email"></span>
+      <button type="button" id="btn-reload">再読込</button>
+      <button type="button" id="btn-logout">ログアウト</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="container">
+    <div class="label-en">OPERATIONS</div>
+    <h1 class="page-title">関東コミュニティ Vol.4 運営ボード</h1>
+    <p class="page-sub">10/22（木）ブックオフ出品倉庫 見学会（東名横浜ロジスティクスセンター）。運営メンバーなら誰でも追加・編集できます。</p>
+
+    <!-- ログイン前: ここ以外は何も描かない -->
+    <section id="login-view">
+      <div class="login-card">
+        <h2>運営メンバー専用</h2>
+        <p>許可された Google アカウントでログインしてください。</p>
+        <div id="gis-button"></div>
+        <div id="login-notice" class="notice"></div>
+      </div>
+    </section>
+
+    <!-- ログイン後 -->
+    <section id="board-view" hidden>
+      <!-- ログインが切れたとき。入力中の内容は残したまま、ここからログインし直す（D12） -->
+      <div class="relogin" id="relogin" hidden>
+        <span>ログインの有効期限が切れました。入力中の内容はそのまま残っています。ログインし直すと続きを保存します。</span>
+        <div id="gis-relogin"></div>
+      </div>
+      <div class="summary" id="summary"></div>
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab" data-tab="prep">準備事項<span class="count" id="count-prep"></span></button>
+        <button type="button" class="tab" data-tab="day">当日スケジュール<span class="count" id="count-day"></span></button>
+      </div>
+      <section id="view-prep">
+        <button type="button" class="btn add" data-add="task">＋ 準備事項を追加</button>
+        <div class="list" id="prep-open"></div>
+        <div class="group-label" id="done-label"></div>
+        <div class="list" id="prep-done"></div>
+      </section>
+      <section id="view-day" hidden>
+        <button type="button" class="btn add" data-add="schedule">＋ 予定を追加</button>
+        <div class="list" id="day-list"></div>
+      </section>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+<footer>© 2026 RECORE Community by 株式会社RECORE.</footer>
+
+<script>
+// ===== 設定 =====
+// OAuth 2.0 クライアント ID。サイト API の環境変数 GOOGLE_CLIENT_ID と同じ値にすること（admin.html と同じ）
+const GOOGLE_CLIENT_ID = '642574052479-lt9bufovhol8iepsi6srft2cm4jj1v9b.apps.googleusercontent.com';
+const OPS_ENDPOINT = '/api/ops';
+const EVENT_DATE = '2026-10-22';        // 開催日（JST）。この日に開くと当日タブを先に出し、いまの行を強調する（D7）
+const TOKEN_KEY = 'ops-id-token';        // 同じタブでの再読込でログインを使い回す（期限まで）
+const STATUS_LABEL = { todo: '未着手', doing: '進行中', done: '完了' };
+
+// ===== 状態 =====
+let idToken = null;
+let tasks = [];
+let schedule = [];
+let tab = null;
+let pendingActions = [];                 // ログイン切れで止まった保存・削除。ログインし直したら順に続ける（D12）
+let reloadAfterLogin = false;            // ログイン切れで止まった再読込。保存の続きより後に読み直す
+let reloginButtonRendered = false;
+const editing = new Map();               // `${kind}:${id|new}` → { kind, id, draft, base, conflict, error, saving }
+
+const $ = (id) => document.getElementById(id);
+
+// ===== 時刻（JST） =====
+function jstParts(date = new Date()) {
+  const p = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
+  }).formatToParts(date).reduce((o, x) => { o[x.type] = x.value; return o; }, {});
+  const hour = p.hour === '24' ? '00' : p.hour;
+  return { date: `${p.year}-${p.month}-${p.day}`, minutes: parseInt(hour, 10) * 60 + parseInt(p.minute, 10), month: +p.month, day: +p.day, hm: `${hour}:${p.minute}` };
+}
+function toMinutes(hm) { const [h, m] = String(hm).split(':'); return parseInt(h, 10) * 60 + parseInt(m, 10); }
+function daysUntil(from, to) { return Math.round((Date.parse(to + 'T00:00:00Z') - Date.parse(from + 'T00:00:00Z')) / 86400000); }
+function shortDate(d) { if (!d) return '期日なし'; const [, m, day] = d.split('-'); return `${+m}/${+day}`; }
+function updatedLabel(row) {
+  const who = row.updated_by === 'seed' ? '初期データ' : String(row.updated_by || '').split('@')[0];
+  const t = jstParts(new Date(row.updated_at));
+  return { who, when: `${t.month}/${t.day} ${t.hm}` };
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// ===== 認証（Google Identity Services） =====
+// ID トークンの期限（exp）を読む。署名の検証は API がする。ここでは送る前に切れているかだけを見る
+function tokenExpired(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    return !(payload.exp * 1000 > Date.now() + 60 * 1000);
+  } catch {
+    return true;
+  }
+}
+function storeToken(token) {
+  try { token ? sessionStorage.setItem(TOKEN_KEY, token) : sessionStorage.removeItem(TOKEN_KEY); } catch { /* 保存できなくても動く */ }
+}
+function storedToken() {
+  try { return sessionStorage.getItem(TOKEN_KEY); } catch { return null; }
+}
+
+function gisReady() { return Boolean(window.google && google.accounts && google.accounts.id); }
+
+function onGisLoad() {
+  const saved = storedToken();
+  if (saved && !tokenExpired(saved)) {
+    idToken = saved;
+    loadData();
+  }
+  if (!gisReady()) {
+    if (!idToken) showLoginNotice('error', 'ログイン機能を読み込めませんでした。ページを再読み込みしてください。');
+    return;
+  }
+  // 2回目以降は Google の自動選択でワンタップ（D12）
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: (res) => handleCredential(res.credential),
+    auto_select: true,
+    ux_mode: 'popup'
+  });
+  google.accounts.id.renderButton($('gis-button'), {
+    type: 'standard', theme: 'outline', size: 'large', text: 'signin_with', shape: 'rectangular', logo_alignment: 'left'
+  });
+  if (!idToken) google.accounts.id.prompt();
+}
+
+async function handleCredential(credential) {
+  if (!credential) return;
+  idToken = credential;
+  storeToken(credential);
+  if ($('board-view').hidden) {
+    showLoginNotice('info', '認証中…');
+    await loadData();
+    return;
+  }
+  // ログインし直した：止まっていた保存・削除を続け、最後に読み直す
+  $('relogin').hidden = true;
+  const actions = pendingActions;
+  const reload = reloadAfterLogin;
+  pendingActions = [];
+  reloadAfterLogin = false;
+  for (const action of actions) await action();
+  if (reload) await loadData();
+}
+
+function needRelogin(retry, message) {
+  if ($('board-view').hidden) {
+    idToken = null;
+    storeToken(null);
+    showLoginNotice('error', message || 'ログインしてください');
+    return;
+  }
+  // 再読込（retry なし）で、止まっている保存を上書きしない
+  if (retry) pendingActions.push(retry); else reloadAfterLogin = true;
+  $('relogin').hidden = false;
+  $('relogin').querySelector('span').textContent = message && !/有効期限|ログインが必要/.test(message)
+    ? message
+    : 'ログインの有効期限が切れました。入力中の内容はそのまま残っています。'
+      + (pendingActions.length ? 'ログインし直すと続きを保存します。' : 'ログインし直すと最新を読み込みます。');
+  if (gisReady()) {
+    if (!reloginButtonRendered) {
+      google.accounts.id.renderButton($('gis-relogin'), { type: 'standard', theme: 'outline', size: 'medium', text: 'signin_with' });
+      reloginButtonRendered = true;
+    }
+    google.accounts.id.prompt();
+  }
+}
+
+function logout() {
+  idToken = null;
+  storeToken(null);
+  tasks = [];
+  schedule = [];
+  editing.clear();
+  pendingActions = [];
+  reloadAfterLogin = false;
+  $('board-view').hidden = true;
+  $('nav-right').hidden = true;
+  $('relogin').hidden = true;
+  $('login-view').hidden = false;
+  showLoginNotice('', '');
+  if (gisReady()) google.accounts.id.disableAutoSelect();
+}
+
+function showLoginNotice(type, msg) {
+  const el = $('login-notice');
+  el.className = 'notice' + (msg ? ' show ' + type : '');
+  el.textContent = msg;
+}
+
+let toastTimer = null;
+function toast(msg, type = '') {
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, type === 'error' ? 6000 : 2500);
+}
+
+// ===== API =====
+// 戻り値: { status, body }。ログインが切れていれば null（再ログインを出し、retry をあとで実行する）
+async function api(payload, retry) {
+  if (!idToken || tokenExpired(idToken)) {
+    needRelogin(retry);
+    return null;
+  }
+  let res;
+  let body;
+  try {
+    res = await fetch(OPS_ENDPOINT, { method: 'POST', body: JSON.stringify({ ...payload, idToken }) });
+    body = await res.json();
+  } catch {
+    toast('通信に失敗しました。電波の良い場所でもう一度お試しください。', 'error');
+    return null;
+  }
+  if (res.status === 403) {
+    needRelogin(retry, body && body.error);
+    return null;
+  }
+  return { status: res.status, body };
+}
+
+async function loadData() {
+  const r = await api({ action: 'list' });
+  if (!r) return;
+  if (!r.body.ok) {
+    if ($('board-view').hidden) showLoginNotice('error', r.body.error || '読み込めませんでした');
+    else toast(r.body.error || '読み込めませんでした', 'error');
+    return;
+  }
+  tasks = r.body.tasks || [];
+  schedule = r.body.schedule || [];
+  $('viewer-email').textContent = r.body.viewer || '';
+  $('login-view').hidden = true;
+  $('nav-right').hidden = false;
+  $('board-view').hidden = false;
+  showLoginNotice('', '');
+  if (!tab) tab = jstParts().date === EVENT_DATE ? 'day' : 'prep';
+  render();
+}
+
+// ===== 描画 =====
+// 準備は「未完了が上・期日の近い順（期日なしは最後）」、完了は下にまとめる（D7）
+function sortedTasks() {
+  const key = (t) => t.due_date || '9999-99-99';
+  const open = tasks.filter((t) => t.status !== 'done').sort((a, b) => (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0));
+  return { open, done: tasks.filter((t) => t.status === 'done') };
+}
+// 当日は開始時刻順（D5）。同じ開始なら時点だけの行を先に
+function sortedSchedule() {
+  return schedule.slice().sort((a, b) => toMinutes(a.start_time) - toMinutes(b.start_time)
+    || (a.end_time ? toMinutes(a.end_time) : -1) - (b.end_time ? toMinutes(b.end_time) : -1));
+}
+
+function render() {
+  const today = jstParts().date;
+  const { open, done } = sortedTasks();
+  const overdue = open.filter((t) => t.due_date && t.due_date < today).length;
+  const left = daysUntil(today, EVENT_DATE);
+  $('summary').innerHTML = [
+    ['開催まで', left > 0 ? `${left}<small>日</small>` : left === 0 ? '当日' : '終了'],
+    ['未完了', `${open.length}<small>件</small>`],
+    ['期日切れ', `${overdue}<small>件</small>`, overdue ? 'warn' : ''],
+    ['完了', `${done.length}<small>/ ${tasks.length}件</small>`]
+  ].map(([l, v, c]) => `<div class="summary-item"><div class="summary-label">${l}</div><div class="summary-value ${c || ''}">${v}</div></div>`).join('');
+  $('count-prep').textContent = `${open.length}件`;
+  $('count-day').textContent = `${schedule.length}件`;
+
+  const newTask = editing.has('task:new') ? editForm('task:new') : '';
+  $('prep-open').innerHTML = newTask + open.map((t) => taskRow(t, today)).join('')
+    || '<div class="empty">未完了の準備事項はありません</div>';
+  $('done-label').textContent = done.length ? `完了 ${done.length}件` : '';
+  $('prep-done').innerHTML = done.map((t) => taskRow(t, today)).join('');
+
+  const newSchedule = editing.has('schedule:new') ? editForm('schedule:new') : '';
+  $('day-list').innerHTML = newSchedule + sortedSchedule().map(scheduleRow).join('')
+    || '<div class="empty">予定はまだありません</div>';
+
+  document.querySelectorAll('.tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
+  $('view-prep').hidden = tab !== 'prep';
+  $('view-day').hidden = tab !== 'day';
+  updateNow();
+}
+
+function taskRow(t, today) {
+  const key = 'task:' + t.id;
+  if (editing.has(key)) return editForm(key);
+  const overdue = t.status !== 'done' && t.due_date && t.due_date < today;
+  const u = updatedLabel(t);
+  const options = Object.entries(STATUS_LABEL).map(([v, l]) => `<option value="${v}"${v === t.status ? ' selected' : ''}>${l}</option>`).join('');
+  return `<div class="row ${t.status === 'done' ? 'done' : ''}">
+    <div class="status"><select class="pill ${esc(t.status)}" data-status-id="${esc(t.id)}" aria-label="状態">${options}</select></div>
+    <div class="body"><div class="title">${esc(t.title)}</div>${t.note ? `<div class="note">${esc(t.note)}</div>` : ''}</div>
+    <div class="meta"><span class="meta-label">担当</span>${esc(t.owner || '—')}</div>
+    <div class="meta due ${overdue ? 'overdue' : ''}"><span class="meta-label">期日</span>${esc(shortDate(t.due_date))}</div>
+    <div class="updated">${esc(u.who)}<br>${esc(u.when)}</div>
+    <div class="actions"><button type="button" class="btn" data-edit="${esc(key)}">編集</button></div>
+  </div>`;
+}
+
+function scheduleRow(s) {
+  const key = 'schedule:' + s.id;
+  if (editing.has(key)) return editForm(key);
+  const chips = [
+    s.owner && `<span class="chip"><b>担当</b>${esc(s.owner)}</span>`,
+    s.place && `<span class="chip"><b>場所</b>${esc(s.place)}</span>`
+  ].filter(Boolean).join('');
+  return `<div class="srow" data-start="${esc(s.start_time)}" data-end="${esc(s.end_time || '')}">
+    <div class="time">${esc(s.start_time)}${s.end_time ? `<span class="end">〜${esc(s.end_time)}</span>` : ''}</div>
+    <div><div class="title">${esc(s.title)}<span class="now-badge">いま</span></div>${chips ? `<div class="chips">${chips}</div>` : ''}${s.note ? `<div class="note">${esc(s.note)}</div>` : ''}</div>
+    <div><button type="button" class="btn" data-edit="${esc(key)}">編集</button></div>
+  </div>`;
+}
+
+// 開催日だけ、いまの時間帯の行を強調し、終わった行を薄くする（D7）。入力中の欄を壊さないよう class だけ付け替える
+function updateNow() {
+  const now = jstParts();
+  const onDay = now.date === EVENT_DATE;
+  document.querySelectorAll('.srow[data-start]').forEach((el) => {
+    const start = toMinutes(el.dataset.start);
+    const end = el.dataset.end ? toMinutes(el.dataset.end) : null;
+    el.classList.toggle('now', onDay && end !== null && start <= now.minutes && now.minutes < end);
+    el.classList.toggle('past', onDay && (end !== null ? end <= now.minutes : start < now.minutes));
+  });
+}
+
+// ===== 編集 =====
+const TASK_FIELDS = ['title', 'owner', 'due_date', 'status', 'note'];
+const SCHEDULE_FIELDS = ['start_time', 'end_time', 'title', 'owner', 'place', 'note'];
+const FIELD_LABEL = { title: 'やること', owner: '担当', due_date: '期日', status: '状態', note: 'メモ', start_time: '開始', end_time: '終了', place: '場所' };
+
+function startEdit(key) {
+  const [kind, id] = key.split(':');
+  const fields = kind === 'task' ? TASK_FIELDS : SCHEDULE_FIELDS;
+  const row = id === 'new' ? null : (kind === 'task' ? tasks : schedule).find((r) => r.id === id);
+  if (id !== 'new' && !row) return;
+  const draft = {};
+  for (const f of fields) draft[f] = row ? (row[f] ?? '') : (f === 'status' ? 'todo' : '');
+  editing.set(key, { kind, id: id === 'new' ? null : id, draft, base: row, conflict: null, error: '', saving: false });
+  render();
+  const first = document.querySelector(`[data-key="${CSS.escape(key)}"] input`);
+  if (first) first.focus();
+}
+
+function input(key, field, type, value, extra = '') {
+  const v = esc(value ?? '');
+  const attrs = `data-key="${esc(key)}" data-field="${field}" ${extra}`;
+  if (type === 'textarea') return `<textarea rows="2" ${attrs}>${v}</textarea>`;
+  if (type === 'status') {
+    return `<select ${attrs}>${Object.entries(STATUS_LABEL).map(([s, l]) => `<option value="${s}"${s === value ? ' selected' : ''}>${l}</option>`).join('')}</select>`;
+  }
+  return `<input type="${type}" value="${v}" ${attrs}>`;
+}
+
+function editForm(key) {
+  const e = editing.get(key);
+  const d = e.draft;
+  const isTask = e.kind === 'task';
+  let conflict = '';
+  if (e.conflict) {
+    const c = e.conflict;
+    const u = updatedLabel(c);
+    const fields = isTask ? TASK_FIELDS : SCHEDULE_FIELDS;
+    const show = (f, v) => (f === 'status' ? STATUS_LABEL[v] : f === 'due_date' ? shortDate(v) : (v || '—'));
+    conflict = `<div class="conflict"><b>${esc(u.who)} が ${esc(u.when)} に先にこの行を更新しました。</b>保存はしていません。最新の内容を確かめて、必要なら直してもう一度保存してください（あなたの入力は下に残しています）。
+      <dl>${fields.map((f) => `<dt>${FIELD_LABEL[f]}</dt><dd>${esc(show(f, c[f]))}</dd>`).join('')}</dl></div>`;
+  }
+  const body = isTask
+    ? `<label class="wide">やること（必須）${input(key, 'title', 'text', d.title, 'maxlength="100" required')}</label>
+       <label>担当${input(key, 'owner', 'text', d.owner, 'maxlength="50" placeholder="例：清野／ブックオフ側"')}</label>
+       <label>期日${input(key, 'due_date', 'date', d.due_date)}</label>
+       <label class="half">状態${input(key, 'status', 'status', d.status)}</label>
+       <label class="wide">メモ${input(key, 'note', 'textarea', d.note, 'maxlength="1000" placeholder="完了の定義・決まった内容など"')}</label>`
+    : `<label>開始（必須）${input(key, 'start_time', 'time', d.start_time, 'required')}</label>
+       <label>終了${input(key, 'end_time', 'time', d.end_time)}</label>
+       <label class="half">場所${input(key, 'place', 'text', d.place, 'maxlength="50"')}</label>
+       <label class="wide">内容（必須）${input(key, 'title', 'text', d.title, 'maxlength="100" required')}</label>
+       <label class="wide">担当${input(key, 'owner', 'text', d.owner, 'maxlength="50"')}</label>
+       <label class="wide">メモ${input(key, 'note', 'textarea', d.note, 'maxlength="1000"')}</label>`;
+  return `<div class="${isTask ? 'row' : 'srow'}" data-key="${esc(key)}"><div class="edit">
+    ${conflict}${body}
+    ${e.error ? `<div class="error">${esc(e.error)}</div>` : ''}
+    <div class="actions">
+      <button type="button" class="btn primary" data-save="${esc(key)}"${e.saving ? ' disabled' : ''}>${e.saving ? '保存中…' : '保存'}</button>
+      <button type="button" class="btn" data-cancel="${esc(key)}">キャンセル</button>
+      <span class="spacer"></span>
+      ${e.id ? `<button type="button" class="btn danger" data-delete="${esc(key)}">削除</button>` : ''}
+    </div>
+  </div></div>`;
+}
+
+function listOf(kind) { return kind === 'task' ? tasks : schedule; }
+function putRow(kind, row) {
+  const list = listOf(kind);
+  const i = list.findIndex((r) => r.id === row.id);
+  if (i >= 0) list[i] = row; else list.push(row);
+}
+function dropRow(kind, id) {
+  const list = listOf(kind);
+  const i = list.findIndex((r) => r.id === id);
+  if (i >= 0) list.splice(i, 1);
+}
+
+async function saveEdit(key) {
+  const e = editing.get(key);
+  if (!e || e.saving) return;
+  e.saving = true;
+  e.error = '';
+  render();
+  // 重なりを見たあとは、最新の更新時刻を基準に保存し直す（D6）
+  const base = e.conflict || e.base;
+  const r = await api({ action: 'save', kind: e.kind, id: e.id, expectedUpdatedAt: base ? base.updated_at : undefined, fields: e.draft },
+    () => saveEdit(key));
+  e.saving = false;
+  if (!r) { render(); return; }
+  if (r.status === 200 && r.body.ok) {
+    putRow(e.kind, r.body.row);
+    editing.delete(key);
+    render();
+    toast('保存しました');
+    return;
+  }
+  if (r.status === 409 && r.body.conflict) {
+    e.conflict = r.body.row;
+    putRow(e.kind, r.body.row);
+  } else if (r.status === 404) {
+    dropRow(e.kind, e.id);
+    editing.delete(key);
+    toast(r.body.error || '削除されています', 'error');
+  } else {
+    e.error = r.body.error || '保存できませんでした';
+  }
+  render();
+}
+
+// 状態のワンタップ変更（D6）。先に他の人が直していたら保存せず最新を出す
+async function changeStatus(id, status) {
+  const row = tasks.find((t) => t.id === id);
+  if (!row) return;
+  const r = await api({ action: 'save', kind: 'task', id, expectedUpdatedAt: row.updated_at, fields: { status } },
+    () => changeStatus(id, status));
+  if (!r) { render(); return; }
+  if (r.status === 200 && r.body.ok) {
+    putRow('task', r.body.row);
+  } else if (r.status === 409 && r.body.conflict) {
+    putRow('task', r.body.row);
+    toast(`${updatedLabel(r.body.row).who} が先にこの行を更新していました。最新の内容を表示しています。`, 'error');
+  } else if (r.status === 404) {
+    dropRow('task', id);
+    toast(r.body.error || '削除されています', 'error');
+  } else {
+    toast(r.body.error || '保存できませんでした', 'error');
+  }
+  render();
+}
+
+async function deleteRow(key) {
+  const e = editing.get(key);
+  if (!e || !e.id) return;
+  const label = e.kind === 'task' ? '準備事項' : '予定';
+  if (!confirm(`この${label}を削除します。元に戻せません。よろしいですか？\n\n${(e.base && e.base.title) || ''}`)) return;
+  const r = await api({ action: 'delete', kind: e.kind, id: e.id }, () => deleteRow(key));
+  if (!r) return;
+  if (r.status === 200 && r.body.ok) {
+    dropRow(e.kind, e.id);
+    editing.delete(key);
+    render();
+    toast('削除しました');
+  } else {
+    toast(r.body.error || '削除できませんでした', 'error');
+  }
+}
+
+// ===== イベント =====
+document.addEventListener('click', (ev) => {
+  const t = ev.target.closest('button');
+  if (!t) return;
+  if (t.dataset.tab) { tab = t.dataset.tab; render(); return; }
+  if (t.dataset.add) { if (!editing.has(t.dataset.add + ':new')) startEdit(t.dataset.add + ':new'); return; }
+  if (t.dataset.edit) { startEdit(t.dataset.edit); return; }
+  if (t.dataset.save) { saveEdit(t.dataset.save); return; }
+  if (t.dataset.cancel) { editing.delete(t.dataset.cancel); render(); return; }
+  if (t.dataset.delete) { deleteRow(t.dataset.delete); }
+});
+// 入力は都度 draft に写す（再描画・再読込・ログインし直しても消えない）
+document.addEventListener('input', (ev) => {
+  const el = ev.target;
+  const e = el.dataset && el.dataset.key ? editing.get(el.dataset.key) : null;
+  if (e) e.draft[el.dataset.field] = el.value;
+});
+document.addEventListener('change', (ev) => {
+  const el = ev.target;
+  if (el.dataset && el.dataset.statusId) { changeStatus(el.dataset.statusId, el.value); return; }
+  const e = el.dataset && el.dataset.key ? editing.get(el.dataset.key) : null;
+  if (e) e.draft[el.dataset.field] = el.value;
+});
+$('btn-reload').addEventListener('click', () => loadData());
+$('btn-logout').addEventListener('click', logout);
+// 画面に戻ったとき（スマホでアプリを切り替えて戻ったとき）に最新を読み直す。編集中の入力は残る（D6・U15）
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && !$('board-view').hidden) loadData();
+});
+setInterval(updateNow, 30 * 1000);
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="onGisLoad()" onerror="onGisLoad()"></script>
+</body>
+</html>
