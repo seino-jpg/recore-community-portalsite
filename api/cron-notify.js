@@ -1,4 +1,4 @@
-// 未通知の申込を再送する Cron（D8）。vercel.json の crons で10分おきに GET される。
+// 未通知の申込を再送する Cron（D8）。vercel.json の crons で1日1回（UTC 0時＝毎朝9時ごろ）GET される。
 // Vercel は環境変数 CRON_SECRET の値を Authorization: Bearer <値> で送る。無ければ 401。
 import { createContext } from './_lib/context.js';
 import { getSql } from './_lib/db.js';

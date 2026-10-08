@@ -31,7 +31,7 @@
 | 4 | portal（PR-A） | `api/_lib/`（`events.js` 締切判定・表示値、`db.js` 接続と JST 表示、`validate.js` 入力検証、`auth.js` tokeninfo 検証と閲覧／編集の許可リスト、`gas.js` 共有シークレット付き送信要求、`notify.js` 通知配送と状態更新、`http.js` 本文読取、`context.js` env/fetch/now の差し替え口） | 共通処理 | D10・D12・D13・D19 |
 | 5 | portal（PR-A） | `api/apply.js`・`api/_lib/apply-core.js` | 申込受付（締切判定・検証・冪等保存・GAS 送信・通知状態の更新・`mailSent` で応答）。`source=gas_forward`＋共有シークレットの転送も受け、token が無ければ採番 | D4・D7・D9・D11／U1〜U13・U21 |
 | 6 | portal（PR-A） | `api/admin.js`・`api/_lib/admin-core.js` | list（全イベント・有効行のみの集計・通知未完了件数）／cancel／update（attendees・car_count・message のみ・履歴は変えた項目だけ）／resend。書き込みは編集の許可リストだけ。更新と履歴は1文（CTE）で原子的に | D5・D6・D8・D12〜D14／U14〜U18b |
-| 7 | portal（PR-A） | `api/cron-notify.js`・`api/_lib/cron-core.js`・`vercel.json`（`crons` 10分おき・`regions: ["sin1"]`） | 未通知の有効行を再送（最大6回）。`CRON_SECRET` の Bearer を確かめる。Pro は「1分に1回」まで可（Vercel 公式 Usage & Pricing で確認） | D8／U8・U10 |
+| 7 | portal（PR-A） | `api/cron-notify.js`・`api/_lib/cron-core.js`・`vercel.json`（`crons` 1日1回〈2026-10-08 に10分おきから変更〉・`regions: ["sin1"]`） | 未通知の有効行を再送（最大6回）。`CRON_SECRET` の Bearer を確かめる。Hobby は「1日1回」まで、Pro は「1分に1回」まで（Vercel 公式 Usage & Pricing。このプロジェクトは Hobby） | D8／U8・U10 |
 | 8 | portal（PR-A） | `scripts/_sheet.mjs`・`scripts/import-sheet.mjs`・`scripts/verify-import.mjs` | Sheets API v4（gspread の authorized_user.json の refresh_token）で関東 Vol.4 タブを読み、DB へ（source=sheet_import・通知済み・JST→UTC・履歴 import・行内容から決めたトークンで冪等）。突き合わせは行数・全行の値・集計 | D16・D18／U20・U22 |
 | 9 | GAS | `Code.js`・`Mail.js`・`Slack.js`・`Admin.js` | 秘密付きの `notify_application`／`notify_change` を受ける。action なしの申込は `SITE_API_URL` へ転送しシートに書かない。旧 /admin の `list` には「移転しました。再読み込みしてください」。Slack・メールの「申し込み一覧」リンクは /admin。シートを読む・書くコードは削除 | D10・D11・D14・D15／U9・U12・U13・U25 |
 | 10 | portal（PR-B） | `apply.html` | `events.json` を読む・`/api/apply` に eventKey と入力だけ送る・`submission_token`（失敗時は同じ token で再送、成功後に更新）・`mailSent=false` なら「確認メールは追ってお送りします」・API の `code=closed` で受付終了表示 | D4・D7・D9／U1・U3・U5・U8 |
@@ -107,7 +107,7 @@
 |---|---|
 | 実際の Google ログイン（GIS→tokeninfo→許可リスト） | 清野さん・閲覧のみの運営1名で /admin を開き、前者にだけ操作列が出る |
 | 実メール・実 Slack | 手順8のテスト申込で申込者メール1通と運営 Slack 1件、取消で Slack 1件（メール無し）。Slack の「申し込み一覧を開く」が /admin に飛ぶ |
-| 本番 Cron | Vercel の Cron Jobs 画面で `/api/cron-notify` が10分おきに 200。手順8でわざと GAS を止める必要はない |
+| 本番 Cron | Vercel の Cron Jobs 画面で `/api/cron-notify` が1日1回（毎朝9時ごろ）200。手順8でわざと GAS を止める必要はない |
 | 関数リージョン | Vercel の Functions 設定が sin1 |
 | 旧 HTML からの転送（U12） | 切替前に開いた古いタブから申込 → /admin に source=gas_forward で出る |
 
