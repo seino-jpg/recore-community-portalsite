@@ -55,6 +55,11 @@
     /* display を指定した要素に hidden 属性を付けても効かないため、明示的に打ち消す */
     [hidden] { display: none !important; }
     .nav-right { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--text-sub); }
+    /* 申込管理と運営ボード（/admin/ops）の切替 */
+    .pages { display: flex; gap: 4px; margin-right: auto; }
+    .pages a { padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: 700; color: var(--text-sub); text-decoration: none; white-space: nowrap; }
+    .pages a:hover { color: var(--green-dark); }
+    .pages a.current { background: var(--green-dark); color: #fff; }
     .nav-right button {
       background: none; border: 1px solid var(--border); border-radius: 4px;
       padding: 6px 12px; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer;
@@ -168,6 +173,10 @@
       .summary-item:nth-child(2) { border-right: none; }
       .summary-item:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
       .nav-right span { display: none; }
+      nav { flex-wrap: wrap; gap: 12px; }
+      .pages { order: 3; width: 100%; margin-right: 0; }
+      .pages a { flex: 1; text-align: center; border: 1px solid var(--border); }
+      .pages a.current { border-color: var(--green-dark); }
     }
   </style>
 </head>
@@ -175,6 +184,10 @@
 <header>
   <nav>
     <a href="index.html" class="logo">RECORE<span class="logo-sub">Community</span></a>
+    <div class="pages">
+      <a href="/admin" class="current" aria-current="page">申込管理</a>
+      <a href="/admin/ops">Vol.4 運営ボード</a>
+    </div>
     <div class="nav-right" id="nav-right" hidden>
       <span id="viewer-email"></span>
       <button type="button" id="btn-reload">再読込</button>
