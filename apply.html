@@ -1138,7 +1138,7 @@ async function initApply() {
   }
 
   // イベント特設ページ（LP）がある回だけ、申込カードから導線を出す
-  const EVENT_LP = { 'kanto-vol4': 'kanto-vol4.html' };
+  const EVENT_LP = { 'kanto-vol4': 'kanto-vol4.html', 'kansai-vol2': 'kansai-vol2.html' };
   if (EVENT_LP[currentKey]) {
     const lp = document.getElementById('event-lp-link');
     lp.querySelector('a').href = EVENT_LP[currentKey];
