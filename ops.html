@@ -520,11 +520,11 @@ function ownersOf(t) {
   const list = String(t.owner || '').split(/[・、]/).map((x) => x.trim()).filter(Boolean);
   return list.length ? list : [NO_OWNER];
 }
-// 絞り込み：分けた誰かが一致するか、「運営全員」なら出す
+// 絞り込み：分けた誰かが一致するか、「運営全員」なら出す。「担当なし」は担当が空の行だけ（U8）
 function matchesOwner(t, who) {
   if (!who) return true;
   const list = ownersOf(t);
-  return list.includes(who) || list.includes(ALL_OWNER);
+  return list.includes(who) || (who !== NO_OWNER && list.includes(ALL_OWNER));
 }
 // 担当ボタン：アーカイブ以外に出てくる人。数字は押したときに出る未完了の数。未完了の多い順、同数は名前順
 function ownerButtons() {
@@ -636,12 +636,19 @@ function renderList(today, tomorrow) {
 function renderMeeting(today, tomorrow) {
   const shown = refreshMeeting();
   const checkedCount = shown.filter((t) => checked.has(t.id)).length;
+  // 共同の担当の行は複数のまとまりに出る。編集フォームは最初のまとまりだけに出す（入力欄を2組にしない）
+  const formShown = new Set();
   const groups = meetingOrder.map((o) => {
     const rows = shown.filter((t) => ownersOf(t).includes(o)).sort(byDue);
     if (!rows.length) return '';
     const p = progressOf(tasks.filter((t) => ownersOf(t).includes(o)));
+    const html = rows.map((t) => {
+      const first = !formShown.has(t.id);
+      formShown.add(t.id);
+      return taskRow(t, today, tomorrow, true, first);
+    }).join('');
     return `<div class="mgroup"><h3>${esc(o)}<small>完了 ${p.done} / ${p.total}件</small><span class="mbar"><span style="width:${p.pct}%"></span></span></h3>
-      <div class="list">${rows.map((t) => taskRow(t, today, tomorrow, true)).join('')}</div></div>`;
+      <div class="list">${html}</div></div>`;
   }).join('');
   const newTask = editing.has('task:new') ? `<div class="list" style="margin-bottom:16px">${editForm('task:new')}</div>` : '';
   $('prep-meeting').innerHTML = `<div class="meeting-bar"><b>打ち合わせモード</b><span>未完了を担当ごとに表示・確認済み ${checkedCount} / ${shown.length}件</span>
@@ -652,9 +659,10 @@ function renderMeeting(today, tomorrow) {
 }
 
 // 期日の印：期日切れは赤字、未完了で今日・明日の行は縦線と「今日」「明日」（進捗管理 D7）
-function taskRow(t, today, tomorrow, inMeeting = false) {
+function taskRow(t, today, tomorrow, inMeeting = false, allowForm = true) {
   const key = 'task:' + t.id;
-  if (editing.has(key)) return editForm(key);
+  const isEditing = editing.has(key);
+  if (isEditing && allowForm) return editForm(key);
   const open = isOpen(t);
   const overdue = open && t.due_date && t.due_date < today;
   const soon = !open || !t.due_date ? '' : t.due_date === today ? 'today' : t.due_date === tomorrow ? 'tomorrow' : '';
@@ -672,7 +680,9 @@ function taskRow(t, today, tomorrow, inMeeting = false) {
     ${inMeeting
       ? `<div class="check-cell"><button type="button" class="check" data-check="${esc(t.id)}" aria-pressed="${isChecked}">${isChecked ? '✓ 確認済み' : '確認した'}</button></div>`
       : `<div class="updated">${esc(u.who)}<br>${esc(u.when)}</div>`}
-    <div class="actions"><button type="button" class="btn" data-edit="${esc(key)}">編集</button></div>
+    <div class="actions">${isEditing
+      ? '<button type="button" class="btn" disabled>編集中</button>'
+      : `<button type="button" class="btn" data-edit="${esc(key)}">編集</button>`}</div>
   </div>`;
 }
 
