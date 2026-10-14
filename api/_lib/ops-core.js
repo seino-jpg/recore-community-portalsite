@@ -5,7 +5,8 @@ import { authenticateAdmin } from './auth.js';
 // Vol.4 専用（D1）。画面からは選ばせない
 export const OPS_EVENT_KEY = 'kanto-vol4';
 
-const STATUSES = ['todo', 'doing', 'done'];
+// archived＝不要になった。完了とは分け、進捗に数えない（2026-10-14-ops-board-progress D1）
+const STATUSES = ['todo', 'doing', 'done', 'archived'];
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vol.4 運営ボード 進捗管理（モック）</title>
+  <!-- 設計用の静的モック。本番コードではない。?today=YYYY-MM-DD ?owner=担当 ?mode=meeting ?archive=1（アーカイブを開く） ?checked=1（確認済みの例）で状態を切り替える -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #1E3A14; --green-mid: #2D4E1C; --gold: #C4D44A;
+      --gold-dim: rgba(196,212,74,0.15); --text: #2C2C2C; --text-sub: #6A6A6A;
+      --bg: #F7F7F2; --surface: #FFFFFF; --border: #DDE0D8;
+      --red: #a8342a; --red-bg: #fdecea; --red-border: #f5c2bd;
+    }
+    body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    [hidden] { display: none !important; }
+
+    header { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; }
+    nav { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 12px 28px; }
+    .logo { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 20px; font-weight: 900; color: var(--green-dark); text-decoration: none; white-space: nowrap; }
+    .logo-sub { color: var(--gold); font-size: 12px; display: block; font-weight: 700; letter-spacing: 0.08em; }
+    .pages { display: flex; gap: 4px; }
+    .pages a { padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: 700; color: var(--text-sub); text-decoration: none; white-space: nowrap; }
+    .pages a.current { background: var(--green-dark); color: #fff; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-sub); }
+    .nav-right button { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 6px 12px; font-family: inherit; font-size: 13px; color: var(--text); }
+
+    main { padding: 36px 24px 80px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .label-en { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; color: var(--gold); margin-bottom: 10px; }
+    .label-en::before { content: ''; width: 32px; height: 2px; background: var(--gold); }
+    .page-title { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(24px, 4vw, 34px); font-weight: 900; color: var(--green-dark); line-height: 1.25; }
+    .page-sub { color: var(--text-sub); font-size: 14px; margin: 6px 0 24px; }
+
+    .summary { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid var(--green-dark); border-bottom: 1px solid var(--border); margin-bottom: 28px; background: var(--surface); }
+    .summary-item { padding: 16px; border-right: 1px solid var(--border); }
+    .summary-item:last-child { border-right: none; }
+    .summary-label { font-size: 12px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; }
+    .summary-value { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 32px; font-weight: 900; color: var(--green-dark); line-height: 1; }
+    .summary-value small { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-sub); margin-left: 4px; }
+    .summary-value.warn { color: var(--red); }
+
+    .tabbar { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--border); margin-bottom: 16px; gap: 12px; }
+    .tabs { display: flex; }
+    .tab { background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; padding: 10px 18px; font-family: inherit; font-size: 15px; font-weight: 700; color: var(--text-sub); white-space: nowrap; }
+    .tab.active { color: var(--green-dark); border-bottom-color: var(--gold); }
+    .tab .count { font-weight: 500; font-size: 13px; margin-left: 6px; }
+    .btn { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 6px 12px; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer; white-space: nowrap; }
+    .btn.primary { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .btn.danger { color: var(--red); border-color: var(--red-border); }
+    .btn.add { margin-bottom: 8px; font-weight: 700; color: var(--green-dark); border-color: var(--green-mid); }
+
+    .group-label { font-size: 12px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.06em; margin: 20px 0 8px; }
+    .list { background: var(--surface); border: 1px solid var(--border); }
+    .row { display: grid; grid-template-columns: 92px 1fr 150px 92px 120px 56px; gap: 12px; align-items: start; padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .row:last-child { border-bottom: none; }
+    .row.done { color: var(--text-sub); }
+    .row.done .title { text-decoration: line-through; text-decoration-color: rgba(0,0,0,0.25); }
+    .title { font-weight: 700; }
+    .note { font-size: 12.5px; color: var(--text-sub); white-space: pre-wrap; margin-top: 2px; }
+    .meta { font-size: 13px; }
+    .meta-label { display: none; }
+    .updated { font-size: 11.5px; color: var(--text-sub); line-height: 1.4; }
+    .due.overdue { color: var(--red); font-weight: 700; }
+    .pill { display: inline-block; border-radius: 12px; padding: 2px 10px; font-size: 12px; font-weight: 700; border: 1px solid; white-space: nowrap; cursor: pointer; }
+    .pill.todo { color: var(--text-sub); border-color: var(--border); background: #fff; }
+    .pill.doing { color: #7a5b00; border-color: #e8d48a; background: #fff8dc; }
+    .pill.done { color: var(--green-dark); border-color: var(--gold); background: var(--gold-dim); }
+    .pill::after { content: ' ▾'; font-size: 10px; opacity: 0.6; }
+
+    /* 当日スケジュール */
+    .srow { display: grid; grid-template-columns: 120px 1fr 56px; gap: 14px; padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 14px; position: relative; }
+    .srow:last-child { border-bottom: none; }
+    .time { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; font-size: 17px; color: var(--green-dark); line-height: 1.3; white-space: nowrap; }
+    .time .end { display: block; font-size: 13px; font-weight: 700; color: var(--text-sub); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .chip { font-size: 12px; padding: 1px 8px; border-radius: 3px; background: #F1F2EC; color: var(--text); }
+    .chip b { color: var(--text-sub); font-weight: 500; margin-right: 4px; }
+    .srow.now { background: var(--gold-dim); box-shadow: inset 4px 0 0 var(--gold); }
+    .now-badge { display: inline-block; margin-left: 8px; padding: 0 8px; border-radius: 10px; background: var(--green-dark); color: #fff; font-size: 11px; font-weight: 700; vertical-align: 2px; }
+    .srow.past { opacity: 0.55; }
+
+    /* 編集 */
+    .edit { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 12px; background: #FBFBF8; padding: 14px; border: 1px solid var(--green-mid); border-radius: 4px; }
+    .edit label { font-size: 12px; font-weight: 700; color: var(--text-sub); display: flex; flex-direction: column; gap: 4px; }
+    .edit input, .edit select, .edit textarea { font-family: inherit; font-size: 14px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; background: #fff; color: var(--text); }
+    .edit .wide { grid-column: 1 / -1; }
+    .edit .half { grid-column: span 2; }
+    .edit .actions { grid-column: 1 / -1; display: flex; gap: 8px; }
+    .edit .actions .spacer { flex: 1; }
+    .conflict { grid-column: 1 / -1; background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); padding: 10px 12px; font-size: 13px; border-radius: 4px; }
+    .conflict dl { display: grid; grid-template-columns: 64px 1fr; gap: 2px 8px; margin-top: 6px; color: var(--text); }
+    .conflict dt { color: var(--text-sub); }
+
+    footer { background: #0F1E09; color: rgba(255,255,255,0.4); padding: 20px; text-align: center; font-size: 12px; }
+
+    @media (max-width: 768px) {
+      header { padding: 10px 16px; }
+      nav { flex-wrap: wrap; }
+      .logo { font-size: 16px; }
+      .logo-sub { font-size: 10px; }
+      .pages { order: 3; width: 100%; }
+      .pages a { flex: 1; text-align: center; padding: 6px 8px; font-size: 13px; border: 1px solid var(--border); }
+      .pages a.current { border-color: var(--green-dark); }
+      .nav-right span, .nav-right .reload { display: none; }
+      main { padding: 24px 16px 60px; }
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .summary-item:nth-child(2) { border-right: none; }
+      .summary-item:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .summary-value { font-size: 26px; }
+      .row { grid-template-columns: 1fr auto; gap: 4px 10px; }
+      .row > .status { grid-column: 1; grid-row: 1; }
+      .row > .actions { grid-column: 2; grid-row: 1; justify-self: end; }
+      .row > .body { grid-column: 1 / -1; }
+      .row > .meta { grid-column: 1 / -1; display: flex; gap: 6px; }
+      .meta-label { display: inline; color: var(--text-sub); }
+      .row > .updated { grid-column: 1 / -1; }
+      .srow { grid-template-columns: 74px 1fr auto; gap: 10px; }
+      .time { font-size: 15px; }
+      .edit { grid-template-columns: 1fr 1fr; }
+      .edit .half { grid-column: 1 / -1; }
+      .tab { padding: 10px 12px; font-size: 14px; }
+    }
+    /* ここから今回の追加（2026-10-14） */
+    .progress { background: var(--surface); border: 1px solid var(--border); border-top: none; margin: -28px 0 28px; padding: 10px 16px 12px; display: flex; align-items: center; gap: 14px; font-size: 13px; }
+    .progress .bar { flex: 1; height: 10px; background: #ECEEE6; border-radius: 5px; overflow: hidden; }
+    .progress .bar span { display: block; height: 100%; background: var(--green-mid); }
+    .progress b { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 18px; color: var(--green-dark); }
+    .progress .sub { color: var(--text-sub); }
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+    .toolbar .spacer { flex: 1; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; font-size: 13px; }
+    .filters .flabel { font-size: 12px; font-weight: 700; color: var(--text-sub); margin-right: 2px; }
+    .fchip { border: 1px solid var(--border); background: #fff; border-radius: 14px; padding: 3px 12px; font-family: inherit; font-size: 13px; cursor: pointer; color: var(--text); }
+    .fchip small { color: var(--text-sub); margin-left: 4px; }
+    .fchip.active { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .fchip.active small { color: rgba(255,255,255,0.7); }
+    .soon { display: inline-block; margin-left: 6px; padding: 0 7px; border-radius: 10px; font-size: 11px; font-weight: 700; vertical-align: 1px; }
+    .soon.today { background: var(--red); color: #fff; }
+    .soon.tomorrow { background: #fff3cd; color: #7a5b00; border: 1px solid #e8d48a; }
+    .row.due-today { box-shadow: inset 4px 0 0 var(--red); }
+    .row.due-tomorrow { box-shadow: inset 4px 0 0 #e8c54a; }
+    .pill.archived { color: var(--text-sub); border-color: var(--border); background: #F1F2EC; }
+    .row.archived { color: var(--text-sub); }
+    details.archive { margin-top: 20px; }
+    details.archive summary { font-size: 12px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.06em; cursor: pointer; margin-bottom: 8px; }
+    .with-owner-chip { font-size: 11.5px; color: var(--text-sub); margin-left: 6px; font-weight: 500; }
+    /* 打ち合わせモード */
+    .meeting-bar { display: flex; align-items: center; gap: 14px; background: var(--green-dark); color: #fff; padding: 10px 16px; border-radius: 4px; margin-bottom: 16px; font-size: 14px; }
+    .meeting-bar b { font-size: 16px; }
+    .meeting-bar .spacer { flex: 1; }
+    .meeting-bar .btn { background: transparent; color: #fff; border-color: rgba(255,255,255,0.5); }
+    .mgroup { margin-bottom: 22px; }
+    .mgroup h3 { display: flex; align-items: baseline; gap: 12px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 20px; font-weight: 900; color: var(--green-dark); margin-bottom: 6px; }
+    .mgroup h3 small { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-sub); }
+    .mgroup h3 .mbar { width: 120px; height: 8px; background: #ECEEE6; border-radius: 4px; overflow: hidden; align-self: center; }
+    .mgroup h3 .mbar span { display: block; height: 100%; background: var(--green-mid); }
+    .meeting .row { grid-template-columns: 92px 1fr 92px 96px 56px; font-size: 15.5px; padding: 14px 16px; }
+    .meeting .title { font-size: 16px; }
+    .meeting .note { font-size: 13.5px; }
+    .check { border: 1px solid var(--border); background: #fff; border-radius: 4px; padding: 5px 8px; font-family: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
+    .row.checked { background: #FAFAF6; }
+    .row.checked .body, .row.checked .meta { opacity: 0.5; }
+    .row.checked .check { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+  </style>
+</head>
+<body>
+<header>
+  <nav>
+    <a class="logo" href="#">RECORE<span class="logo-sub">Community</span></a>
+    <div class="pages"><a href="#">申込管理</a><a href="#" class="current">Vol.4 運営ボード</a></div>
+    <div class="nav-right"><span>seino@recore-corp.jp</span><button class="reload">再読込</button><button>ログアウト</button></div>
+  </nav>
+</header>
+<main>
+  <div class="container">
+    <div class="label-en">OPERATIONS</div>
+    <h1 class="page-title">関東コミュニティ Vol.4 運営ボード</h1>
+    <p class="page-sub">10/22（木）ブックオフ出品倉庫 見学会（東名横浜ロジスティクスセンター）。運営メンバーなら誰でも追加・編集できます。</p>
+    <div class="summary" id="summary"></div>
+    <div class="progress" id="progress"></div>
+    <div class="tabbar">
+      <div class="tabs">
+        <button class="tab active">準備事項<span class="count" id="count-prep"></span></button>
+        <button class="tab">当日スケジュール<span class="count">12件</span></button>
+      </div>
+    </div>
+    <section id="view"></section>
+  </div>
+</main>
+<footer>© 2026 RECORE Community by 株式会社RECORE.</footer>
+<script>
+// 架空のデータ（公開リポジトリなので社外の方の名前は入れない）
+const TASKS = [
+  { id: 1, title: '修正したスケジュール・準備事項を運営で確認する', owner: '運営全員', due: '2026-10-15', status: 'todo', note: 'ずれているところを各自確認', by: 'seino', at: '10/8 15:52' },
+  { id: 2, title: '撮影ルールと遅刻時の連絡方法を案内に書く', owner: '清野', due: '2026-10-15', status: 'todo', note: '運営側は記録用に撮影する', by: 'seino', at: '10/8 15:52' },
+  { id: 3, title: '参加者に連絡する（時間の変更・メディア倉庫は1社1名）', owner: '清野', due: '2026-10-15', status: 'doing', note: '宛先と本文は用意済み', by: 'seino', at: '10/14 23:15' },
+  { id: 4, title: '当日の入館証の運用・セキュリティ解除の方法を確認する', owner: 'ブックオフ側', due: '2026-10-15', status: 'doing', note: '企業一覧を作成し、業務支援チームに共有', by: 'staff-b', at: '10/13 15:51' },
+  { id: 5, title: 'ネームホルダーの在庫を確認・確保する', owner: '運営A・清野', due: '2026-10-15', status: 'todo', note: 'ネックストラップ付きの簡易的なもの', by: 'seino', at: '10/8 15:52' },
+  { id: 6, title: '会議室の大きいモニター・ホワイトボードが使えるか確認する', owner: 'ブックオフ側', due: '2026-10-15', status: 'doing', note: '4Fにスペースを借りた。モニターも当日設置できる', by: 'staff-b', at: '10/13 15:52' },
+  { id: 7, title: 'オリエンテーション用のスペースを交渉する', owner: 'ブックオフ側', due: '2026-10-16', status: 'todo', note: '30名ほどで今の部屋は手狭', by: 'seino', at: '10/8 15:52' },
+  { id: 8, title: '当日のしおりを作って参加者に配る', owner: '清野', due: '2026-10-20', status: 'todo', note: '倉庫と他部署のつながり・見どころ・質問タイムの案内', by: '初期データ', at: '10/8 12:11' },
+  { id: 9, title: '各社用の名札（会社名のみ）を作る', owner: '運営A', due: '2026-10-20', status: 'todo', note: '個人名は入れない', by: 'seino', at: '10/8 15:52' },
+  { id: 10, title: '運営は平置き駐車場に停めるよう全員に伝える', owner: '清野', due: '2026-10-21', status: 'todo', note: '来客用の駐車場を空けるため', by: 'seino', at: '10/8 15:52' },
+  { id: 11, title: '14時までの荷物置き場を決める', owner: '清野', due: null, status: 'todo', note: 'オリエンテーション用の部屋を荷物置き場にする案', by: 'seino', at: '10/8 15:52' },
+  { id: 12, title: '募集要項を公開・告知する（一次締切 9/30）', owner: '清野', due: '2026-09-30', status: 'done', note: '', by: '初期データ', at: '10/8 12:11' },
+  { id: 13, title: '参加フォームに交通手段・車の台数の項目を入れる', owner: '清野', due: '2026-09-30', status: 'done', note: '駐車枠の上限も明記', by: '初期データ', at: '10/8 12:11' },
+  { id: 14, title: '22番会議室を14時以降で予約し、鍵の受け渡し方法を確認する', owner: 'ブックオフ側', due: null, status: 'done', note: '18:00まで確保済み', by: 'seino', at: '10/8 15:52' },
+  { id: 15, title: '外部の説明担当にアプリ説明（15:00〜）を依頼する', owner: '清野', due: '2026-10-13', status: 'done', note: '', by: 'seino', at: '10/14 23:30' },
+  { id: 16, title: '確定人数からレンタカーと自家用車の構成を決めて予約する', owner: '清野', due: '2026-10-09', status: 'archived', note: '→ 不要になった（10/14）', by: 'seino', at: '10/14 23:30' },
+  { id: 17, title: '集合場所（南町田／新横浜）を決めて参加者に通知する', owner: '清野', due: '2026-10-09', status: 'archived', note: '→ 不要になった（10/14）', by: 'seino', at: '10/14 23:30' },
+  { id: 18, title: '昼食候補の混雑状況と駐車場を確認する', owner: 'ブックオフ側', due: '2026-10-09', status: 'archived', note: '昼食は各自済ませてから来てもらう方針になったので不要', by: 'seino', at: '10/8 15:52' }
+];
+const q = new URLSearchParams(location.search);
+const TODAY = q.get('today') || '2026-10-14';
+const TOMORROW = new Date(new Date(TODAY + 'T00:00:00Z').getTime() + 86400000).toISOString().slice(0, 10);
+const OWNER = q.get('owner') || '';
+const MEETING = q.get('mode') === 'meeting';
+const CHECKED = new Set(q.get('checked') ? [1, 2, 3] : []);
+const STATUS = { todo: '未着手', doing: '進行中', done: '完了', archived: 'アーカイブ' };
+const ALL = '運営全員';
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function md(d) { if (!d) return '期日なし'; const [, m, day] = d.split('-'); return `${+m}/${+day}`; }
+const owners = (t) => t.owner.split(/[・、]/).map(s => s.trim()).filter(Boolean);
+const isOpen = (t) => t.status === 'todo' || t.status === 'doing';
+const byDue = (a, b) => (a.due || '9999') < (b.due || '9999') ? -1 : (a.due || '9999') > (b.due || '9999') ? 1 : a.id - b.id;
+// 担当の絞り込み：「・」で分けた誰かが一致すれば出す。「運営全員」は全員に出す（D3）
+const matches = (t, who) => !who || owners(t).includes(who) || owners(t).includes(ALL);
+function people() {
+  const m = new Map();
+  TASKS.filter(t => t.status !== 'archived').forEach(t => owners(t).forEach(o => { if (o !== ALL) m.set(o, (m.get(o) || 0) + (isOpen(t) ? 1 : 0)); }));
+  // 件数は絞り込んだときに出る未完了の数（「運営全員」の分も含める）
+  return [...m.keys()].map(o => [o, TASKS.filter(t => isOpen(t) && matches(t, o)).length]).sort((a, b) => b[1] - a[1]);
+}
+function dueInfo(t) {
+  if (!isOpen(t) || !t.due) return { cls: '', badge: '', overdue: false };
+  if (t.due < TODAY) return { cls: '', badge: '', overdue: true };
+  if (t.due === TODAY) return { cls: 'due-today', badge: '<span class="soon today">今日</span>', overdue: false };
+  if (t.due === TOMORROW) return { cls: 'due-tomorrow', badge: '<span class="soon tomorrow">明日</span>', overdue: false };
+  return { cls: '', badge: '', overdue: false };
+}
+function row(t, meeting, group) {
+  const d = dueInfo(t);
+  const shared = meeting && owners(t).length > 1 ? `<span class="with-owner-chip">（${esc(t.owner)}）</span>` : '';
+  const checked = meeting && CHECKED.has(t.id);
+  return `<div class="row ${t.status === 'done' ? 'done' : ''} ${t.status === 'archived' ? 'archived' : ''} ${d.cls} ${checked ? 'checked' : ''}">
+    <div class="status"><span class="pill ${t.status}">${STATUS[t.status]}</span></div>
+    <div class="body"><div class="title">${esc(t.title)}${shared}</div>${t.note ? `<div class="note">${esc(t.note)}</div>` : ''}</div>
+    ${meeting ? '' : `<div class="meta">${esc(t.owner || '—')}</div>`}
+    <div class="meta due ${d.overdue ? 'overdue' : ''}">${md(t.due)}${d.badge}</div>
+    ${meeting ? `<div><button class="check">${checked ? '✓ 確認済み' : '確認した'}</button></div>` : `<div class="updated">${esc(t.by)}<br>${esc(t.at)}</div>`}
+    <div class="actions"><button class="btn">編集</button></div>
+  </div>`;
+}
+function progress(list) { const live = list.filter(t => t.status !== 'archived'); const done = live.filter(t => t.status === 'done').length; return { done, total: live.length, pct: live.length ? Math.round(done / live.length * 100) : 0 }; }
+function render() {
+  const p = progress(TASKS);
+  const open = TASKS.filter(isOpen);
+  document.getElementById('summary').innerHTML = [['開催まで', `${Math.round((new Date('2026-10-22') - new Date(TODAY)) / 86400000)}<small>日</small>`], ['未完了', `${open.length}<small>件</small>`], ['期日切れ', `${open.filter(t => t.due && t.due < TODAY).length}<small>件</small>`], ['完了', `${p.done}<small>/ ${p.total}件</small>`]]
+    .map(([l, v]) => `<div class="summary-item"><div class="summary-label">${l}</div><div class="summary-value">${v}</div></div>`).join('');
+  const dueToday = open.filter(t => t.due === TODAY).length, dueTomorrow = open.filter(t => t.due === TOMORROW).length;
+  document.getElementById('progress').innerHTML = `<b>${p.pct}%</b><div class="bar"><span style="width:${p.pct}%"></span></div><span class="sub">完了 ${p.done} / ${p.total}件（アーカイブ ${TASKS.length - p.total}件は数えない）・今日期限 ${dueToday}件・明日期限 ${dueTomorrow}件</span>`;
+  document.getElementById('count-prep').textContent = `${open.length}件`;
+  document.getElementById('view').innerHTML = MEETING ? meetingView() : listView();
+}
+function listView() {
+  const shown = TASKS.filter(t => matches(t, OWNER));
+  const open = shown.filter(isOpen).sort(byDue), done = shown.filter(t => t.status === 'done'), arch = shown.filter(t => t.status === 'archived');
+  const chips = [`<button class="fchip ${OWNER ? '' : 'active'}">すべて<small>${TASKS.filter(isOpen).length}</small></button>`]
+    .concat(people().map(([o, n]) => `<button class="fchip ${OWNER === o ? 'active' : ''}">${esc(o)}<small>${n}</small></button>`)).join('');
+  return `<div class="toolbar"><button class="btn add" style="margin:0">＋ 準備事項を追加</button><span class="spacer"></span><button class="btn primary">打ち合わせモード</button></div>
+    <div class="filters"><span class="flabel">担当</span>${chips}</div>
+    <div class="list">${open.map(t => row(t)).join('')}</div>
+    <div class="group-label">完了 ${done.length}件</div><div class="list">${done.map(t => row(t)).join('')}</div>
+    <details class="archive" ${q.get('archive') ? 'open' : ''}><summary>アーカイブ ${arch.length}件（不要になったもの）</summary><div class="list">${arch.map(t => row(t)).join('')}</div></details>`;
+}
+function meetingView() {
+  const open = TASKS.filter(isOpen);
+  const groups = [[ALL, TASKS.filter(t => owners(t).includes(ALL))]].concat(people().map(([o]) => [o, TASKS.filter(t => owners(t).includes(o))]));
+  const checkedN = open.filter(t => CHECKED.has(t.id)).length;
+  return `<div class="meeting-bar"><b>打ち合わせモード</b><span>未完了を担当ごとに表示・確認済み ${checkedN} / ${open.length}件</span><span class="spacer"></span><button class="btn">確認済みの印を消す</button><button class="btn">終える</button></div>
+    <div class="meeting">${groups.filter(([, l]) => l.some(isOpen)).map(([o, l]) => { const p = progress(l); return `<div class="mgroup"><h3>${esc(o)}<small>完了 ${p.done} / ${p.total}件</small><span class="mbar"><span style="width:${p.pct}%"></span></span></h3>
+      <div class="list">${l.filter(isOpen).sort(byDue).map(t => row(t, true, o)).join('')}</div></div>`; }).join('')}</div>`;
+}
+render();
+</script>
+</body>
+</html>
