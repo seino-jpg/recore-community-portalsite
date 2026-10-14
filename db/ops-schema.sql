@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS ops_tasks (
   title       text        NOT NULL CHECK (char_length(title) BETWEEN 1 AND 100),
   owner       text        NOT NULL DEFAULT '' CHECK (char_length(owner) <= 50), -- 自由入力（D4）
   due_date    date,                                                -- null＝期日なし
-  status      text        NOT NULL DEFAULT 'todo' CHECK (status IN ('todo', 'doing', 'done')),
+  status      text        NOT NULL DEFAULT 'todo' CHECK (status IN ('todo', 'doing', 'done', 'archived')), -- archived＝不要になった（2026-10-14-ops-board-progress D1）
   note        text        NOT NULL DEFAULT '' CHECK (char_length(note) <= 1000),
   created_at  timestamptz NOT NULL DEFAULT date_trunc('milliseconds', now()),
   updated_at  timestamptz NOT NULL DEFAULT date_trunc('milliseconds', now()),
@@ -17,6 +17,10 @@ CREATE TABLE IF NOT EXISTS ops_tasks (
 );
 
 CREATE INDEX IF NOT EXISTS ops_tasks_event_idx ON ops_tasks (event_key);
+
+-- 状態に archived を足す（docs/designs/2026-10-14-ops-board-progress/design.md D1）。作成済みの表の制約を張り替える
+ALTER TABLE ops_tasks DROP CONSTRAINT IF EXISTS ops_tasks_status_check;
+ALTER TABLE ops_tasks ADD CONSTRAINT ops_tasks_status_check CHECK (status IN ('todo', 'doing', 'done', 'archived'));
 
 CREATE TABLE IF NOT EXISTS ops_schedule (
   id          uuid        PRIMARY KEY DEFAULT gen_random_uuid(),

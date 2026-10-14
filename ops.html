@@ -99,6 +99,51 @@
     select.pill.todo { color: var(--text-sub); border-color: var(--border); background-color: #fff; }
     select.pill.doing { color: #7a5b00; border-color: #e8d48a; background-color: #fff8dc; }
     select.pill.done { color: var(--green-dark); border-color: var(--gold); background-color: #f4f7dc; }
+    select.pill.archived { color: var(--text-sub); border-color: var(--border); background-color: #F1F2EC; }
+    .row.archived { color: var(--text-sub); }
+
+    /* ===== 進捗率・担当の絞り込み・今日／明日（2026-10-14-ops-board-progress） ===== */
+    .progress { background: var(--surface); border: 1px solid var(--border); border-top: none; margin: -28px 0 28px; padding: 10px 16px 12px; display: flex; align-items: center; gap: 14px; font-size: 13px; }
+    .progress .bar { flex: 1; min-width: 80px; height: 10px; background: #ECEEE6; border-radius: 5px; overflow: hidden; }
+    .progress .bar span { display: block; height: 100%; background: var(--green-mid); }
+    .progress b { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 18px; color: var(--green-dark); }
+    .progress .sub { color: var(--text-sub); }
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+    .toolbar .btn.add { margin-bottom: 0; }
+    .toolbar .spacer { flex: 1; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; font-size: 13px; }
+    .filters:empty { display: none; }
+    .filters .flabel { font-size: 12px; font-weight: 700; color: var(--text-sub); margin-right: 2px; }
+    .fchip { border: 1px solid var(--border); background: #fff; border-radius: 14px; padding: 3px 12px; font-family: inherit; font-size: 13px; cursor: pointer; color: var(--text); }
+    .fchip small { color: var(--text-sub); margin-left: 4px; }
+    .fchip.active { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .fchip.active small { color: rgba(255,255,255,0.7); }
+    .soon { display: inline-block; margin-left: 6px; padding: 0 7px; border-radius: 10px; font-size: 11px; font-weight: 700; vertical-align: 1px; }
+    .soon.today { background: var(--red); color: #fff; }
+    .soon.tomorrow { background: #fff3cd; color: #7a5b00; border: 1px solid #e8d48a; }
+    .row.due-today { box-shadow: inset 4px 0 0 var(--red); }
+    .row.due-tomorrow { box-shadow: inset 4px 0 0 #e8c54a; }
+    details.archive { margin-top: 20px; }
+    details.archive summary { font-size: 12px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.06em; cursor: pointer; margin-bottom: 8px; }
+    .shared { font-size: 11.5px; color: var(--text-sub); margin-left: 6px; font-weight: 500; }
+
+    /* ===== 打ち合わせモード ===== */
+    .meeting-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; background: var(--green-dark); color: #fff; padding: 10px 16px; border-radius: 4px; margin-bottom: 16px; font-size: 14px; }
+    .meeting-bar b { font-size: 16px; }
+    .meeting-bar .spacer { flex: 1; }
+    .meeting-bar .btn { background: transparent; color: #fff; border-color: rgba(255,255,255,0.5); }
+    .mgroup { margin-bottom: 22px; }
+    .mgroup h3 { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 20px; font-weight: 900; color: var(--green-dark); margin-bottom: 6px; word-break: break-word; }
+    .mgroup h3 small { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-sub); }
+    .mgroup h3 .mbar { width: 120px; height: 8px; background: #ECEEE6; border-radius: 4px; overflow: hidden; align-self: center; }
+    .mgroup h3 .mbar span { display: block; height: 100%; background: var(--green-mid); }
+    .meeting .row { grid-template-columns: 92px 1fr 110px 104px 56px; font-size: 15.5px; padding: 14px 16px; }
+    .meeting .title { font-size: 16px; }
+    .meeting .note { font-size: 13.5px; }
+    .check { border: 1px solid var(--border); background: #fff; border-radius: 4px; padding: 5px 8px; font-family: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; color: var(--text); }
+    .row.checked { background: #FAFAF6; }
+    .row.checked .body, .row.checked .meta { opacity: 0.5; }
+    .row.checked .check { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
 
     /* ===== 当日スケジュール ===== */
     .srow { display: grid; grid-template-columns: 120px 1fr 56px; gap: 14px; padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
@@ -154,6 +199,10 @@
       .edit { grid-template-columns: 1fr 1fr; }
       .edit .half { grid-column: 1 / -1; }
       .tab { padding: 10px 12px; font-size: 14px; }
+      .progress { flex-wrap: wrap; gap: 6px 12px; }
+      .progress .sub { width: 100%; }
+      .meeting .row { grid-template-columns: 1fr auto; font-size: 14px; padding: 12px 14px; }
+      .row > .check-cell { grid-column: 1 / -1; }
     }
   </style>
 </head>
@@ -197,15 +246,30 @@
         <div id="gis-relogin"></div>
       </div>
       <div class="summary" id="summary"></div>
+      <div class="progress" id="progress"></div>
       <div class="tabs" role="tablist">
         <button type="button" class="tab" data-tab="prep">準備事項<span class="count" id="count-prep"></span></button>
         <button type="button" class="tab" data-tab="day">当日スケジュール<span class="count" id="count-day"></span></button>
       </div>
       <section id="view-prep">
-        <button type="button" class="btn add" data-add="task">＋ 準備事項を追加</button>
-        <div class="list" id="prep-open"></div>
-        <div class="group-label" id="done-label"></div>
-        <div class="list" id="prep-done"></div>
+        <div class="toolbar">
+          <button type="button" class="btn add" data-add="task">＋ 準備事項を追加</button>
+          <span class="spacer"></span>
+          <button type="button" class="btn primary" id="btn-meeting" data-meeting="on">打ち合わせモード</button>
+        </div>
+        <!-- 普段の一覧：担当の絞り込み・未完了・完了・アーカイブ -->
+        <div id="prep-list">
+          <div class="filters" id="owner-filters"></div>
+          <div class="list" id="prep-open"></div>
+          <div class="group-label" id="done-label"></div>
+          <div class="list" id="prep-done"></div>
+          <details class="archive" id="archive-box" hidden>
+            <summary id="archive-label"></summary>
+            <div class="list" id="prep-archive"></div>
+          </details>
+        </div>
+        <!-- 打ち合わせモード：担当ごとの未完了（D8〜D11） -->
+        <div id="prep-meeting" hidden></div>
       </section>
       <section id="view-day" hidden>
         <button type="button" class="btn add" data-add="schedule">＋ 予定を追加</button>
@@ -225,7 +289,10 @@ const GOOGLE_CLIENT_ID = '642574052479-lt9bufovhol8iepsi6srft2cm4jj1v9b.apps.goo
 const OPS_ENDPOINT = '/api/ops';
 const EVENT_DATE = '2026-10-22';        // 開催日（JST）。この日に開くと当日タブを先に出し、いまの行を強調する（D7）
 const TOKEN_KEY = 'ops-id-token';        // 同じタブでの再読込でログインを使い回す（期限まで）
-const STATUS_LABEL = { todo: '未着手', doing: '進行中', done: '完了' };
+const STATUS_LABEL = { todo: '未着手', doing: '進行中', done: '完了', archived: 'アーカイブ' };
+const ALL_OWNER = '運営全員';            // 全員の担当。絞り込みでは全員のボタンに出し、打ち合わせでは先頭のまとまりにする（進捗管理 D3・D8）
+const NO_OWNER = '担当なし';
+const CHECKED_KEY = 'ops-meeting-checked'; // 打ち合わせの確認済みの印。保存せず、このタブの間だけ残す（進捗管理 D10）
 
 // ===== 状態 =====
 let idToken = null;
@@ -236,6 +303,13 @@ let pendingActions = [];                 // ログイン切れで止まった保
 let reloadAfterLogin = false;            // ログイン切れで止まった再読込。保存の続きより後に読み直す
 let reloginButtonRendered = false;
 const editing = new Map();               // `${kind}:${id|new}` → { kind, id, draft, base, conflict, error, saving }
+// 担当の絞り込みと打ち合わせモードは URL に持つ（?owner=・?mode=meeting。進捗管理 D5・D8）
+const startParams = new URLSearchParams(location.search);
+let ownerFilter = startParams.get('owner') || '';
+let meeting = startParams.get('mode') === 'meeting';
+let meetingShown = new Set();            // 打ち合わせモードで出す行。モード中に完了・アーカイブにしても残す（D11）
+let meetingOrder = [];                   // 打ち合わせの担当の並び。モード中に並びが動かないよう、入ったときに決める
+let checked = new Set(readChecked());
 
 const $ = (id) => document.getElementById(id);
 
@@ -250,6 +324,7 @@ function jstParts(date = new Date()) {
 function toMinutes(hm) { const [h, m] = String(hm).split(':'); return parseInt(h, 10) * 60 + parseInt(m, 10); }
 function daysUntil(from, to) { return Math.round((Date.parse(to + 'T00:00:00Z') - Date.parse(from + 'T00:00:00Z')) / 86400000); }
 function shortDate(d) { if (!d) return '期日なし'; const [, m, day] = d.split('-'); return `${+m}/${+day}`; }
+function addDays(date, n) { return new Date(Date.parse(date + 'T00:00:00Z') + n * 86400000).toISOString().slice(0, 10); }
 function updatedLabel(row) {
   const who = row.updated_by === 'seed' ? '初期データ' : String(row.updated_by || '').split('@')[0];
   const t = jstParts(new Date(row.updated_at));
@@ -414,16 +489,85 @@ async function loadData() {
   $('nav-right').hidden = false;
   $('board-view').hidden = false;
   showLoginNotice('', '');
-  if (!tab) tab = jstParts().date === EVENT_DATE ? 'day' : 'prep';
+  if (!tab) tab = meeting ? 'prep' : jstParts().date === EVENT_DATE ? 'day' : 'prep';
   render();
 }
 
 // ===== 描画 =====
-// 準備は「未完了が上・期日の近い順（期日なしは最後）」、完了は下にまとめる（D7）
-function sortedTasks() {
+// 準備は「未完了が上・期日の近い順（期日なしは最後）」、完了は下にまとめる（D7）。アーカイブはさらに下（進捗管理 D2）
+const isOpen = (t) => t.status === 'todo' || t.status === 'doing';
+function byDue(a, b) {
   const key = (t) => t.due_date || '9999-99-99';
-  const open = tasks.filter((t) => t.status !== 'done').sort((a, b) => (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0));
-  return { open, done: tasks.filter((t) => t.status === 'done') };
+  return key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0;
+}
+function sortedTasks(list = tasks) {
+  return {
+    open: list.filter(isOpen).sort(byDue),
+    done: list.filter((t) => t.status === 'done'),
+    archived: list.filter((t) => t.status === 'archived')
+  };
+}
+// 進捗＝完了 ÷（全件 − アーカイブ）（進捗管理 D6）
+function progressOf(list) {
+  const total = list.filter((t) => t.status !== 'archived').length;
+  const done = list.filter((t) => t.status === 'done').length;
+  return { done, total, pct: total ? Math.round((done / total) * 100) : 0 };
+}
+
+// ===== 担当（進捗管理 D3・D4） =====
+// 担当の文字を「・」「、」で分ける。空なら「担当なし」。表記のゆれは寄せない
+function ownersOf(t) {
+  const list = String(t.owner || '').split(/[・、]/).map((x) => x.trim()).filter(Boolean);
+  return list.length ? list : [NO_OWNER];
+}
+// 絞り込み：分けた誰かが一致するか、「運営全員」なら出す
+function matchesOwner(t, who) {
+  if (!who) return true;
+  const list = ownersOf(t);
+  return list.includes(who) || list.includes(ALL_OWNER);
+}
+// 担当ボタン：アーカイブ以外に出てくる人。数字は押したときに出る未完了の数。未完了の多い順、同数は名前順
+function ownerButtons() {
+  const names = new Set();
+  tasks.filter((t) => t.status !== 'archived').forEach((t) => ownersOf(t).forEach((o) => { if (o !== ALL_OWNER) names.add(o); }));
+  return [...names]
+    .map((o) => [o, tasks.filter((t) => isOpen(t) && matchesOwner(t, o)).length])
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ja'));
+}
+
+function syncUrl() {
+  const p = new URLSearchParams(location.search);
+  if (ownerFilter) p.set('owner', ownerFilter); else p.delete('owner');
+  if (meeting) p.set('mode', 'meeting'); else p.delete('mode');
+  const q = p.toString();
+  history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+}
+
+// ===== 打ち合わせモード（進捗管理 D8〜D11） =====
+function readChecked() {
+  try { return JSON.parse(sessionStorage.getItem(CHECKED_KEY) || '[]'); } catch { return []; }
+}
+function saveChecked() {
+  try { sessionStorage.setItem(CHECKED_KEY, JSON.stringify([...checked])); } catch { /* 保存できなくてもこの画面では動く */ }
+}
+function setMeeting(on) {
+  meeting = on;
+  meetingShown = new Set();
+  meetingOrder = [];
+  if (on) tab = 'prep';
+  syncUrl();
+  render();
+}
+// 未完了の行（モード中に足された・戻された行も）を加え、担当の並びに新しい人を後ろへ足す
+function refreshMeeting() {
+  tasks.filter(isOpen).forEach((t) => meetingShown.add(t.id));
+  const shown = tasks.filter((t) => meetingShown.has(t.id));
+  const order = ownerButtons().map(([o]) => o);
+  if (shown.some((t) => ownersOf(t).includes(ALL_OWNER))) order.unshift(ALL_OWNER);
+  for (const o of order) {
+    if (!meetingOrder.includes(o) && shown.some((t) => ownersOf(t).includes(o))) meetingOrder.push(o);
+  }
+  return shown;
 }
 // 当日は開始時刻順（D5）。同じ開始なら時点だけの行を先に
 function sortedSchedule() {
@@ -433,23 +577,30 @@ function sortedSchedule() {
 
 function render() {
   const today = jstParts().date;
-  const { open, done } = sortedTasks();
+  const tomorrow = addDays(today, 1);
+  // 上の集計・進捗率はイベント全体（絞り込んでも変えない。進捗管理 D5）
+  const { open } = sortedTasks();
+  const p = progressOf(tasks);
+  const archivedCount = tasks.length - p.total;
   const overdue = open.filter((t) => t.due_date && t.due_date < today).length;
   const left = daysUntil(today, EVENT_DATE);
   $('summary').innerHTML = [
     ['開催まで', left > 0 ? `${left}<small>日</small>` : left === 0 ? '当日' : '終了'],
     ['未完了', `${open.length}<small>件</small>`],
     ['期日切れ', `${overdue}<small>件</small>`, overdue ? 'warn' : ''],
-    ['完了', `${done.length}<small>/ ${tasks.length}件</small>`]
+    ['完了', `${p.done}<small>/ ${p.total}件</small>`]
   ].map(([l, v, c]) => `<div class="summary-item"><div class="summary-label">${l}</div><div class="summary-value ${c || ''}">${v}</div></div>`).join('');
+  const dueToday = open.filter((t) => t.due_date === today).length;
+  const dueTomorrow = open.filter((t) => t.due_date === tomorrow).length;
+  $('progress').innerHTML = `<b>${p.pct}%</b><div class="bar"><span style="width:${p.pct}%"></span></div>
+    <span class="sub">完了 ${p.done} / ${p.total}件${archivedCount ? `（アーカイブ ${archivedCount}件は数えない）` : ''}・今日期限 ${dueToday}件・明日期限 ${dueTomorrow}件</span>`;
   $('count-prep').textContent = `${open.length}件`;
   $('count-day').textContent = `${schedule.length}件`;
 
-  const newTask = editing.has('task:new') ? editForm('task:new') : '';
-  $('prep-open').innerHTML = newTask + open.map((t) => taskRow(t, today)).join('')
-    || '<div class="empty">未完了の準備事項はありません</div>';
-  $('done-label').textContent = done.length ? `完了 ${done.length}件` : '';
-  $('prep-done').innerHTML = done.map((t) => taskRow(t, today)).join('');
+  $('prep-list').hidden = meeting;
+  $('prep-meeting').hidden = !meeting;
+  $('btn-meeting').hidden = meeting;
+  if (meeting) renderMeeting(today, tomorrow); else renderList(today, tomorrow);
 
   const newSchedule = editing.has('schedule:new') ? editForm('schedule:new') : '';
   $('day-list').innerHTML = newSchedule + sortedSchedule().map(scheduleRow).join('')
@@ -461,18 +612,66 @@ function render() {
   updateNow();
 }
 
-function taskRow(t, today) {
+// 普段の一覧：担当ボタン・未完了・完了・アーカイブ（畳む）
+function renderList(today, tomorrow) {
+  const buttons = ownerButtons();
+  // 無い担当のリンクは「すべて」に戻す（U11）
+  if (ownerFilter && !buttons.some(([o]) => o === ownerFilter)) { ownerFilter = ''; syncUrl(); }
+  $('owner-filters').innerHTML = buttons.length
+    ? `<span class="flabel">担当</span><button type="button" class="fchip${ownerFilter ? '' : ' active'}" data-owner="">すべて<small>${tasks.filter(isOpen).length}</small></button>`
+      + buttons.map(([o, n]) => `<button type="button" class="fchip${o === ownerFilter ? ' active' : ''}" data-owner="${esc(o)}">${esc(o)}<small>${n}</small></button>`).join('')
+    : '';
+  const { open, done, archived } = sortedTasks(tasks.filter((t) => matchesOwner(t, ownerFilter)));
+  const newTask = editing.has('task:new') ? editForm('task:new') : '';
+  $('prep-open').innerHTML = newTask + open.map((t) => taskRow(t, today, tomorrow)).join('')
+    || `<div class="empty">${ownerFilter ? `${esc(ownerFilter)}の未完了の準備事項はありません` : '未完了の準備事項はありません'}</div>`;
+  $('done-label').textContent = done.length ? `完了 ${done.length}件` : '';
+  $('prep-done').innerHTML = done.map((t) => taskRow(t, today, tomorrow)).join('');
+  $('archive-box').hidden = archived.length === 0;
+  $('archive-label').textContent = `アーカイブ ${archived.length}件（不要になったもの）`;
+  $('prep-archive').innerHTML = archived.map((t) => taskRow(t, today, tomorrow)).join('');
+}
+
+// 打ち合わせモード：「運営全員」→ 担当（未完了の多い順）。担当ごとに完了 x / y件とバー、未完了を期日順（D8・D9）
+function renderMeeting(today, tomorrow) {
+  const shown = refreshMeeting();
+  const checkedCount = shown.filter((t) => checked.has(t.id)).length;
+  const groups = meetingOrder.map((o) => {
+    const rows = shown.filter((t) => ownersOf(t).includes(o)).sort(byDue);
+    if (!rows.length) return '';
+    const p = progressOf(tasks.filter((t) => ownersOf(t).includes(o)));
+    return `<div class="mgroup"><h3>${esc(o)}<small>完了 ${p.done} / ${p.total}件</small><span class="mbar"><span style="width:${p.pct}%"></span></span></h3>
+      <div class="list">${rows.map((t) => taskRow(t, today, tomorrow, true)).join('')}</div></div>`;
+  }).join('');
+  const newTask = editing.has('task:new') ? `<div class="list" style="margin-bottom:16px">${editForm('task:new')}</div>` : '';
+  $('prep-meeting').innerHTML = `<div class="meeting-bar"><b>打ち合わせモード</b><span>未完了を担当ごとに表示・確認済み ${checkedCount} / ${shown.length}件</span>
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-meeting="clear">確認済みの印を消す</button>
+      <button type="button" class="btn" data-meeting="off">終える</button></div>
+    ${newTask}<div class="meeting">${groups || '<div class="empty">未完了の準備事項はありません</div>'}</div>`;
+}
+
+// 期日の印：期日切れは赤字、未完了で今日・明日の行は縦線と「今日」「明日」（進捗管理 D7）
+function taskRow(t, today, tomorrow, inMeeting = false) {
   const key = 'task:' + t.id;
   if (editing.has(key)) return editForm(key);
-  const overdue = t.status !== 'done' && t.due_date && t.due_date < today;
+  const open = isOpen(t);
+  const overdue = open && t.due_date && t.due_date < today;
+  const soon = !open || !t.due_date ? '' : t.due_date === today ? 'today' : t.due_date === tomorrow ? 'tomorrow' : '';
+  const badge = soon ? `<span class="soon ${soon}">${soon === 'today' ? '今日' : '明日'}</span>` : '';
+  const isChecked = inMeeting && checked.has(t.id);
+  const shared = inMeeting && ownersOf(t).length > 1 ? `<span class="shared">（${esc(t.owner)}）</span>` : '';
   const u = updatedLabel(t);
   const options = Object.entries(STATUS_LABEL).map(([v, l]) => `<option value="${v}"${v === t.status ? ' selected' : ''}>${l}</option>`).join('');
-  return `<div class="row ${t.status === 'done' ? 'done' : ''}">
+  const cls = [t.status === 'done' ? 'done' : '', t.status === 'archived' ? 'archived' : '', soon ? 'due-' + soon : '', isChecked ? 'checked' : ''].filter(Boolean).join(' ');
+  return `<div class="row ${cls}">
     <div class="status"><select class="pill ${esc(t.status)}" data-status-id="${esc(t.id)}" aria-label="状態">${options}</select></div>
-    <div class="body"><div class="title">${esc(t.title)}</div>${t.note ? `<div class="note">${esc(t.note)}</div>` : ''}</div>
-    <div class="meta"><span class="meta-label">担当</span>${esc(t.owner || '—')}</div>
-    <div class="meta due ${overdue ? 'overdue' : ''}"><span class="meta-label">期日</span>${esc(shortDate(t.due_date))}</div>
-    <div class="updated">${esc(u.who)}<br>${esc(u.when)}</div>
+    <div class="body"><div class="title">${esc(t.title)}${shared}</div>${t.note ? `<div class="note">${esc(t.note)}</div>` : ''}</div>
+    ${inMeeting ? '' : `<div class="meta"><span class="meta-label">担当</span>${esc(t.owner || '—')}</div>`}
+    <div class="meta due ${overdue ? 'overdue' : ''}"><span class="meta-label">期日</span>${esc(shortDate(t.due_date))}${badge}</div>
+    ${inMeeting
+      ? `<div class="check-cell"><button type="button" class="check" data-check="${esc(t.id)}" aria-pressed="${isChecked}">${isChecked ? '✓ 確認済み' : '確認した'}</button></div>`
+      : `<div class="updated">${esc(u.who)}<br>${esc(u.when)}</div>`}
     <div class="actions"><button type="button" class="btn" data-edit="${esc(key)}">編集</button></div>
   </div>`;
 }
@@ -655,6 +854,18 @@ document.addEventListener('click', (ev) => {
   const t = ev.target.closest('button');
   if (!t) return;
   if (t.dataset.tab) { tab = t.dataset.tab; render(); return; }
+  if (t.dataset.owner !== undefined) { ownerFilter = t.dataset.owner; syncUrl(); render(); return; }
+  if (t.dataset.meeting) {
+    if (t.dataset.meeting === 'clear') { checked = new Set(); saveChecked(); render(); return; }
+    setMeeting(t.dataset.meeting === 'on');
+    return;
+  }
+  if (t.dataset.check) {
+    if (checked.has(t.dataset.check)) checked.delete(t.dataset.check); else checked.add(t.dataset.check);
+    saveChecked();
+    render();
+    return;
+  }
   if (t.dataset.add) { if (!editing.has(t.dataset.add + ':new')) startEdit(t.dataset.add + ':new'); return; }
   if (t.dataset.edit) { startEdit(t.dataset.edit); return; }
   if (t.dataset.save) { saveEdit(t.dataset.save); return; }

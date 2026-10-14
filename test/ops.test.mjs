@@ -196,7 +196,7 @@ test('U14 入力の誤りは保存しない（字数・時刻の前後・空・�
     ['task', { title: 'x', owner: 'あ'.repeat(51) }, /担当/],
     ['task', { title: 'x', note: 'あ'.repeat(1001) }, /メモ/],
     ['task', { title: 'x', due_date: '2026-02-30' }, /期日/],
-    ['task', { title: 'x', status: 'archived' }, /状態/],
+    ['task', { title: 'x', status: 'finished' }, /状態/],
     ['schedule', { start_time: '', title: '受付' }, /開始時刻/],
     ['schedule', { start_time: '25:00', title: '受付' }, /開始時刻/],
     ['schedule', { start_time: '12:00', end_time: '11:59', title: '受付' }, /終了時刻/],
@@ -238,6 +238,33 @@ test('不正な action・種類・id', async () => {
   assert.equal((await as('editor', { action: 'save', kind: 'user', fields: {} })).status, 400);
   assert.equal((await as('editor', { action: 'save', kind: 'task', id: 'not-a-uuid', fields: {} })).status, 400);
   assert.equal((await as('editor', { action: 'delete', kind: 'task', id: "1' OR '1'='1" })).status, 400);
+});
+
+// 進捗管理（docs/designs/2026-10-14-ops-board-progress/design.md）の U1・U2・U24
+test('進捗管理 U1・U2 アーカイブへ移し、未着手に戻せる。一覧には状態 archived で返る', async () => {
+  const t = await addTask({ title: 'レンタカーを予約する', owner: '清野', due_date: '2026-10-09' });
+  const a = await as('outside', { action: 'save', kind: 'task', id: t.id, expectedUpdatedAt: t.updated_at, fields: { status: 'archived' } });
+  assert.equal(a.status, 200, JSON.stringify(a.body));
+  assert.deepEqual([a.body.row.status, a.body.row.title, a.body.row.due_date], ['archived', 'レンタカーを予約する', '2026-10-09']);
+  const list = await as('editor', { action: 'list' });
+  assert.equal(list.body.tasks.find((x) => x.id === t.id).status, 'archived');
+  const b = await as('editor', { action: 'save', kind: 'task', id: t.id, expectedUpdatedAt: a.body.row.updated_at, fields: { status: 'todo' } });
+  assert.equal(b.status, 200);
+  assert.equal(b.body.row.status, 'todo');
+  // 追加のときからアーカイブでも入れられる
+  const c = await addTask({ title: '昼食候補を確認する', status: 'archived' });
+  assert.equal(c.status, 'archived');
+});
+
+test('進捗管理 U24 不正な状態は 400 で保存しない。DB の制約も archived だけを足している', async () => {
+  const t = await addTask({ title: 'x' });
+  for (const status of ['finished', 'ARCHIVED', '', 'アーカイブ']) {
+    const r = await as('editor', { action: 'save', kind: 'task', id: t.id, expectedUpdatedAt: t.updated_at, fields: { status } });
+    assert.equal(r.status, 400, status);
+    assert.match(r.body.error, /状態/);
+  }
+  await assert.rejects(sql`UPDATE ops_tasks SET status = 'finished' WHERE id = ${t.id}`);
+  await sql`UPDATE ops_tasks SET status = 'archived' WHERE id = ${t.id}`;
 });
 
 test('U18 初期データ: 準備9件（完了2・未着手7）と予定9件。2回流しても増えない', async () => {
