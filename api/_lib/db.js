@@ -38,6 +38,18 @@ export function toApplicationView(row) {
   };
 }
 
+// アンケートの回答行を API の応答用の形にする（列名は DB のまま）
+export function toSurveyResponseView(row) {
+  return {
+    id: row.id,
+    received_at: toIso(row.received_at),
+    answers: row.answers,
+    questions: row.questions,
+    slack_sent_at: toIso(row.slack_sent_at),
+    slack_error: row.slack_error
+  };
+}
+
 function toIso(v) {
   if (v == null) return null;
   return v instanceof Date ? v.toISOString() : new Date(v).toISOString();

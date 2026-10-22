@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ご参加者アンケート | RECORE Community</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#1E3A14">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #1E3A14;
+      --green-mid: #2D4E1C;
+      --green-card: #1A3212;
+      --gold: #C4D44A;
+      --gold-dim: rgba(196,212,74,0.15);
+      --text: #2C2C2C;
+      --text-sub: #6A6A6A;
+      --bg: #F7F7F2;
+      --surface: #FFFFFF;
+      --border: #DDE0D8;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    /* ===== HEADER / NAV ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .logo {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--green-dark);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .logo-main { color: var(--green-dark); }
+    .logo-sub { color: var(--gold); font-size: 12px; display: block; font-weight: 700; letter-spacing: 0.08em; }
+
+    nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      flex: 1;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 8px 0;
+      transition: color 0.2s;
+    }
+
+    nav button:hover { color: var(--gold); }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--green-dark);
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #d6e85a;
+      transform: translateY(-2px);
+    }
+
+    /* ===== COMMON ===== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 96px 24px; }
+
+    .label-en {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .label-en::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 2px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      color: var(--green-dark);
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .section-sub {
+      color: var(--text-sub);
+      font-size: 16px;
+      margin-bottom: 48px;
+      max-width: 700px;
+      line-height: 1.8;
+    }
+
+    .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: #fff;
+      padding: 120px 24px;
+      text-align: center;
+    }
+
+    .hero-content { max-width: 900px; margin: 0 auto; }
+
+    .hero-logo {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+      opacity: 0.9;
+    }
+
+    .hero-title {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: clamp(32px, 8vw, 56px);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+
+    .hero-title em { font-style: normal; color: var(--gold); }
+
+    .hero-subtitle {
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 48px;
+      opacity: 0.9;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 32px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--green-dark);
+      box-shadow: 0 4px 16px rgba(196, 212, 74, 0.3);
+    }
+
+    .btn-gold:hover {
+      background: #d6e85a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(196, 212, 74, 0.4);
+    }
+
+    .btn-white {
+      background: #fff;
+      color: var(--green-dark);
+      box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-white:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+    }
+
+    /* ===== STATS ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      margin: 64px 0;
+    }
+
+    .stat-card {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: clamp(36px, 6vw, 48px);
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    /* ===== ABOUT SECTION ===== */
+    .about-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+      margin: 40px 0;
+    }
+
+    .about-content h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 16px;
+      margin-top: 24px;
+    }
+
+    .about-content h3:first-child { margin-top: 0; }
+
+    .about-content p {
+      color: var(--text-sub);
+      line-height: 1.85;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+
+    .benefits-list {
+      display: grid;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .benefit-item {
+      background: var(--surface);
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid var(--gold);
+    }
+
+    .benefit-item strong {
+      color: var(--green-dark);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .benefit-item p {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin: 0;
+    }
+
+    /* ===== VISION GRID ===== */
+    .vision-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 32px;
+      margin: 40px 0;
+    }
+
+    .vision-card {
+      text-align: center;
+      padding: 40px 24px;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .vision-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(30, 58, 20, 0.1);
+      border-color: var(--gold);
+    }
+
+    .vision-card h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--green-dark);
+      margin-bottom: 12px;
+    }
+
+    .vision-card p {
+      color: var(--text-sub);
+      font-size: 14px;
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    /* ===== EVENT GRID ===== */
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin: 40px 0;
+    }
+
+    .event-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(30, 58, 20, 0.1);
+    }
+
+    .event-header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: #fff;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .event-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--green-dark);
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .event-vol {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .event-status {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .event-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-body h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 16px;
+    }
+
+    .event-info {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex: 1;
+    }
+
+    .event-info-item {
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    .event-info-label {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .event-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .event-button {
+      margin-top: auto;
+    }
+
+    /* ===== APPLY FORM ===== */
+    .apply-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 720px;
+      margin: 40px auto 0;
+      box-shadow: 0 8px 24px rgba(30, 58, 20, 0.06);
+    }
+
+    .apply-event {
+      background: var(--bg);
+      border-left: 4px solid var(--gold);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.9;
+    }
+
+    .apply-event strong {
+      color: var(--green-dark);
+      font-size: 15px;
+    }
+
+    .form-row {
+      margin-bottom: 20px;
+    }
+
+    .form-row label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .form-required {
+      display: inline-block;
+      background: var(--green-mid);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-left: 8px;
+      vertical-align: 2px;
+    }
+
+    .form-optional {
+      display: inline-block;
+      background: var(--border);
+      color: var(--text-sub);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-left: 8px;
+      vertical-align: 2px;
+    }
+
+    .form-row input,
+    .form-row textarea,
+    .form-row select {
+      width: 100%;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-row select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236A6A6A' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 44px;
+      cursor: pointer;
+    }
+
+    .form-row select:invalid {
+      color: var(--text-sub);
+    }
+
+    .form-row input:focus,
+    .form-row textarea:focus,
+    .form-row select:focus {
+      outline: none;
+      border-color: var(--green-mid);
+      box-shadow: 0 0 0 3px var(--gold-dim);
+      background: var(--surface);
+    }
+
+    .form-row textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    .form-note {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 6px;
+    }
+
+    .companion-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .form-submit {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .form-submit .btn {
+      justify-content: center;
+      min-width: 240px;
+    }
+
+    .form-submit .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .form-message {
+      display: none;
+      margin-top: 20px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .form-message.success {
+      display: block;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold);
+      color: var(--green-dark);
+    }
+
+    .form-message.error {
+      display: block;
+      background: #fdecea;
+      border: 1px solid #f5c2bd;
+      color: #a8342a;
+    }
+
+    /* ===== ROADMAP ===== */
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+      margin: 40px 0;
+    }
+
+    .phase-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 24px;
+      position: relative;
+    }
+
+    .phase-card.current {
+      border-color: var(--gold);
+      box-shadow: 0 4px 16px rgba(196, 212, 74, 0.2);
+    }
+
+    .phase-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--green-dark);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .phase-number {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--green-dark);
+      margin-bottom: 8px;
+    }
+
+    .phase-card h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--green-dark);
+      margin-bottom: 8px;
+    }
+
+    .phase-subtitle {
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .phase-description {
+      color: var(--text-sub);
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .phase-items {
+      display: grid;
+      gap: 12px;
+    }
+
+    .phase-item {
+      display: flex;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .phase-item::before {
+      content: '✓';
+      color: var(--gold);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ===== REPORT SECTION ===== */
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin: 40px 0;
+    }
+
+    .report-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .report-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(30, 58, 20, 0.1);
+    }
+
+    .report-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 48px;
+    }
+
+    .report-content {
+      padding: 24px;
+    }
+
+    .report-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--green-dark);
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .report-content h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .report-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-meta-item {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .report-meta-label {
+      font-weight: 700;
+      color: var(--text);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .report-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    /* ===== JOIN SECTION ===== */
+    .join-section {
+      background: var(--green-card);
+      color: #fff;
+      padding: 80px 24px;
+      text-align: center;
+    }
+
+    .join-section .label-en { justify-content: center; }
+    .join-section .label-en::before { display: none; }
+
+    .join-section .section-title {
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .join-section .section-sub {
+      color: rgba(255, 255, 255, 0.8);
+      max-width: 600px;
+    }
+
+    .join-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 32px;
+      margin: 64px 0;
+    }
+
+    .join-benefit {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .join-benefit h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .join-benefit p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .join-info {
+      max-width: 700px;
+      margin: 64px auto;
+      padding: 32px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+    }
+
+    .join-info h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .join-info-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 24px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .join-info-label {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #0F1E09;
+      color: rgba(255, 255, 255, 0.4);
+      padding: 48px 24px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    footer strong { color: rgba(255, 255, 255, 0.7); }
+
+    footer .container {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 24px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      nav {
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      nav-links {
+        flex: 1 0 100%;
+        order: 3;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      section { padding: 56px 20px; }
+      .hero { padding: 80px 20px; }
+
+      .about-section,
+      .stats-grid,
+      .vision-grid,
+      .event-grid,
+      .roadmap,
+      .report-grid,
+      .join-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .report-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .apply-card {
+        padding: 24px 20px;
+      }
+
+      .form-submit .btn {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn { width: 100%; text-align: center; }
+
+      .join-info-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+    /* ===== アンケート（survey.html だけ） ===== */
+    .form-row.choice-row > .choice-label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .choice-list { display: grid; gap: 8px; border: 0; }
+    .choice-list label {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 500; margin: 0; padding: 11px 14px;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
+    }
+    .choice-list label:has(input:checked) { border-color: var(--green-mid); background: var(--gold-dim); }
+    .form-row .choice-list input {
+      width: 18px; height: 18px; padding: 0; flex: none;
+      -webkit-appearance: auto; appearance: auto; accent-color: var(--green-mid);
+    }
+    .scale-list { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+    .scale-list label {
+      display: flex; align-items: center; justify-content: center;
+      position: relative; margin: 0; height: 44px; font-weight: 700;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
+    }
+    .scale-list input { position: absolute; inset: 0; opacity: 0; width: 1px; height: 1px; padding: 0; pointer-events: none; }
+    .scale-list label:has(input:checked) { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
+    .scale-list label:has(input:focus-visible) { box-shadow: 0 0 0 3px var(--gold-dim); }
+    .scale-ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-top: 6px; }
+    @media (max-width: 480px) {
+      .scale-list { grid-template-columns: repeat(5, 1fr); }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <nav>
+    <a href="index.html" class="logo">RECORE<span class="logo-sub">Community</span></a>
+    <nav-links>
+      <button onclick="location.href='index.html#about'">コミュニティとは</button>
+      <button onclick="location.href='index.html#events'">次回イベント</button>
+      <button onclick="location.href='index.html#reports'">イベントレポート</button>
+    </nav-links>
+  </nav>
+</header>
+
+<!-- ===== SURVEY FORM ===== -->
+<section id="apply">
+  <div class="container">
+    <div class="label-en fade-in">SURVEY</div>
+    <h2 class="section-title fade-in" id="survey-title">ご参加者アンケート</h2>
+    <p class="section-sub fade-in" id="survey-lead"></p>
+
+    <div class="apply-card fade-in">
+      <div class="apply-event">
+        <strong id="event-title"></strong><br>
+        <span id="event-date"></span><br>
+        <span id="survey-deadline" style="font-weight: 700;"></span>
+      </div>
+
+      <form id="survey-form" novalidate hidden>
+        <div id="question-list"></div>
+        <div class="form-submit">
+          <button type="submit" class="btn btn-gold" id="survey-submit">送信する</button>
+        </div>
+      </form>
+
+      <div class="form-message" id="form-message"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <p><strong>RECORE Community</strong> — 孤独な試行錯誤を終わらせる。</p>
+    <p style="margin: 12px 0; font-size: 12px;">
+      <a href="https://recore-corp.jp/" style="color: var(--gold); text-decoration: none;">コーポレートサイト</a> |
+      <a href="https://recore-pos.com/" style="color: var(--gold); text-decoration: none;">RECORE サービスHP</a> |
+      <a href="mailto:seino@recore-corp.jp" style="color: var(--gold); text-decoration: none;">お問い合わせ</a>
+    </p>
+    <p>© 2026 RECORE Community by 株式会社RECORE. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+// ===== 設問定義 =====
+// 設問の正本は events.json の各イベントの survey（id・文言・種類・必須・選択肢）。
+// ページはそこから設問を描き、API に送るのは eventKey と「設問 id → 値」だけ（文言は API が events.json から引く）。
+// 新しいイベントのアンケートは events.json に survey を足して survey.html?event=<キー> を配るだけでよい。
+const EVENTS_URL = 'events.json';
+const SURVEY_ENDPOINT = '/api/survey';
+const TEXT_MAX = 100;       // API の検証と同じ上限
+const TEXTAREA_MAX = 2000;
+
+const surveyForm = document.getElementById('survey-form');
+const surveyMessage = document.getElementById('form-message');
+const surveyButton = document.getElementById('survey-submit');
+const questionList = document.getElementById('question-list');
+
+function showSurveyMessage(type, html) {
+  surveyMessage.className = 'form-message ' + type;
+  surveyMessage.innerHTML = html;
+}
+
+// 二重送信防止のトークン（送信ごとに作る。連打・通信リトライは同じトークンで届く）
+let submissionToken = crypto.randomUUID();
+
+function el(tag, attrs = {}, text) {
+  const node = document.createElement(tag);
+  Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+  if (text != null) node.textContent = text;
+  return node;
+}
+
+function badge(required) {
+  return el('span', { class: required ? 'form-required' : 'form-optional' }, required ? '必須' : '任意');
+}
+
+function renderQuestion(q, index) {
+  const row = el('div', { class: 'form-row', 'data-qid': q.id });
+  const number = 'Q' + (index + 1) + '. ';
+  if (q.type === 'text' || q.type === 'textarea') {
+    const label = el('label', { for: 'q-' + q.id }, number + q.label);
+    label.appendChild(badge(q.required));
+    const input = q.type === 'text'
+      ? el('input', { type: 'text', id: 'q-' + q.id, maxlength: TEXT_MAX })
+      : el('textarea', { id: 'q-' + q.id, maxlength: TEXTAREA_MAX });
+    if (q.id === 'company') input.setAttribute('autocomplete', 'organization');
+    if (q.id === 'name') input.setAttribute('autocomplete', 'name');
+    row.append(label, input);
+    return row;
+  }
+  row.classList.add('choice-row');
+  const label = el('span', { class: 'choice-label', id: 'q-' + q.id + '-label' }, number + q.label);
+  label.appendChild(badge(q.required));
+  row.appendChild(label);
+  const group = el('div', { role: q.type === 'checkbox' ? 'group' : 'radiogroup', 'aria-labelledby': 'q-' + q.id + '-label' });
+  if (q.type === 'scale') {
+    group.className = 'scale-list';
+    for (let n = q.min; n <= q.max; n++) {
+      const opt = el('label', {}, null);
+      opt.append(el('input', { type: 'radio', name: q.id, value: String(n), 'aria-label': n + '点' }), document.createTextNode(String(n)));
+      group.appendChild(opt);
+    }
+    row.appendChild(group);
+    const ends = el('div', { class: 'scale-ends' });
+    ends.append(el('span', {}, q.min + '：不満'), el('span', {}, q.max + '：とても満足'));
+    row.appendChild(ends);
+    return row;
+  }
+  group.className = 'choice-list';
+  q.options.forEach(o => {
+    const opt = el('label', {}, null);
+    opt.append(el('input', { type: q.type, name: q.id, value: o }), document.createTextNode(o));
+    group.appendChild(opt);
+  });
+  row.appendChild(group);
+  return row;
+}
+
+function collectAnswers(questions) {
+  const answers = {};
+  questions.forEach(q => {
+    if (q.type === 'text' || q.type === 'textarea') {
+      answers[q.id] = document.getElementById('q-' + q.id).value.trim();
+    } else if (q.type === 'checkbox') {
+      answers[q.id] = Array.from(surveyForm.querySelectorAll(`input[name="${q.id}"]:checked`)).map(i => i.value);
+    } else {
+      const checked = surveyForm.querySelector(`input[name="${q.id}"]:checked`);
+      answers[q.id] = checked ? (q.type === 'scale' ? Number(checked.value) : checked.value) : (q.type === 'scale' ? null : '');
+    }
+  });
+  return answers;
+}
+
+function isEmpty(v) {
+  return v == null || v === '' || (Array.isArray(v) && v.length === 0);
+}
+
+async function initSurvey() {
+  let defs;
+  try {
+    const res = await fetch(EVENTS_URL, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('events.json ' + res.status);
+    defs = await res.json();
+  } catch (err) {
+    showSurveyMessage('error', 'アンケートを読み込めませんでした。ページを再読み込みしてください。');
+    return;
+  }
+
+  const currentKey = new URLSearchParams(location.search).get('event');
+  const currentEvent = Object.prototype.hasOwnProperty.call(defs.events, currentKey) ? defs.events[currentKey] : null;
+  if (!currentEvent || !currentEvent.survey) {
+    document.querySelector('.apply-event').hidden = true;
+    showSurveyMessage('error', '対象のアンケートが見つかりません。お手数ですが、ご案内の URL をご確認ください。');
+    return;
+  }
+  const survey = currentEvent.survey;
+
+  document.title = currentEvent.title.split('｜')[0] + ' ' + survey.title + ' | RECORE Community';
+  document.getElementById('survey-title').textContent = survey.title;
+  document.getElementById('survey-lead').innerHTML = survey.lead;
+  document.getElementById('event-title').textContent = currentEvent.title;
+  document.getElementById('event-date').textContent = currentEvent.date_text;
+
+  // ===== 回答締切 =====
+  // deadline の日付の 23:59（JST）を過ぎたらフォームを出さない（API もサーバー側で同じ判定をする）
+  const deadlineLabel = (() => {
+    const [y, m, d] = survey.deadline.split('-').map(Number);
+    const youbi = '日月火水木金土'[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+    return `${y}年${m}月${d}日（${youbi}）`;
+  })();
+  document.getElementById('survey-deadline').textContent = '回答締切：' + deadlineLabel;
+  const closedMessage = 'アンケートの受付は終了しました（締切：' + deadlineLabel + '）。<br>ご意見は <a href="mailto:seino@recore-corp.jp" style="color: inherit;">seino@recore-corp.jp</a> までお寄せください。';
+  if (Date.now() >= new Date(survey.deadline + 'T23:59:59+09:00').getTime()) {
+    showSurveyMessage('error', closedMessage);
+    return;
+  }
+
+  survey.questions.forEach((q, i) => questionList.appendChild(renderQuestion(q, i)));
+  surveyForm.hidden = false;
+
+  surveyForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const answers = collectAnswers(survey.questions);
+    const missing = survey.questions.filter(q => q.required && isEmpty(answers[q.id]));
+    if (missing.length) {
+      const nums = missing.map(q => 'Q' + (survey.questions.indexOf(q) + 1)).join('・');
+      showSurveyMessage('error', '必須の設問（' + nums + '）にご回答ください。');
+      surveyForm.querySelector(`[data-qid="${missing[0].id}"]`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    surveyButton.disabled = true;
+    surveyButton.textContent = '送信中…';
+    surveyMessage.className = 'form-message';
+
+    try {
+      // Content-Type は text/plain（申込フォームと同じ流儀。API は同一オリジン）
+      const res = await fetch(SURVEY_ENDPOINT, {
+        method: 'POST',
+        body: JSON.stringify({ eventKey: currentKey, submission_token: submissionToken, answers })
+      });
+      const result = await res.json();
+      if (!result.ok) {
+        if (result.code === 'closed') {
+          surveyForm.hidden = true;
+          showSurveyMessage('error', closedMessage);
+          return;
+        }
+        showSurveyMessage('error', (result.error || '送信に失敗しました') + '。内容をご確認のうえ、もう一度お送りください。');
+        return;
+      }
+      surveyForm.reset();
+      surveyForm.hidden = true;
+      submissionToken = crypto.randomUUID();
+      showSurveyMessage('success', 'ご回答ありがとうございました。<br>いただいた内容は、今後のコミュニティ運営に活かしてまいります。');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      showSurveyMessage('error', '送信に失敗しました。お手数ですが <a href="mailto:seino@recore-corp.jp" style="color: inherit;">seino@recore-corp.jp</a> まで直接ご連絡ください。');
+    } finally {
+      surveyButton.disabled = false;
+      surveyButton.textContent = '送信する';
+    }
+  });
+}
+
+initSurvey();
+</script>
+
+</body>
+</html>

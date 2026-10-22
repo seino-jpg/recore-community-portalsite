@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>アンケート | RECORE Community</title>
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#1E3A14">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #1E3A14;
+      --green-mid: #2D4E1C;
+      --gold: #C4D44A;
+      --gold-dim: rgba(196,212,74,0.15);
+      --text: #2C2C2C;
+      --text-sub: #6A6A6A;
+      --bg: #F7F7F2;
+      --surface: #FFFFFF;
+      --border: #DDE0D8;
+    }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    nav {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    }
+    .logo {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 20px; font-weight: 900; color: var(--green-dark);
+      text-decoration: none; white-space: nowrap;
+    }
+    .logo-sub { color: var(--gold); font-size: 12px; display: block; font-weight: 700; letter-spacing: 0.08em; }
+    /* display を指定した要素に hidden 属性を付けても効かないため、明示的に打ち消す */
+    [hidden] { display: none !important; }
+    .nav-right { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--text-sub); }
+    /* 申込管理と運営ボード（/admin/ops）の切替 */
+    .pages { display: flex; gap: 4px; margin-right: auto; }
+    .pages a { padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: 700; color: var(--text-sub); text-decoration: none; white-space: nowrap; }
+    .pages a:hover { color: var(--green-dark); }
+    .pages a.current { background: var(--green-dark); color: #fff; }
+    .nav-right button {
+      background: none; border: 1px solid var(--border); border-radius: 4px;
+      padding: 6px 12px; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer;
+    }
+    .nav-right button:hover { border-color: var(--green-mid); color: var(--green-dark); }
+
+    /* ===== COMMON ===== */
+    main { flex: 1; padding: 48px 24px 80px; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    .label-en {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.18em; color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .label-en::before { content: ''; display: block; width: 32px; height: 2px; background: var(--gold); flex-shrink: 0; }
+    .page-title {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: clamp(24px, 4vw, 36px); font-weight: 900; color: var(--green-dark);
+      line-height: 1.2; margin-bottom: 8px;
+    }
+    .page-sub { color: var(--text-sub); font-size: 14px; margin-bottom: 32px; }
+
+    /* ===== LOGIN ===== */
+    .login-card {
+      background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--gold);
+      padding: 28px 24px; max-width: 520px;
+    }
+    .login-card h2 {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 18px; font-weight: 900; color: var(--green-dark); margin-bottom: 8px;
+    }
+    .login-card p { font-size: 14px; color: var(--text-sub); margin-bottom: 20px; }
+    #gis-button { min-height: 44px; }
+    .notice {
+      display: none; margin-top: 16px; padding: 12px 16px; font-size: 14px;
+      border: 1px solid var(--border); background: var(--surface);
+    }
+    .notice.show { display: block; }
+    .notice.error { background: #fdecea; border-color: #f5c2bd; color: #a8342a; }
+    .notice.info { background: var(--gold-dim); border-color: var(--gold); color: var(--green-dark); }
+
+    /* ===== SUMMARY ===== */
+    .summary {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 2px solid var(--green-dark); border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .summary-item { padding: 20px 16px; border-right: 1px solid var(--border); }
+    .summary-item:last-child { border-right: none; }
+    .summary-label { font-size: 12px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.06em; margin-bottom: 6px; }
+    .summary-value {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: clamp(28px, 4vw, 40px); font-weight: 900; color: var(--green-dark); line-height: 1;
+    }
+    .summary-value small { font-family: 'Noto Sans JP', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-sub); margin-left: 4px; }
+    .summary-value.warn { color: #a8342a; }
+    .summary-note { font-size: 12px; color: var(--text-sub); margin-top: 6px; }
+
+    /* ===== TABS ===== */
+    .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 0; overflow-x: auto; }
+    .tab {
+      background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px;
+      padding: 12px 20px; font-family: inherit; font-size: 15px; font-weight: 700; color: var(--text-sub);
+      cursor: pointer; white-space: nowrap;
+    }
+    .tab:hover { color: var(--green-dark); }
+    .tab.active { color: var(--green-dark); border-bottom-color: var(--gold); }
+    .tab .count { font-weight: 500; font-size: 13px; margin-left: 6px; color: var(--text-sub); }
+
+    /* ===== TABLE ===== */
+    .table-meta { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; font-size: 13px; color: var(--text-sub); flex-wrap: wrap; gap: 8px; }
+    .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); }
+    table { border-collapse: collapse; width: 100%; min-width: 1100px; font-size: 13px; }
+    th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    th {
+      background: var(--green-dark); color: #fff; font-weight: 700; font-size: 12px;
+      white-space: nowrap; position: sticky; top: 0;
+    }
+    td { white-space: pre-wrap; word-break: break-word; max-width: 360px; }
+    td.num { text-align: right; white-space: nowrap; }
+    tr:nth-child(even) td { background: #FBFBF8; }
+    tr:hover td { background: var(--gold-dim); }
+    .empty { padding: 40px 16px; text-align: center; color: var(--text-sub); font-size: 14px; }
+    /* 取消行は薄く残す（集計には含めない） */
+    tr.cancelled td { opacity: 0.45; }
+    .badge-pending {
+      display: inline-block; margin-left: 12px; padding: 2px 10px; border-radius: 12px;
+      background: #fdecea; border: 1px solid #f5c2bd; color: #a8342a; font-weight: 700; font-size: 12px;
+    }
+    td.actions { white-space: nowrap; }
+    td.col-received_at, td.col-status { min-width: 120px; }
+    td.col-notify { min-width: 200px; }
+    .act {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+      padding: 4px 10px; margin-right: 6px; font-family: inherit; font-size: 12px; color: var(--text); cursor: pointer;
+    }
+    .act:hover { border-color: var(--green-mid); color: var(--green-dark); }
+    .act.primary { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .act.danger { color: #a8342a; border-color: #f5c2bd; }
+    td textarea, td select {
+      width: 220px; font-family: inherit; font-size: 13px; padding: 4px 6px;
+      border: 1px solid var(--border); border-radius: 4px; background: var(--surface);
+    }
+
+    /* ===== FOOTER ===== */
+    footer { background: #0F1E09; color: rgba(255,255,255,0.4); padding: 24px; text-align: center; font-size: 12px; }
+
+    @media (max-width: 768px) {
+      main { padding: 32px 16px 60px; }
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .summary-item:nth-child(2) { border-right: none; }
+      .summary-item:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .nav-right span { display: none; }
+      nav { flex-wrap: wrap; gap: 12px; }
+      .pages { order: 3; width: 100%; margin-right: 0; }
+      .pages a { flex: 1; text-align: center; border: 1px solid var(--border); }
+      .pages a.current { border-color: var(--green-dark); }
+    }
+    /* ===== アンケート（admin-survey.html だけ） ===== */
+    .q-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin: 20px 0 8px; }
+    .q-card { background: var(--surface); border: 1px solid var(--border); padding: 16px 18px; }
+    .q-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 4px; line-height: 1.5; }
+    .q-card .q-meta { font-size: 12px; color: var(--text-sub); margin-bottom: 10px; }
+    .bar-row { display: grid; grid-template-columns: minmax(0, 1fr) 120px 32px; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 6px; }
+    .bar-row.scale { grid-template-columns: 24px minmax(0, 1fr) 32px; }
+    .bar-row .bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bar-row .bar { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+    .bar-row .bar span { display: block; height: 100%; background: var(--green-mid); }
+    .bar-row .bar-count { text-align: right; font-weight: 700; }
+    .bar-row.extra .bar-label { color: var(--text-sub); }
+    .table-meta .act { margin: 0; }
+    th { white-space: normal; min-width: 120px; }
+    td.col-received_at { min-width: 140px; white-space: nowrap; }
+    .notify-ng { color: #a8342a; font-weight: 700; }
+  </style>
+</head>
+<body>
+<header>
+  <nav>
+    <a href="/" class="logo">RECORE<span class="logo-sub">Community</span></a>
+    <div class="pages">
+      <a href="/admin">申込管理</a>
+      <a href="/admin/ops">Vol.4 運営ボード</a>
+      <a href="/admin/survey" class="current" aria-current="page">アンケート</a>
+    </div>
+    <div class="nav-right" id="nav-right" hidden>
+      <span id="viewer-email"></span>
+      <button type="button" id="btn-reload">再読込</button>
+      <button type="button" id="btn-logout">ログアウト</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="container">
+    <div class="label-en">ADMIN</div>
+    <h1 class="page-title">アンケート</h1>
+    <p class="page-sub">運営メンバー専用。イベントごとの参加者アンケートの回答を確認できます。</p>
+
+    <!-- ログイン前: ここ以外は何も描かない -->
+    <section id="login-view">
+      <div class="login-card">
+        <h2>運営メンバー専用</h2>
+        <p>許可された Google アカウントでログインしてください。</p>
+        <div id="gis-button"></div>
+        <div id="login-notice" class="notice"></div>
+      </div>
+    </section>
+
+    <!-- ログイン後 -->
+    <section id="data-view" hidden>
+      <div class="tabs" id="tabs"></div>
+      <div class="summary" id="summary" style="margin-top: 20px;"></div>
+      <div class="q-grid" id="q-grid"></div>
+      <div class="table-meta">
+        <span id="table-meta-left"></span>
+        <span id="table-meta-right"><button type="button" class="act" id="btn-csv">CSV をダウンロード</button></span>
+      </div>
+      <div class="table-wrap" id="table-wrap"></div>
+    </section>
+  </div>
+</main>
+
+<footer>© 2026 RECORE Community by 株式会社RECORE.</footer>
+
+<script>
+// ===== 設定 =====
+// OAuth 2.0 クライアント ID。サイト API の環境変数 GOOGLE_CLIENT_ID と同じ値にすること。
+const GOOGLE_CLIENT_ID = '642574052479-lt9bufovhol8iepsi6srft2cm4jj1v9b.apps.googleusercontent.com';
+
+// アンケートの回答を読むサイト API。ID トークンを検証して閲覧の許可リストと照合する
+const SURVEY_ADMIN_ENDPOINT = '/api/survey-admin';
+
+// ===== 状態 =====
+let idToken = null;
+let events = [];
+let currentKey = null;
+
+const $ = (id) => document.getElementById(id);
+
+// ===== 認証（Google Identity Services）=====
+function initGis() {
+  if (!window.google || !google.accounts || !google.accounts.id) {
+    showLoginNotice('error', 'ログイン機能を読み込めませんでした。ページを再読み込みしてください。');
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: (res) => handleCredential(res.credential),
+    auto_select: false,
+    ux_mode: 'popup'
+  });
+  google.accounts.id.renderButton($('gis-button'), {
+    type: 'standard', theme: 'outline', size: 'large', text: 'signin_with', shape: 'rectangular', logo_alignment: 'left'
+  });
+}
+
+async function handleCredential(credential) {
+  if (!credential) return;
+  idToken = credential;
+  showLoginNotice('info', '認証中…');
+  await loadData();
+}
+
+function logout() {
+  idToken = null;
+  events = [];
+  currentKey = null;
+  $('data-view').hidden = true;
+  $('nav-right').hidden = true;
+  ['summary', 'tabs', 'q-grid', 'table-wrap'].forEach(id => { $(id).innerHTML = ''; });
+  $('login-view').hidden = false;
+  showLoginNotice('', '');
+  if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+}
+
+// ===== データ取得 =====
+async function loadData() {
+  if (!idToken) return;
+  let result;
+  try {
+    const res = await fetch(SURVEY_ADMIN_ENDPOINT, { method: 'POST', body: JSON.stringify({ action: 'list', idToken }) });
+    result = await res.json();
+  } catch (err) {
+    showLoginNotice('error', 'データの取得に失敗しました。通信環境を確認して再度お試しください。');
+    return;
+  }
+  if (!result || !result.ok) {
+    idToken = null;
+    showLoginNotice('error', (result && result.error) || '閲覧できませんでした');
+    return;
+  }
+
+  events = Array.isArray(result.events) ? result.events : [];
+  $('viewer-email').textContent = result.viewer || '';
+  $('login-view').hidden = true;
+  $('nav-right').hidden = false;
+  $('data-view').hidden = false;
+  showLoginNotice('', '');
+  if (!currentKey || !events.some(e => e.key === currentKey)) {
+    currentKey = events.length ? events[0].key : null;
+  }
+  render();
+}
+
+// ===== 描画 =====
+function render() {
+  renderTabs();
+  const ev = events.find(e => e.key === currentKey);
+  renderSummary(ev);
+  renderQuestions(ev);
+  renderTable(ev);
+}
+
+function renderTabs() {
+  const tabs = $('tabs');
+  tabs.innerHTML = '';
+  events.forEach(ev => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tab' + (ev.key === currentKey ? ' active' : '');
+    b.textContent = ev.name;
+    const c = document.createElement('span');
+    c.className = 'count';
+    c.textContent = ev.summary.count + '件';
+    b.appendChild(c);
+    b.addEventListener('click', () => { currentKey = ev.key; render(); });
+    tabs.appendChild(b);
+  });
+}
+
+// JST 表示（yyyy/MM/dd HH:mm:ss）
+function formatJst(iso) {
+  if (!iso) return '';
+  const p = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  }).formatToParts(new Date(iso)).reduce((o, x) => { o[x.type] = x.value; return o; }, {});
+  return `${p.year}/${p.month}/${p.day} ${p.hour === '24' ? '00' : p.hour}:${p.minute}:${p.second}`;
+}
+
+function deadlineText(d) {
+  const [y, m, day] = d.split('-').map(Number);
+  return `${y}/${String(m).padStart(2, '0')}/${String(day).padStart(2, '0')} 23:59`;
+}
+
+// 集計は API が計算した値をそのまま出す（D7）
+function renderSummary(ev) {
+  const el = $('summary');
+  el.innerHTML = '';
+  if (!ev) return;
+  const scale = ev.questions.find(q => q.type === 'scale');
+  const scaleSum = scale ? ev.summary.questions[scale.id] : null;
+  const failed = ev.rows.filter(r => r.slack_error && !r.slack_sent_at).length;
+  const items = [
+    { label: '回答数', value: ev.summary.count, unit: '件' },
+    { label: '満足度の平均', value: scaleSum && scaleSum.average != null ? scaleSum.average.toFixed(1) : '—', unit: scale ? '/ ' + scale.max : '' },
+    { label: '回答締切', value: deadlineText(ev.deadline), unit: '' },
+    { label: 'Slack 通知の失敗', value: failed, unit: '件', warn: failed > 0 }
+  ];
+  items.forEach(it => {
+    const d = document.createElement('div');
+    d.className = 'summary-item';
+    d.innerHTML = '<div class="summary-label"></div><div class="summary-value' + (it.warn ? ' warn' : '') + '"><span class="v"></span><small></small></div>';
+    d.querySelector('.summary-label').textContent = it.label;
+    d.querySelector('.v').textContent = String(it.value);
+    d.querySelector('small').textContent = it.unit;
+    el.appendChild(d);
+  });
+}
+
+function barRow(label, count, max, cls) {
+  const row = document.createElement('div');
+  row.className = 'bar-row' + (cls ? ' ' + cls : '');
+  row.innerHTML = '<span class="bar-label"></span><span class="bar"><span></span></span><span class="bar-count"></span>';
+  row.querySelector('.bar-label').textContent = label;
+  row.querySelector('.bar-label').title = label;
+  row.querySelector('.bar span').style.width = (max ? Math.round(count / max * 100) : 0) + '%';
+  row.querySelector('.bar-count').textContent = String(count);
+  return row;
+}
+
+// 選択式の設問ごとの件数。定義に無くなった値（文言を直す前の回答）は薄く後ろに出す
+function renderQuestions(ev) {
+  const grid = $('q-grid');
+  grid.innerHTML = '';
+  if (!ev) return;
+  ev.questions.forEach((q, i) => {
+    const s = ev.summary.questions[q.id];
+    if (!s) return;
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    const h = document.createElement('h3');
+    h.textContent = 'Q' + (i + 1) + '. ' + q.label;
+    const meta = document.createElement('div');
+    meta.className = 'q-meta';
+    card.append(h, meta);
+    if (q.type === 'scale') {
+      meta.textContent = '回答 ' + s.answered + '件・平均 ' + (s.average != null ? s.average.toFixed(1) : '—');
+      const max = Math.max(0, ...Object.values(s.distribution));
+      for (let n = q.max; n >= q.min; n--) card.appendChild(barRow(String(n), s.distribution[n], max, 'scale'));
+    } else {
+      meta.textContent = '回答 ' + s.answered + '件' + (q.type === 'checkbox' ? '（複数選択）' : '');
+      const max = Math.max(0, ...s.counts.map(c => c.count));
+      s.counts.forEach(c => card.appendChild(barRow(c.option, c.count, max, q.options.includes(c.option) ? '' : 'extra')));
+    }
+    grid.appendChild(card);
+  });
+}
+
+// 一覧の列は今の設問定義の順。値は回答の値をそのまま出す（D2）
+function columnsOf(ev) {
+  return [{ id: 'received_at', label: '回答日時' }]
+    .concat(ev.questions.map((q, i) => ({ id: q.id, label: 'Q' + (i + 1) + ' ' + q.label })))
+    .concat([{ id: 'notify', label: 'Slack 通知' }]);
+}
+
+function cellText(r, id) {
+  if (id === 'received_at') return formatJst(r.received_at);
+  if (id === 'notify') return r.slack_sent_at ? '済' : r.slack_error ? '失敗：' + r.slack_error : '未通知';
+  const v = r.answers[id];
+  if (v == null) return '';
+  return Array.isArray(v) ? v.join('、') : String(v);
+}
+
+function renderTable(ev) {
+  const wrap = $('table-wrap');
+  wrap.innerHTML = '';
+  $('table-meta-left').textContent = ev ? ev.name + '：' + ev.summary.count + '件' : '';
+  $('btn-csv').disabled = !ev || ev.rows.length === 0;
+  if (!ev || ev.rows.length === 0) {
+    wrap.innerHTML = '<div class="empty">まだ回答はありません</div>';
+    return;
+  }
+  const cols = columnsOf(ev);
+  const table = document.createElement('table');
+  const head = document.createElement('tr');
+  cols.forEach(c => { const th = document.createElement('th'); th.textContent = c.label; head.appendChild(th); });
+  table.appendChild(head);
+  // 新しい回答を上に
+  ev.rows.slice().reverse().forEach(r => {
+    const tr = document.createElement('tr');
+    cols.forEach(c => {
+      const td = document.createElement('td');
+      td.className = 'col-' + c.id + (c.id === 'satisfaction' ? ' num' : '');
+      td.textContent = cellText(r, c.id);
+      if (c.id === 'notify' && !r.slack_sent_at && r.slack_error) td.classList.add('notify-ng');
+      tr.appendChild(td);
+    });
+    table.appendChild(tr);
+  });
+  wrap.appendChild(table);
+}
+
+// ===== CSV =====
+// 画面にある回答をそのまま書き出す（回答日時の古い順）。Excel で文字化けしないよう BOM を付ける
+function downloadCsv() {
+  const ev = events.find(e => e.key === currentKey);
+  if (!ev || ev.rows.length === 0) return;
+  const cols = columnsOf(ev);
+  const quote = (s) => '"' + String(s).replace(/"/g, '""') + '"';
+  const lines = [cols.map(c => quote(c.label)).join(',')]
+    .concat(ev.rows.map(r => cols.map(c => quote(cellText(r, c.id))).join(',')));
+  const blob = new Blob(['﻿' + lines.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'survey-' + ev.key + '-' + formatJst(new Date().toISOString()).slice(0, 10).replace(/\//g, '') + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function showLoginNotice(type, msg) {
+  const n = $('login-notice');
+  n.className = 'notice' + (type ? ' show ' + type : '');
+  n.textContent = msg;
+}
+
+// ===== イベント =====
+$('btn-reload').addEventListener('click', () => loadData());
+$('btn-logout').addEventListener('click', logout);
+$('btn-csv').addEventListener('click', downloadCsv);
+
+// GIS ライブラリの読み込み完了後に初期化（onload は下の <script> タグから呼ぶ）
+window.onGisLoad = initGis;
+window.handleCredential = handleCredential;
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="onGisLoad()" onerror="onGisLoad()"></script>
+
+</body>
+</html>

@@ -119,6 +119,18 @@ RECOREコミュニティの全体ポータルサイトです。リユース業�
 記録先のタブは最初の申し込みが入った時点で自動作成される（ヘッダー・書式つき）。手で作っておいても構わない。
 キーが未登録・未指定の申し込みは `その他` タブに入るので、設定漏れでも取りこぼさない。
 
+### 2b. 参加者アンケート（survey.html）
+
+イベント後に参加者へ配るアンケート。`/survey?event=<キー>` で開く（設計：`docs/designs/2026-10-22-event-survey/`）。
+
+- 設問は `events.json` の各イベントの `survey`（`deadline`・`title`・`lead`・`questions`）が正本。ページも API もここから作る。設問の種類は `text`・`textarea`・`scale`（`min`〜`max`）・`radio`・`checkbox`
+- 回答は `/api/survey` が検証して DB の `survey_responses` に保存し、運営 Slack に1件ずつ流す（失敗しても回答は残る）
+- `survey.deadline` の 23:59 JST を過ぎるとフォームを閉じ、API も受け付けない
+- 運営は `/admin/survey`（閲覧の許可リスト）で集計・一覧・CSV を見る
+- 公開後は設問の `id` を変えない（回答はこの id で持つ）。文言・選択肢を直しても、過去の回答は回答時点の写しで残る
+
+新しいイベントのアンケートは `events.json` に `survey` を足して URL を配るだけでよい。
+
 ### 3. イベント特設ページ / LP（kanto-vol4.html）
 
 関東コミュニティ Vol.4「ブックオフ出品倉庫 見学会」の単独LP。トップのイベントカード「イベント詳細を見る」と、申込ページの「→ 当日の流れ・開催概要はこちら」から遷移する。
@@ -180,7 +192,8 @@ recore-community-portalsite/
 ├── vercel.json         # Vercel 設定（拡張子なしURLの rewrite・セキュリティヘッダ）
 ├── index.html          # 全体ポータルサイト
 ├── kanto-vol4.html     # 関東 Vol.4 イベント特設ページ（LP）
-└── apply.html          # 参加申し込みフォーム（イベント共通・?event= で切替）
+├── apply.html          # 参加申し込みフォーム（イベント共通・?event= で切替）
+└── survey.html         # 参加者アンケート（イベント共通・?event= で切替）
 ```
 
 ビルドなしの静的HTML。各ページはスタイル・スクリプトをファイル内に持つ（共通CSSファイルは無い）。
@@ -216,6 +229,8 @@ python3 -m http.server 8080
 | `/` | `index.html` |
 | `/kanto-vol4` | `kanto-vol4.html` |
 | `/apply?event=kanto-vol4` | `apply.html` |
+| `/survey?event=kanto-vol4` | `survey.html` |
+| `/admin/survey` | `admin-survey.html` |
 
 ## 更新方法
 

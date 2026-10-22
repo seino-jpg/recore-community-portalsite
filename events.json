@@ -10,7 +10,112 @@
       "place": "東名横浜ロジスティクスセンター（神奈川県横浜市瀬谷区北町25-9）",
       "detail": "ピッキング業務・ささげ業務・メディア倉庫の見学（1工程60〜75分）\n11:40 オリエンテーション／12:15 ピッキング／13:15 ささげ／14:30 休憩・名刺交換／15:00 メディア倉庫・グラムス社によるささげアプリのご説明／16:00 振り返り・質疑応答（16:30 終了）",
       "capacity": 20,
-      "transportNote": "当日のスケジュール維持のため、できるだけ公共交通機関でのご来場をお願いしています。お車でお越しの場合も台数を事前に伺い、駐車場（敷地外含む）を調整しますのでご安心ください。"
+      "transportNote": "当日のスケジュール維持のため、できるだけ公共交通機関でのご来場をお願いしています。お車でお越しの場合も台数を事前に伺い、駐車場（敷地外含む）を調整しますのでご安心ください。",
+      "survey": {
+        "deadline": "2026-10-31",
+        "title": "ご参加者アンケート",
+        "lead": "本日はご参加いただき、ありがとうございました！<br>今後のコミュニティ運営の参考にさせていただきますので、ご協力をお願いいたします（所要 約3分）。",
+        "questions": [
+          {
+            "id": "company",
+            "label": "貴社名",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "name",
+            "label": "お名前",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "satisfaction",
+            "label": "本日の見学会の満足度を教えてください",
+            "type": "scale",
+            "min": 1,
+            "max": 10,
+            "required": true
+          },
+          {
+            "id": "satisfaction_reason",
+            "label": "Q3 を選んだ理由をお聞かせください",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "id": "helpful",
+            "label": "特に参考になった内容を選んでください（複数選択可）",
+            "type": "checkbox",
+            "required": true,
+            "options": [
+              "ピッキング業務の見学",
+              "ささげ業務の見学",
+              "メディア倉庫の見学",
+              "グラムス社によるささげアプリのご説明",
+              "振り返り・質疑応答",
+              "休憩中の名刺交換・参加者同士の交流"
+            ]
+          },
+          {
+            "id": "helpful_reason",
+            "label": "Q5 で選んだ内容について、どんな点が参考になりましたか",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "id": "adopt",
+            "label": "見学した内容で、自社でも取り入れてみたいことはありますか",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "id": "time_allocation",
+            "label": "当日の時間配分はいかがでしたか",
+            "type": "radio",
+            "required": true,
+            "options": [
+              "ちょうどよかった",
+              "もっと長く見たかった",
+              "長く感じた"
+            ]
+          },
+          {
+            "id": "operation",
+            "label": "運営（ご案内・受付・会場移動など）で気になった点があればお聞かせください",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "id": "next_participation",
+            "label": "次回の RECORE コミュニティイベントにも参加したいと思いますか",
+            "type": "radio",
+            "required": true,
+            "options": [
+              "ぜひ参加したい",
+              "日程が合えば参加したい",
+              "今回は見送りたい"
+            ]
+          },
+          {
+            "id": "next_theme",
+            "label": "次回取り上げてほしいテーマや、見学してみたい現場があれば教えてください",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "id": "request",
+            "label": "RECORE へのご要望・ご意見があればお聞かせください",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "id": "impression",
+            "label": "最後に、全体を通してのご感想をお聞かせください",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
     },
     "kansai-vol2": {
       "title": "関西コミュニティ第2回イベント｜うまくいった一手を持ち寄る、関西RECOREユーザーの戦略会議",
