@@ -23,7 +23,7 @@ export const devEnv = loadDevEnv();
 export const sql = neon(devEnv.DATABASE_URL);
 
 export async function resetDb() {
-  await sql`TRUNCATE application_changes, applications, survey_responses`;
+  await sql`TRUNCATE application_changes, applications`;
 }
 
 // 架空の設定値（実在のメール・ID・シークレット・チャンネルを書かない）

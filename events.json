@@ -38,7 +38,7 @@
           },
           {
             "id": "satisfaction_reason",
-            "label": "上記を選んだ理由をお聞かせください",
+            "label": "Q3 を選んだ理由をお聞かせください",
             "type": "textarea",
             "required": false
           },
@@ -58,7 +58,7 @@
           },
           {
             "id": "helpful_reason",
-            "label": "選んだ内容について、どんな点が参考になりましたか",
+            "label": "Q5 で選んだ内容について、どんな点が参考になりましたか",
             "type": "textarea",
             "required": false
           },

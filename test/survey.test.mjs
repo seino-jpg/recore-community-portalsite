@@ -2,11 +2,13 @@
 // 先に検証用 DB へ表を作っておく: DATABASE_URL=<検証用> node scripts/apply-survey-schema.mjs
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { sql, resetDb, makeCtx, mockFetch, tokenInfo, PREVIEW_ENV } from './helpers.mjs';
+import { sql, makeCtx, mockFetch, tokenInfo, PREVIEW_ENV } from './helpers.mjs';
 import { handleSurvey, validateAnswers, getSurveyEvent } from '../api/_lib/survey-core.js';
 import { handleSurveyAdmin } from '../api/_lib/survey-admin-core.js';
 
-beforeEach(resetDb);
+beforeEach(async () => {
+  await sql`TRUNCATE survey_responses`;
+});
 
 const NOW = Date.parse('2026-10-22T17:00:00+09:00');
 const QUESTIONS = getSurveyEvent('kanto-vol4').survey.questions;
@@ -71,6 +73,11 @@ test('U2 任意を空: 必須6問だけで保存。任意は空文字・空配�
   assert.equal(row.answers.impression, '');
   assert.equal(row.answers.operation, '');
   assert.equal(Object.keys(row.answers).length, 13);
+  // 関東 Vol.4 に任意の複数選択は無いので、定義に1問足して空配列を確かめる
+  const withOptionalCheckbox = [...QUESTIONS, { id: 'extra', label: '任意の複数選択', type: 'checkbox', required: false, options: ['A', 'B'] }];
+  const v = validateAnswers(withOptionalCheckbox, requiredOnly());
+  assert.equal(v.ok, true);
+  assert.deepEqual(v.answers.extra, []);
 });
 
 test('U3 必須漏れ: 参考になった内容が0件は 400・保存しない', async () => {
